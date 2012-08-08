@@ -2,9 +2,10 @@ require "minitest/spec"
 require "minitest/mock"
 require "minitest/autorun"
 
+Bundler.require
+
 require "time"
 require "base64"
-require "debugger"
 require "tmpdir"
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
