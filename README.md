@@ -15,6 +15,19 @@ You can validate a SAML response string using either of the below approaches. Th
 
 If the verification fails for whatever reason, a `Samlr::Error` will be thrown. This class has several subclasses and generally contains a useful error message that can help trouble shooting.
 
+### Testing
+
+```
+bundle install
+rake
+```
+
+Top speed things up, you can skip schema validation checks:
+
+```
+FAST=1 rake
+```
+
 ### Supported IdPs
 
 Please help adding IdP's or IdP services you find to work with Samlr
