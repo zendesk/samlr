@@ -1,4 +1,4 @@
-## Zaml
+## Zaml [![Build Status](https://secure.travis-ci.org/morten/zaml.png)](http://travis-ci.org/morten/zaml)
 
 Zaml is a clean room implementation of SAML for Ruby.
 
