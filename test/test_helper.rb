@@ -5,6 +5,7 @@ require "minitest/autorun"
 require "time"
 require "base64"
 require "debugger"
+require "tmpdir"
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 

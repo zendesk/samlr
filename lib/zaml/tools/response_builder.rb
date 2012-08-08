@@ -39,7 +39,7 @@ module Zaml
             xml["saml"].Issuer(issuer)
             xml["samlp"].Status { |xml| xml["samlp"].StatusCode("Value" => status_code) }
 
-            xml["saml"].Assertion("xmlns:saml" => NS_MAP["saml"], "ID" => assertion_id, "IssueInstant" => issue_instant) do
+            xml["saml"].Assertion("xmlns:saml" => NS_MAP["saml"], "ID" => assertion_id, "IssueInstant" => issue_instant, "Version" => "2.0") do
               xml["saml"].Issuer(issuer)
 
               xml["saml"].Subject do

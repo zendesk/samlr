@@ -18,7 +18,7 @@ describe Zaml::Reference do
 
   describe "#digest_value" do
     it "should return the verbatim value" do
-      assert_equal "rGWSpbnnodvp3utG2IHscl/Vf94=", @reference.digest_value
+      assert_equal "cx6i8RCjAntF/yzvMeHfoCVV7G4=", @reference.digest_value
     end
   end
 

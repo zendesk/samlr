@@ -1,5 +1,4 @@
 require File.expand_path("test/test_helper")
-require "tmpdir"
 
 describe Zaml::Tools::Certificate do
   before { @certificate = TEST_CERTIFICATE }
