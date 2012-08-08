@@ -1,9 +1,6 @@
 require File.expand_path("test/test_helper")
 require "tempfile"
 
-# TODO SCHEMA VALIDATION
-SAML_SCHEMA = File.join(FIXTURE_PATH, "schemas", "saml-schema-protocol-2.0.xsd")
-
 describe Zaml::Tools::ResponseBuilder do
   before { @certificate = TEST_CERTIFICATE }
 

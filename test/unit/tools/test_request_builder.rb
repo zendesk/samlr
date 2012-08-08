@@ -6,7 +6,7 @@ describe Zaml::Tools::RequestBuilder do
       @xml = Zaml::Tools::RequestBuilder.build({
         :issuer               => "https://sp.example.com/saml2",
         :name_identity_format => "identity_format",
-        :allow_create         => "hello",
+        :allow_create         => "true",
         :customer_service_url => "https://support.sp.example.com/",
         :authn_context        => "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport"
       })
@@ -22,8 +22,22 @@ describe Zaml::Tools::RequestBuilder do
       assert_equal "https://sp.example.com/saml2", issuer.text
 
       name_id_policy = @doc.root.at("./samlp:NameIDPolicy", Zaml::NS_MAP)
-      assert_equal "hello", name_id_policy["AllowCreate"]
+      assert_equal "true", name_id_policy["AllowCreate"]
       assert_equal "identity_format", name_id_policy["Format"]
     end
+
+    # TODO: This is dog slow. There must be a way to define local schemas.
+    it "validates against schemas" do
+      skip if ENV["FAST"]
+      flunk("Install xmllint to validate schemas") if `which xmllint`.empty?
+
+      output = Tempfile.new("#{Zaml::Tools.uuid}-request.xml")
+      output.write(@xml)
+      output.flush
+
+      result = `xmllint --noout --schema #{SAML_SCHEMA} #{output.path} 2>&1`.chomp
+      assert_equal "#{output.path} validates", result
+    end
+
   end
 end
