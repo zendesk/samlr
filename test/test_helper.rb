@@ -10,30 +10,30 @@ require "tmpdir"
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
-require "zaml"
-require "zaml/tools/response_builder"
-require "zaml/tools/certificate"
+require "samlr"
+require "samlr/tools/response_builder"
+require "samlr/tools/certificate"
 
 FIXTURE_PATH     = File.join(File.dirname(__FILE__), "fixtures")
-TEST_CERTIFICATE = Zaml::Tools::Certificate.load(FIXTURE_PATH, "default_zaml")
+TEST_CERTIFICATE = Samlr::Tools::Certificate.load(FIXTURE_PATH, "default_samlr")
 SAML_SCHEMA      = File.join(FIXTURE_PATH, "schemas", "saml-schema-protocol-2.0.xsd")
 
 def saml_response(options = {})
   fingerprint   = options[:fingerprint]
   fingerprint ||= options[:certificate] ? options[:certificate].fingerprint : nil
 
-  Zaml::Response.new(Zaml::Tools::ResponseBuilder.fixture(options), :fingerprint => fingerprint)
+  Samlr::Response.new(Samlr::Tools::ResponseBuilder.fixture(options), :fingerprint => fingerprint)
 end
 
 def fixed_saml_response(options = {})
   options = {
     :certificate     => TEST_CERTIFICATE,
-    :issue_instant   => Zaml::Tools::Time.stamp(Time.at(1344379365)),
+    :issue_instant   => Samlr::Tools::Time.stamp(Time.at(1344379365)),
     :response_id     => "123",
     :assertion_id    => "456",
     :in_response_to  => "789",
-    :not_on_or_after => Zaml::Tools::Time.stamp(Time.at(1344379365 + 60)),
-    :not_before      => Zaml::Tools::Time.stamp(Time.at(1344379365 - 60))
+    :not_on_or_after => Samlr::Tools::Time.stamp(Time.at(1344379365 + 60)),
+    :not_before      => Samlr::Tools::Time.stamp(Time.at(1344379365 - 60))
   }.merge(options)
   saml_response(options)
 end
@@ -74,5 +74,5 @@ end
 
 # Reads the response fixtures by file name (no prefix, an optionally encodes)
 def responses(name, options = {})
-  Zaml::Response.new(fixtures(name, options))
+  Samlr::Response.new(fixtures(name, options))
 end

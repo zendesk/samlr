@@ -1,4 +1,4 @@
-describe Zaml::Reference do
+describe Samlr::Reference do
   before do
     @response  = fixed_saml_response
     @reference = @response.signature.send(:references).first

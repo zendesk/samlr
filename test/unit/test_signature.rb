@@ -1,14 +1,14 @@
 require "openssl"
 
-describe Zaml::Signature do
+describe Samlr::Signature do
   before do
     @response  = fixed_saml_response
     @signature = @response.signature
   end
 
   describe "#signature_algorithm" do
-    it "should defer to Zaml::Tools::algorithm" do
-      Zaml::Tools.stub(:algorithm, "hello") do
+    it "should defer to Samlr::Tools::algorithm" do
+      Samlr::Tools.stub(:algorithm, "hello") do
         assert_match "hello", @signature.send(:signature_method)
       end
     end

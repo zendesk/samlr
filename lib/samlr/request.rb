@@ -1,6 +1,6 @@
-require "zaml/tools/request_builder"
+require "samlr/tools/request_builder"
 
-module Zaml
+module Samlr
   class Request
     attr_reader :options
 
@@ -10,12 +10,12 @@ module Zaml
 
     # The encoded SAML request
     def param
-      @param ||= Zaml::Tools.encode(body)
+      @param ||= Samlr::Tools.encode(body)
     end
 
     # The XML payload body
     def body
-      @body ||= Zaml::Tools::RequestBuilder.build(options)
+      @body ||= Samlr::Tools::RequestBuilder.build(options)
     end
 
   end

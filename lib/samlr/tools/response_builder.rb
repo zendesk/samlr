@@ -2,16 +2,16 @@ require "nokogiri"
 require "time"
 require "uuidtools"
 
-module Zaml
+module Samlr
   module Tools
 
     # Use this for building test data, not ready to use for production data
     module ResponseBuilder
 
       def self.build(options = {})
-        issue_instant   = options[:issue_instant]  || Zaml::Tools::Time.stamp
-        response_id     = options[:response_id]    || Zaml::Tools.uuid
-        assertion_id    = options[:assertion_id]   || Zaml::Tools.uuid
+        issue_instant   = options[:issue_instant]  || Samlr::Tools::Time.stamp
+        response_id     = options[:response_id]    || Samlr::Tools.uuid
+        assertion_id    = options[:assertion_id]   || Samlr::Tools.uuid
         status_code     = options[:status_code]    || "urn:oasis:names:tc:SAML:2.0:status:Success"
         name_id_format  = options[:name_id_format] || "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
         subject_conf_m  = options[:subject_conf_m] || "urn:oasis:names:tc:SAML:2.0:cm:bearer"
@@ -75,7 +75,7 @@ module Zaml
       end
 
       def self.sign(document, element_id, options)
-        certificate = options[:certificate] || Zaml::Tools::Certificate.new
+        certificate = options[:certificate] || Samlr::Tools::Certificate.new
         element     = document.at("//*[@ID='#{element_id}']")
         digest      = digest(document, element, options)
         canoned     = digest.at("./ds:SignedInfo", NS_MAP).canonicalize(C14N)
@@ -133,13 +133,13 @@ module Zaml
       def self.fixture(options = {})
         options = {
           :destination     => "https://example.org/saml/endpoint",
-          :in_response_to  => Zaml::Tools.uuid,
-          :issue_instant   => Zaml::Tools::Time.stamp,
+          :in_response_to  => Samlr::Tools.uuid,
+          :issue_instant   => Samlr::Tools::Time.stamp,
           :name_id         => "someone@example.org",
           :audience        => "example.org",
-          :not_on_or_after => Zaml::Tools::Time.stamp(::Time.now + 60),
-          :not_before      => Zaml::Tools::Time.stamp(::Time.now - 60),
-          :response_id     => Zaml::Tools.uuid
+          :not_on_or_after => Samlr::Tools::Time.stamp(::Time.now + 60),
+          :not_before      => Samlr::Tools::Time.stamp(::Time.now - 60),
+          :response_id     => Samlr::Tools.uuid
           }.merge(options)
 
           build(options)

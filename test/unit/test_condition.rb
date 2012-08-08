@@ -1,11 +1,11 @@
 def condition(before, after)
-  Zaml::Condition.new(
+  Samlr::Condition.new(
     "NotBefore"    => before ? before.utc.iso8601 : nil,
     "NotOnOrAfter" => after  ? after.utc.iso8601  : nil
   )
 end
 
-describe Zaml::Condition do
+describe Samlr::Condition do
   before do
     @not_before = (Time.now - 10*60)
     @not_after  = (Time.now + 10*60)
@@ -45,13 +45,13 @@ describe Zaml::Condition do
 
   describe "#not_before_satisfied?" do
     it "returns true when passed a nil value" do
-      assert Zaml::Condition.new({}).not_before_satisfied?
+      assert Samlr::Condition.new({}).not_before_satisfied?
     end
   end
 
   describe "#not_on_or_after_satisfied?" do
     it "returns true when passed a nil value" do
-      assert Zaml::Condition.new({}).not_on_or_after_satisfied?
+      assert Samlr::Condition.new({}).not_on_or_after_satisfied?
     end
   end
 end

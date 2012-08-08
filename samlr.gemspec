@@ -1,9 +1,9 @@
-Gem::Specification.new "zaml", "0.0.1" do |s|
+Gem::Specification.new "samlr", "0.0.1" do |s|
   s.summary     = "Ruby tools for SAML"
   s.description = "Helps you implement a SAML SP"
   s.authors     = ["Morten Primdahl"]
   s.email       = "primdahl@me.com"
-  s.homepage    = "http://github.com/morten/zaml"
+  s.homepage    = "http://github.com/morten/samlr"
 
   s.add_runtime_dependency("nokogiri", ">= 1.5.5")
   s.add_runtime_dependency("uuidtools", ">= 2.1.3")

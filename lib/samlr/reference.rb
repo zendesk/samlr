@@ -1,6 +1,6 @@
 require "base64"
 
-module Zaml
+module Samlr
   class Reference
     attr_reader :uri, :node
 
@@ -10,7 +10,7 @@ module Zaml
     end
 
     def digest_method
-      @digest_method ||= Zaml::Tools.algorithm(node.at("./ds:DigestMethod/@Algorithm", NS_MAP).try(:value))
+      @digest_method ||= Samlr::Tools.algorithm(node.at("./ds:DigestMethod/@Algorithm", NS_MAP).try(:value))
     end
 
     def digest_value

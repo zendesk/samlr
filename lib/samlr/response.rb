@@ -1,8 +1,8 @@
 require "nokogiri"
-require "zaml/assertion"
-require "zaml/tools/certificate"
+require "samlr/assertion"
+require "samlr/tools/certificate"
 
-module Zaml
+module Samlr
 
   # This is the object interface to the XML response object.
   class Response
@@ -17,7 +17,7 @@ module Zaml
     # is destructive the document needs to verify itself first, and then any signed assertions
     def verify!
       if signature.missing? && assertion.signature.missing?
-        raise Zaml::SignatureError.new("Neither response nor assertion signed")
+        raise Samlr::SignatureError.new("Neither response nor assertion signed")
       end
 
       signature.verify! unless signature.missing?
@@ -31,12 +31,12 @@ module Zaml
     end
 
     def signature
-      @signature ||= Zaml::Signature.new(document, location, fingerprint)
+      @signature ||= Samlr::Signature.new(document, location, fingerprint)
     end
 
     # Returns the assertion element. Only supports a single assertion.
     def assertion
-      @assertion ||= Zaml::Assertion.new(document, fingerprint)
+      @assertion ||= Samlr::Assertion.new(document, fingerprint)
     end
 
     private
@@ -51,16 +51,16 @@ module Zaml
         begin
           document = Nokogiri::XML(data) { |config| config.strict }
         rescue
-          raise Zaml::FormatError.new(e.message)
+          raise Samlr::FormatError.new(e.message)
         end
       end
     end
 
     def self.fingerprint(options)
       begin
-        options[:fingerprint] || Zaml::Tools::Certificate.fingerprint(options[:certificate])
+        options[:fingerprint] || Samlr::Tools::Certificate.fingerprint(options[:certificate])
       rescue Exception => e
-        raise Zaml::ZamlError.new("Invalid or missing fingerprint data: #{e.message}")
+        raise Samlr::SamlrError.new("Invalid or missing fingerprint data: #{e.message}")
       end
     end
   end

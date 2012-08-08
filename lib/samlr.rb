@@ -1,6 +1,6 @@
 require "nokogiri"
 
-module Zaml
+module Samlr
   C14N    = Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0
   COMPACT = { :indent => 0, :save_with => Nokogiri::XML::Node::SaveOptions::AS_XML }
 
@@ -11,19 +11,19 @@ module Zaml
     "samlp" => "urn:oasis:names:tc:SAML:2.0:protocol"
   }
 
-  class ZamlError < StandardError
+  class SamlrError < StandardError
   end
 
-  class FormatError < ZamlError
+  class FormatError < SamlrError
   end
 
-  class SignatureError < ZamlError
+  class SignatureError < SamlrError
   end
 
   class FingerprintError < SignatureError
   end
 
-  class ConditionsError < ZamlError
+  class ConditionsError < SamlrError
   end
 end
 
@@ -35,7 +35,7 @@ unless Object.new.respond_to?(:try)
   end
 end
 
-require "zaml/tools"
-require "zaml/signature"
-require "zaml/response"
-require "zaml/request"
+require "samlr/tools"
+require "samlr/signature"
+require "samlr/response"
+require "samlr/request"

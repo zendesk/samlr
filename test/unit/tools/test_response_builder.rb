@@ -1,14 +1,14 @@
 require File.expand_path("test/test_helper")
 require "tempfile"
 
-describe Zaml::Tools::ResponseBuilder do
+describe Samlr::Tools::ResponseBuilder do
   before { @certificate = TEST_CERTIFICATE }
 
   describe "#fixture" do
-    before { @output = Zaml::Tools::ResponseBuilder.fixture(:certificate => @certificate) }
+    before { @output = Samlr::Tools::ResponseBuilder.fixture(:certificate => @certificate) }
 
     it "generates a fully valid response document" do
-      response = Zaml::Response.new(@output, :certificate => @certificate.x509)
+      response = Samlr::Response.new(@output, :certificate => @certificate.x509)
       assert response.verify!
     end
 
@@ -17,7 +17,7 @@ describe Zaml::Tools::ResponseBuilder do
       skip if ENV["FAST"]
       flunk("Install xmllint to validate schemas") if `which xmllint`.empty?
 
-      output = Tempfile.new("#{Zaml::Tools.uuid}-response.xml")
+      output = Tempfile.new("#{Samlr::Tools.uuid}-response.xml")
       output.write(@output)
       output.flush
 

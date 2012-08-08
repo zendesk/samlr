@@ -1,6 +1,6 @@
 require "nokogiri"
 
-module Zaml
+module Samlr
   module Tools
 
     # Use this for building the SAML auth request XML
@@ -13,7 +13,7 @@ module Zaml
         authn_context        = options[:authn_context]
 
         builder = Nokogiri::XML::Builder.new do |xml|
-          xml.AuthnRequest("xmlns:samlp" => NS_MAP["samlp"], "xmlns:saml" => NS_MAP["saml"], "ID" => Zaml::Tools.uuid, "IssueInstant" => Zaml::Tools::Time.stamp, "Version" => "2.0") do
+          xml.AuthnRequest("xmlns:samlp" => NS_MAP["samlp"], "xmlns:saml" => NS_MAP["saml"], "ID" => Samlr::Tools.uuid, "IssueInstant" => Samlr::Tools::Time.stamp, "Version" => "2.0") do
             xml.doc.root.namespace = xml.doc.root.namespace_definitions.find { |ns| ns.prefix == "samlp" }
 
             unless consumer_service_url.nil?

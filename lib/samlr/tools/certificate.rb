@@ -1,4 +1,4 @@
-module Zaml
+module Samlr
   module Tools
 
     # Container for generating/referencing X509 and keys
@@ -21,7 +21,7 @@ module Zaml
           name   = OpenSSL::X509::Name.new([
             [ 'C', 'US', OpenSSL::ASN1::PRINTABLESTRING ],
             [ 'O', domain, OpenSSL::ASN1::UTF8STRING ],
-            [ 'OU', 'Zaml ResponseBuilder', OpenSSL::ASN1::UTF8STRING ],
+            [ 'OU', 'Samlr ResponseBuilder', OpenSSL::ASN1::UTF8STRING ],
             [ 'CN', 'CA' ]
             ])
 
@@ -51,7 +51,7 @@ module Zaml
       end
 
       def fingerprint
-        Zaml::Tools::Certificate.fingerprint(x509)
+        Samlr::Tools::Certificate.fingerprint(x509)
       end
 
       def sign(string)
@@ -62,12 +62,12 @@ module Zaml
         key_pair.public_key.verify(OpenSSL::Digest::SHA1.new, Base64.decode64(signature), string)
       end
 
-      def self.dump(path, certificate, id = "zaml")
+      def self.dump(path, certificate, id = "samlr")
         File.open(File.join(path, "#{id}_private_key.pem"), "w") { |f| f.write(certificate.key_pair.to_pem) }
         File.open(File.join(path, "#{id}_certificate.pem"), "w") { |f| f.write(certificate.x509.to_pem) }
       end
 
-      def self.load(path, id = "zaml")
+      def self.load(path, id = "samlr")
         key_pair  = OpenSSL::PKey::RSA.new(File.read(File.join(path, "#{id}_private_key.pem")))
         x509_cert = OpenSSL::X509::Certificate.new(File.read(File.join(path, "#{id}_certificate.pem")))
 

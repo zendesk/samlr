@@ -4,7 +4,7 @@ require "openssl"
 require "cgi"
 require "zlib"
 
-module Zaml
+module Samlr
   module Tools
     SHA_MAP = {
       1    => OpenSSL::Digest::SHA1,
@@ -38,7 +38,7 @@ module Zaml
 
     # Generate an xs:NCName conforming UUID
     def self.uuid
-      "zaml-#{UUIDTools::UUID.timestamp_create}"
+      "samlr-#{UUIDTools::UUID.timestamp_create}"
     end
 
     # Deflates, Base64 encodes and CGI escapes a string

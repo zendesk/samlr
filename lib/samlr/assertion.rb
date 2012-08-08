@@ -1,6 +1,6 @@
-require "zaml/condition"
+require "samlr/condition"
 
-module Zaml
+module Samlr
   class Assertion
     attr_reader :document, :fingerprint
 
@@ -21,7 +21,7 @@ module Zaml
     end
 
     def signature
-      @signature ||= Zaml::Signature.new(document, location, fingerprint)
+      @signature ||= Samlr::Signature.new(document, location, fingerprint)
     end
 
     def unsigned?
@@ -35,7 +35,7 @@ module Zaml
     end
 
     def verify_conditions!
-      raise Zaml::ConditionsError.new("One more more conditions not met") unless conditions_met?
+      raise Samlr::ConditionsError.new("One more more conditions not met") unless conditions_met?
     end
 
     def conditions_met?

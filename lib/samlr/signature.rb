@@ -1,8 +1,8 @@
 require "openssl"
 require "base64"
-require "zaml/reference"
+require "samlr/reference"
 
-module Zaml
+module Samlr
 
   # A SAML specific implementation http://en.wikipedia.org/wiki/XML_Signature
   class Signature
@@ -49,7 +49,7 @@ module Zaml
     # Establishes trust that the remote party is who you think, no-op if you do not supply
     # a fingerprint to validate against
     def verify_fingerprint!
-      if fingerprint != Zaml::Tools::Certificate.fingerprint(x509)
+      if fingerprint != Samlr::Tools::Certificate.fingerprint(x509)
         raise FingerprintError.new("Fingerprint mismatch #{fingerprint}")
       end
 
@@ -88,14 +88,14 @@ module Zaml
       @references ||= begin
         [].tap do |refs|
           original.xpath("#{prefix}/ds:Signature/ds:SignedInfo/ds:Reference[@URI]", NS_MAP).each do |ref|
-            refs << Zaml::Reference.new(ref)
+            refs << Samlr::Reference.new(ref)
           end
         end
       end
     end
 
     def signature_method
-      @signature_method ||= Zaml::Tools.algorithm(signature.at("./ds:SignedInfo/ds:SignatureMethod/@Algorithm", NS_MAP).try(:value))
+      @signature_method ||= Samlr::Tools.algorithm(signature.at("./ds:SignedInfo/ds:SignatureMethod/@Algorithm", NS_MAP).try(:value))
     end
 
     def signature_value

@@ -1,6 +1,6 @@
 require "time"
 
-describe Zaml::Assertion do
+describe Samlr::Assertion do
   subject { fixed_saml_response.assertion }
 
   describe "#verify!" do
@@ -15,7 +15,7 @@ describe Zaml::Assertion do
     describe "when conditions are not met" do
       it "should raise" do
         subject.stub(:conditions_met?, false) do
-          assert_raises(Zaml::ConditionsError) { subject.verify! }
+          assert_raises(Samlr::ConditionsError) { subject.verify! }
         end
       end
     end

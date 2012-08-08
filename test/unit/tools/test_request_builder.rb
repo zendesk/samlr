@@ -1,9 +1,9 @@
 require File.expand_path("test/test_helper")
 
-describe Zaml::Tools::RequestBuilder do
+describe Samlr::Tools::RequestBuilder do
   describe "#build" do
     before do
-      @xml = Zaml::Tools::RequestBuilder.build({
+      @xml = Samlr::Tools::RequestBuilder.build({
         :issuer               => "https://sp.example.com/saml2",
         :name_identity_format => "identity_format",
         :allow_create         => "true",
@@ -18,10 +18,10 @@ describe Zaml::Tools::RequestBuilder do
       assert_equal "AuthnRequest", @doc.root.name
       assert_equal "https://support.sp.example.com/", @doc.root["AssertionConsumerServiceURL"]
 
-      issuer = @doc.root.at("./saml:Issuer", Zaml::NS_MAP)
+      issuer = @doc.root.at("./saml:Issuer", Samlr::NS_MAP)
       assert_equal "https://sp.example.com/saml2", issuer.text
 
-      name_id_policy = @doc.root.at("./samlp:NameIDPolicy", Zaml::NS_MAP)
+      name_id_policy = @doc.root.at("./samlp:NameIDPolicy", Samlr::NS_MAP)
       assert_equal "true", name_id_policy["AllowCreate"]
       assert_equal "identity_format", name_id_policy["Format"]
     end
@@ -31,7 +31,7 @@ describe Zaml::Tools::RequestBuilder do
       skip if ENV["FAST"]
       flunk("Install xmllint to validate schemas") if `which xmllint`.empty?
 
-      output = Tempfile.new("#{Zaml::Tools.uuid}-request.xml")
+      output = Tempfile.new("#{Samlr::Tools.uuid}-request.xml")
       output.write(@xml)
       output.flush
 

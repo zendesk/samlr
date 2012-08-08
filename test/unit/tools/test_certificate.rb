@@ -1,6 +1,6 @@
 require File.expand_path("test/test_helper")
 
-describe Zaml::Tools::Certificate do
+describe Samlr::Tools::Certificate do
   before { @certificate = TEST_CERTIFICATE }
 
   it "provides a certificate" do
@@ -20,7 +20,7 @@ describe Zaml::Tools::Certificate do
     end
 
     describe "self#dump" do
-      before { Zaml::Tools::Certificate.dump(@path, @certificate) }
+      before { Samlr::Tools::Certificate.dump(@path, @certificate) }
 
       it "creates a key file and a certificate file on disk" do
         state = Dir.glob("#{@path}/*.pem")
@@ -28,7 +28,7 @@ describe Zaml::Tools::Certificate do
       end
 
       describe "#load" do
-        before { @loaded = Zaml::Tools::Certificate.load(@path) }
+        before { @loaded = Samlr::Tools::Certificate.load(@path) }
 
         it "verified the signature signed by the unserialized certificate" do
           assert @loaded.verify(@certificate.sign("12345678"), "12345678")
