@@ -7,6 +7,7 @@ Bundler.require
 require "time"
 require "base64"
 require "tmpdir"
+require "debugger" unless ENV["TRAVIS"]
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
@@ -30,6 +31,7 @@ def fixed_saml_response(options = {})
     :issue_instant   => Samlr::Tools::Time.stamp(Time.at(1344379365)),
     :response_id     => "123",
     :assertion_id    => "456",
+    :attributes      => { "tags" => "mean horse" },
     :in_response_to  => "789",
     :not_on_or_after => Samlr::Tools::Time.stamp(Time.at(1344379365 + 60)),
     :not_before      => Samlr::Tools::Time.stamp(Time.at(1344379365 - 60))

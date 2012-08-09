@@ -28,6 +28,23 @@ module Samlr
       !signature.present?
     end
 
+    def attributes
+      @attributes ||= begin
+        {}.tap do |attrs|
+          assertion.xpath("./saml:AttributeStatement/saml:Attribute", NS_MAP).each do |statement|
+            name  = statement["Name"]
+            value = statement.at("./saml:AttributeValue", NS_MAP).text
+
+            attrs[name] = attrs[name.to_sym] = value
+          end
+        end
+      end
+    end
+
+    def name_id
+      @name_id ||= assertion.at("./saml:Subject/saml:NameID").text
+    end
+
     private
 
     def skip_conditions?

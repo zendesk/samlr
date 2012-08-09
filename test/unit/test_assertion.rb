@@ -10,6 +10,19 @@ describe Samlr::Assertion do
     end
   end
 
+  describe "#attributes" do
+    it "returns a hash of assertion attributes" do
+      assert_equal subject.attributes[:tags], "mean horse"
+      assert_equal subject.attributes["tags"], "mean horse"
+    end
+  end
+
+  describe "#name_id" do
+    it "returns the body of the NameID element" do
+      assert_equal "someone@example.org", subject.name_id
+    end
+  end
+
   describe "#verify!" do
     describe "when conditions are met" do
       it "should pass" do

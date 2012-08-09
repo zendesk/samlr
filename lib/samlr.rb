@@ -9,7 +9,8 @@ module Samlr
     "c14n"  => "http://www.w3.org/2001/10/xml-exc-c14n#",
     "ds"    => "http://www.w3.org/2000/09/xmldsig#",
     "saml"  => "urn:oasis:names:tc:SAML:2.0:assertion",
-    "samlp" => "urn:oasis:names:tc:SAML:2.0:protocol"
+    "samlp" => "urn:oasis:names:tc:SAML:2.0:protocol",
+    "xsi"   => "http://www.w3.org/2001/XMLSchema-instance"
   }
 
   class SamlrError < StandardError

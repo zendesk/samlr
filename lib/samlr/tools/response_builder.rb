@@ -18,6 +18,7 @@ module Samlr
         version         = options[:version]        || "2.0"
         auth_context    = options[:auth_context]   || "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"
         issuer          = options[:issuer]         || "ResponseBuilder IdP"
+        attributes      = options[:attributes]     || {}
 
         # Mandatory for responses
         destination     = options.fetch(:destination)
@@ -59,6 +60,16 @@ module Samlr
               xml["saml"].AuthnStatement("AuthnInstant" => issue_instant, "SessionIndex" => assertion_id) do
                 xml["saml"].AuthnContext do
                   xml["saml"].AuthnContextClassRef(auth_context)
+                end
+              end
+
+              unless attributes.empty?
+                xml["saml"].AttributeStatement do
+                  attributes.each_pair do |name, value|
+                    xml["saml"].Attribute("Name" => name) do
+                      xml["saml"].AttributeValue(value, "xmlns:xsi" => NS_MAP["xsi"], "xsi:type" => "xs:string")
+                    end
+                  end
                 end
               end
             end
