@@ -34,4 +34,6 @@ describe Samlr do
       assert_raises(Samlr::ConditionsError) { subject.verify! }
     end
   end
+
+  # TODO MORE HERE
 end

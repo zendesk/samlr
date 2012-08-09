@@ -6,11 +6,12 @@ module Samlr
 
   # This is the object interface to the XML response object.
   class Response
-    attr_reader :document, :fingerprint
+    attr_reader :document, :fingeprint, :options
 
     def initialize(data, options)
       @document    = Response.parse(data)
       @fingerprint = Response.fingerprint(options)
+      @options     = options
     end
 
     # The verification process assumes that all signatures are enveloped. Since this process
@@ -31,15 +32,13 @@ module Samlr
     end
 
     def signature
-      @signature ||= Samlr::Signature.new(document, location, fingerprint)
+      @signature ||= Samlr::Signature.new(document, location, options)
     end
 
     # Returns the assertion element. Only supports a single assertion.
     def assertion
-      @assertion ||= Samlr::Assertion.new(document, fingerprint)
+      @assertion ||= Samlr::Assertion.new(document, options)
     end
-
-    private
 
     # Tries to parse the SAML response. First, it assumes it to be Base64 encoded
     # If this fails, it subsequently attempts to parse the raw input as select IdP's
@@ -58,7 +57,7 @@ module Samlr
 
     def self.fingerprint(options)
       begin
-        options[:fingerprint] || Samlr::Tools::Certificate.fingerprint(options[:certificate])
+        options[:fingerprint] ||= Samlr::Tools::Certificate.fingerprint(options[:certificate])
       rescue Exception => e
         raise Samlr::SamlrError.new("Invalid or missing fingerprint data: #{e.message}")
       end

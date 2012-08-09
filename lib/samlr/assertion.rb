@@ -2,16 +2,16 @@ require "samlr/condition"
 
 module Samlr
   class Assertion
-    attr_reader :document, :fingerprint
+    attr_reader :document, :options
 
-    def initialize(document, fingerprint)
-      @document    = document
-      @fingerprint = fingerprint
+    def initialize(document, options)
+      @document = document
+      @options  = options
     end
 
     def verify!
-      verify_conditions!
-      signature.verify! unless unsigned?
+      verify_conditions! unless skip_conditions?
+      signature.verify!  unless unsigned?
 
       true
     end
@@ -21,7 +21,7 @@ module Samlr
     end
 
     def signature
-      @signature ||= Samlr::Signature.new(document, location, fingerprint)
+      @signature ||= Samlr::Signature.new(document, location, options)
     end
 
     def unsigned?
@@ -29,6 +29,10 @@ module Samlr
     end
 
     private
+
+    def skip_conditions?
+      !!options[:skip_conditions]
+    end
 
     def assertion
       @assertion ||= document.at(location, NS_MAP)

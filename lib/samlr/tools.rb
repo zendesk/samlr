@@ -62,6 +62,23 @@ module Samlr
       inflated
     end
 
+    # Validate a SAML request or response against an XSD. Supply either :path or :document in the options.
+    # TODO: This is dog slow. There must be a way to define local schemas.
+    def self.validate(options = {})
+      raise Samlr::SamlrError.new("No xmllint installed") if `which xmllint`.empty?
+
+      if options[:document]
+        output = Tempfile.new("#{Samlr::Tools.uuid}.xml")
+        output.write(options[:document])
+        output.flush
+
+        options[:path] = output.path
+      end
+
+      result = `xmllint --noout --schema #{SCHEMA} #{options[:path]} 2>&1`.chomp
+      result
+    end
+
     module Time
       class << self
         attr_accessor :jitter

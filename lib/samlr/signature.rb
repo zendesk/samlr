@@ -3,23 +3,23 @@ require "base64"
 require "samlr/reference"
 
 module Samlr
-
   # A SAML specific implementation http://en.wikipedia.org/wiki/XML_Signature
   class Signature
-    attr_reader :original, :document, :prefix, :signature, :fingerprint
+    attr_reader :original, :document, :prefix, :options, :signature, :fingerprint
 
     # Is initialized with the source document and a path to the element embedding the signature
-    def initialize(original, prefix, fingerprint)
+    def initialize(original, prefix, options)
       # Signature validations require document alterations
       @original = original
       @document = original.dup
       @prefix   = prefix
+      @options  = options
 
       if @signature = document.at("#{prefix}/ds:Signature", NS_MAP)
         @signature.remove # enveloped signatures only
       end
 
-      @fingerprint = fingerprint
+      @fingerprint = options.fetch(:fingerprint)
     end
 
     def present?

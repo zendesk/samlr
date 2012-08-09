@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+require "samlr"
+require "samlr/command"
+
+require "trollop"
+
+ARGV << "--help" if ARGV.empty?
+
+opts = Trollop.options do
+  banner <<-EOS
+SAML response command line tool.
+
+Usage examples:
+  samlr --verify --fingerprint ab:23:cd --skip-conditions response.xml
+  samlr --verify --skip-fingerprint --skip-conditions response.xml
+  samlr --schema-validate response.xml
+  samlr --print response.xml.base64
+EOS
+
+  opt :verify, "Verify a SAML response document"
+  opt :fingerprint, "The fingerprint to verify the certificate against", :type => String
+  opt :skip_conditions
+  opt :skip_fingerprint
+  opt :schema_validate, "Perform a schema validation against the input, requires xmllint installed"
+  opt :print, "Pretty prints the XML"
+end
+
+if ARGV.empty? || !File.exist?(ARGV[0])
+  puts "Input file not given or does not exist"
+  exit 1
+end
+
+puts Samlr::Command.execute(opts, ARGV[0])

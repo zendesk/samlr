@@ -16,7 +16,6 @@ require "samlr/tools/certificate"
 
 FIXTURE_PATH     = File.join(File.dirname(__FILE__), "fixtures")
 TEST_CERTIFICATE = Samlr::Tools::Certificate.load(FIXTURE_PATH, "default_samlr")
-SAML_SCHEMA      = File.join(FIXTURE_PATH, "schemas", "saml-schema-protocol-2.0.xsd")
 
 def saml_response(options = {})
   fingerprint   = options[:fingerprint]
