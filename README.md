@@ -15,6 +15,17 @@ You can validate a SAML response string using either of the below approaches. Th
 
 If the verification fails for whatever reason, a `Samlr::Error` will be thrown. This class has several subclasses and generally contains a useful error message that can help trouble shooting.
 
+### Command line
+
+Useful to work with files, e.g.
+
+```
+$ samlr -v --skip-conditions -f 83:CC:12:...:F7:9D:19 response.xml.base64
+$ Verification passed
+```
+
+Run `samlr -h` for options.
+
 ### Testing
 
 ```
