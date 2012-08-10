@@ -9,11 +9,24 @@ The objective is to keep things simple and leverage Nokogiri for the heavy lifti
 You can validate a SAML response string using either of the below approaches. The fingerprint is a certificate fingerprint, and the certificate is the certificate PEM (from which Samlr will obtain the fingerprint).
 
 ```ruby
-  Samlr::Response.new(response, :fingerprint => fingerprint).verify!
-  Samlr::Response.new(response, :certificate => certificate).verify!
+response = Samlr::Response.new(response, :fingerprint => fingerprint)
 ```
 
-If the verification fails for whatever reason, a `Samlr::Error` will be thrown. This class has several subclasses and generally contains a useful error message that can help trouble shooting.
+Or using a certificate:
+
+```
+response = Samlr::Response.new(response, :certificate => certificate)
+```
+
+You then verify the response by calling
+
+```ruby
+response.verify!
+```
+
+If the verification fails for whatever reason, a `Samlr::Error` will be thrown. This error class has several subclasses and generally contains a useful error message that can help trouble shooting.
+
+When the verification suceeds,the resulting response object will surface `response.name_id` and `response.attributes`
 
 ### Command line
 
@@ -25,6 +38,25 @@ $ Verification passed
 ```
 
 Run `samlr -h` for options.
+
+```
+SAML response command line tool.
+
+Usage examples:
+  samlr --verify --fingerprint ab:23:cd --skip-conditions response.xml
+  samlr --verify --skip-fingerprint --skip-conditions response.xml
+  samlr --schema-validate response.xml
+  samlr --print response.xml.base64
+Full list of options:
+            --verify, -v:   Verify a SAML response document
+   --fingerprint, -f <s>:   The fingerprint to verify the certificate against
+   --skip-conditions, -s:   
+  --skip-fingerprint, -k:   
+   --schema-validate, -c:   Perform a schema validation against the input,
+                            requires xmllint installed
+             --print, -p:   Pretty prints the XML
+              --help, -h:   Show this message
+```
 
 ### Testing
 

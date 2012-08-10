@@ -1,3 +1,4 @@
+require "forwardable"
 require "nokogiri"
 require "samlr/assertion"
 require "samlr/tools/certificate"
@@ -6,6 +7,9 @@ module Samlr
 
   # This is the object interface to the XML response object.
   class Response
+    extend Forwardable
+
+    def_delegators :assertion, :name_id, :attributes
     attr_reader :document, :fingeprint, :options
 
     def initialize(data, options)

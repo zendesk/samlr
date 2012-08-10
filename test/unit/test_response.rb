@@ -1,4 +1,23 @@
 describe Samlr::Response do
+
+  subject { fixed_saml_response }
+
+  describe "#name_id" do
+    it "delegates to the assertion" do
+      subject.assertion.stub(:name_id, "george") do
+        assert_equal("george", subject.name_id)
+      end
+    end
+  end
+
+  describe "#attributes" do
+    it "delegates to the assertion" do
+      subject.assertion.stub(:attributes, { :name => "george" }) do
+        assert_equal({ :name => "george" }, subject.attributes)
+      end
+    end
+  end
+
   describe "::parse" do
     before { @document = Samlr::Tools::ResponseBuilder.fixture(:certificate => TEST_CERTIFICATE) }
 

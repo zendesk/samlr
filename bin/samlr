@@ -16,6 +16,7 @@ Usage examples:
   samlr --verify --skip-fingerprint --skip-conditions response.xml
   samlr --schema-validate response.xml
   samlr --print response.xml.base64
+Full list of options:
 EOS
 
   opt :verify, "Verify a SAML response document"
