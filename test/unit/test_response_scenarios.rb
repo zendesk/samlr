@@ -35,5 +35,20 @@ describe Samlr do
     end
   end
 
-  # TODO MORE HERE
+  describe "when there are no attributes" do
+    subject { saml_response(:certificate => TEST_CERTIFICATE, :attributes => {}) }
+
+    it "returns an empty hash" do
+      assert_equal({}, subject.attributes)
+    end
+  end
+
+  describe "when there are no signatures" do
+    subject { saml_response(:certificate => TEST_CERTIFICATE, :sign_assertion => false, :sign_response => false) }
+
+    it "fails" do
+      assert_raises(Samlr::SignatureError) { subject.verify! }
+    end
+  end
+
 end

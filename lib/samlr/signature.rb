@@ -49,8 +49,10 @@ module Samlr
     # Establishes trust that the remote party is who you think, no-op if you do not supply
     # a fingerprint to validate against
     def verify_fingerprint!
-      if fingerprint != Samlr::Tools::Certificate.fingerprint(x509)
-        raise FingerprintError.new("Fingerprint mismatch #{fingerprint}")
+      certificate_fingerprint = Samlr::Tools::Certificate.fingerprint(x509)
+
+      if fingerprint != certificate_fingerprint
+        raise FingerprintError.new("Fingerprint mismatch #{fingerprint} vs. #{certificate_fingerprint}")
       end
 
       true
