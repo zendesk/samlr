@@ -42,7 +42,7 @@ module Samlr
     end
 
     def name_id
-      @name_id ||= assertion.at("./saml:Subject/saml:NameID").text
+      @name_id ||= assertion.at("./saml:Subject/saml:NameID", NS_MAP).text
     end
 
     private

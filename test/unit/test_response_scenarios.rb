@@ -9,6 +9,7 @@ describe Samlr do
 
     it "verifies" do
       assert subject.verify!
+      assert_equal "someone@example.org", subject.name_id
     end
   end
 

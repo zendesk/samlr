@@ -1,4 +1,4 @@
-Gem::Specification.new "samlr", "0.0.7" do |s|
+Gem::Specification.new "samlr", "0.0.8" do |s|
   s.summary     = "Ruby tools for SAML"
   s.description = "Helps you implement a SAML SP"
   s.authors     = ["Morten Primdahl"]
