@@ -33,5 +33,10 @@ describe Samlr::Signature do
       @signature.fingerprint.upcase!
       assert @signature.send(:verify_fingerprint!)
     end
+
+    it "doesn't care about semi colons" do
+      @signature.fingerprint << ":::"
+      assert @signature.send(:verify_fingerprint!)
+    end
   end
 end

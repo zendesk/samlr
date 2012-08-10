@@ -53,7 +53,7 @@ module Samlr
 
       certificate_fingerprint = Samlr::Tools::Certificate.fingerprint(x509)
 
-      if fingerprint.downcase != certificate_fingerprint.downcase
+      if fingerprint.downcase.delete(":") != certificate_fingerprint.downcase.delete(":")
         raise FingerprintError.new("Fingerprint mismatch #{fingerprint} vs. #{certificate_fingerprint}")
       end
 
