@@ -50,8 +50,8 @@ Usage examples:
 Full list of options:
             --verify, -v:   Verify a SAML response document
    --fingerprint, -f <s>:   The fingerprint to verify the certificate against
-   --skip-conditions, -s:   
-  --skip-fingerprint, -k:   
+   --skip-conditions, -s:   Skip conditions check
+  --skip-fingerprint, -k:   Skip certificate fingerprint check
    --schema-validate, -c:   Perform a schema validation against the input,
                             requires xmllint installed
              --print, -p:   Pretty prints the XML

@@ -23,7 +23,7 @@ EOS
   opt :fingerprint, "The fingerprint to verify the certificate against", :type => String
   opt :skip_conditions, "Skip conditions check"
   opt :skip_fingerprint, "Skip certificate fingerprint check"
-  opt :schema_validate, "Perform a schema validation against the input, requires xmllint installed"
+  opt :schema_validate, "Perform a schema validation against the input, requires xmllint installed - slow"
   opt :print, "Pretty prints the XML"
 end
 

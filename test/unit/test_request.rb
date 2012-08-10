@@ -21,4 +21,12 @@ describe Samlr::Request do
       end
     end
   end
+
+  describe "#url" do
+    it "returns a valid URL" do
+      @request.stub(:param, "hello") do
+        assert_equal("https://foo.com/?SAMLRequest=hello&foo=bar", @request.url("https://foo.com/", :foo => "bar"))
+      end
+    end
+  end
 end
