@@ -38,6 +38,7 @@ unless Object.new.respond_to?(:try)
 end
 
 require "samlr/tools"
+require "samlr/fingerprint"
 require "samlr/signature"
 require "samlr/response"
 require "samlr/request"

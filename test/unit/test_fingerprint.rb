@@ -1,4 +1,3 @@
-require "samlr/fingerprint"
 
 describe Samlr::Fingerprint do
   describe "#new" do
