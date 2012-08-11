@@ -28,13 +28,13 @@ end
 def fixed_saml_response(options = {})
   options = {
     :certificate     => TEST_CERTIFICATE,
-    :issue_instant   => Samlr::Tools::Time.stamp(Time.at(1344379365)),
+    :issue_instant   => Samlr::Tools::Timestamp.stamp(Time.at(1344379365)),
     :response_id     => "123",
     :assertion_id    => "456",
     :attributes      => { "tags" => "mean horse" },
     :in_response_to  => "789",
-    :not_on_or_after => Samlr::Tools::Time.stamp(Time.at(1344379365 + 60)),
-    :not_before      => Samlr::Tools::Time.stamp(Time.at(1344379365 - 60))
+    :not_on_or_after => Samlr::Tools::Timestamp.stamp(Time.at(1344379365 + 60)),
+    :not_before      => Samlr::Tools::Timestamp.stamp(Time.at(1344379365 - 60))
   }.merge(options)
   saml_response(options)
 end

@@ -9,7 +9,7 @@ module Samlr
     module ResponseBuilder
 
       def self.build(options = {})
-        issue_instant   = options[:issue_instant]  || Samlr::Tools::Time.stamp
+        issue_instant   = options[:issue_instant]  || Samlr::Tools::Timestamp.stamp
         response_id     = options[:response_id]    || Samlr::Tools.uuid
         assertion_id    = options[:assertion_id]   || Samlr::Tools.uuid
         status_code     = options[:status_code]    || "urn:oasis:names:tc:SAML:2.0:status:Success"
@@ -145,11 +145,11 @@ module Samlr
         options = {
           :destination     => "https://example.org/saml/endpoint",
           :in_response_to  => Samlr::Tools.uuid,
-          :issue_instant   => Samlr::Tools::Time.stamp,
+          :issue_instant   => Samlr::Tools::Timestamp.stamp,
           :name_id         => "someone@example.org",
           :audience        => "example.org",
-          :not_on_or_after => Samlr::Tools::Time.stamp(::Time.now + 60),
-          :not_before      => Samlr::Tools::Time.stamp(::Time.now - 60),
+          :not_on_or_after => Samlr::Tools::Timestamp.stamp(Time.now + 60),
+          :not_before      => Samlr::Tools::Timestamp.stamp(Time.now - 60),
           :response_id     => Samlr::Tools.uuid
           }.merge(options)
 

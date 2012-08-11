@@ -21,7 +21,7 @@ describe Samlr do
   end
 
   describe "an unsatisfied before condition" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :not_before => Samlr::Tools::Time.stamp(Time.now + 60)) }
+    subject { saml_response(:certificate => TEST_CERTIFICATE, :not_before => Samlr::Tools::Timestamp.stamp(Time.now + 60)) }
 
     it "fails" do
       assert_raises(Samlr::ConditionsError) { subject.verify! }
@@ -29,7 +29,7 @@ describe Samlr do
   end
 
   describe "an unsatisfied after condition" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :not_on_or_after => Samlr::Tools::Time.stamp(Time.now - 60)) }
+    subject { saml_response(:certificate => TEST_CERTIFICATE, :not_on_or_after => Samlr::Tools::Timestamp.stamp(Time.now - 60)) }
 
     it "fails" do
       assert_raises(Samlr::ConditionsError) { subject.verify! }

@@ -25,7 +25,7 @@ describe Samlr::Assertion do
 
   describe "#verify!" do
     before do
-      @unsatisfied_condition = Samlr::Condition.new("NotBefore" => Samlr::Tools::Time.stamp(Time.now + 60))
+      @unsatisfied_condition = Samlr::Condition.new("NotBefore" => Samlr::Tools::Timestamp.stamp(Time.now + 60))
     end
 
     describe "when conditions are not met" do
