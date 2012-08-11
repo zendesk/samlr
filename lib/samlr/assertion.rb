@@ -47,20 +47,21 @@ module Samlr
 
     private
 
-    def skip_conditions?
-      !!options[:skip_conditions]
-    end
-
     def assertion
       @assertion ||= document.at(location, NS_MAP)
     end
 
-    def verify_conditions!
-      raise Samlr::ConditionsError.new("One more more conditions not met") unless conditions_met?
+    def skip_conditions?
+      !!options[:skip_conditions]
     end
 
-    def conditions_met?
-      Condition.new(assertion.at("./saml:Conditions", NS_MAP)).satisfied?
+    def conditions
+      @conditions ||= Condition.new(assertion.at("./saml:Conditions", NS_MAP))
     end
+
+    def verify_conditions!
+      conditions.verify!
+    end
+
   end
 end

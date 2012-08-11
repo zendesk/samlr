@@ -24,17 +24,13 @@ describe Samlr::Assertion do
   end
 
   describe "#verify!" do
-    describe "when conditions are met" do
-      it "should pass" do
-        subject.stub(:conditions_met?, true) do
-          assert subject.verify!
-        end
-      end
+    before do
+      @unsatisfied_condition = Samlr::Condition.new("NotBefore" => Samlr::Tools::Time.stamp(Time.now + 60))
     end
 
     describe "when conditions are not met" do
       it "should raise" do
-        subject.stub(:conditions_met?, false) do
+        subject.stub(:conditions, @unsatisfied_condition) do
           assert_raises(Samlr::ConditionsError) { subject.verify! }
         end
       end
@@ -42,7 +38,7 @@ describe Samlr::Assertion do
       describe "and conditions are to be skipped" do
         it "should pass" do
           subject.stub(:skip_conditions?, true) do
-            subject.stub(:conditions_met?, false) do
+            subject.stub(:conditions, @unsatisfied_condition) do
               assert subject.verify!
             end
           end

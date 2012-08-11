@@ -11,15 +11,21 @@ describe Samlr::Condition do
     @not_after  = (Time.now + 10*60)
   end
 
-  describe "satisfied?" do
+  describe "verify!" do
     describe "when the lower time has not been met" do
       before  { @not_before = (Time.now + 5*60) }
       subject { condition(@not_before, @not_after) }
 
-      it "returns false" do
+      it "raises an exception" do
         assert subject.not_on_or_after_satisfied?
         refute subject.not_before_satisfied?
-        refute subject.satisfied?
+
+        begin
+          subject.verify!
+          flunk "Expected exception"
+        rescue Samlr::ConditionsError => e
+          assert_match /Not before/, e.message
+        end
       end
     end
 
@@ -27,10 +33,16 @@ describe Samlr::Condition do
       before { @not_after = (Time.now - 5*60) }
       subject { condition(@not_before, @not_after) }
 
-      it "returns false" do
+      it "raises an exception" do
         refute subject.not_on_or_after_satisfied?
         assert subject.not_before_satisfied?
-        refute subject.satisfied?
+
+        begin
+          subject.verify!
+          flunk "Expected exception"
+        rescue Samlr::ConditionsError => e
+          assert_match /Not on or after/, e.message
+        end
       end
     end
 
@@ -38,7 +50,7 @@ describe Samlr::Condition do
       subject { condition(@not_before, @not_after) }
 
       it "returns true" do
-        assert subject.satisfied?
+        assert subject.verify!
       end
     end
   end
