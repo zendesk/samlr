@@ -46,18 +46,9 @@ module Samlr
       @x509 ||= OpenSSL::X509::Certificate.new(decoded_certificate)
     end
 
-    # Establishes trust that the remote party is who you think, no-op if you do not supply
-    # a fingerprint to validate against
+    # Establishes trust that the remote party is who you think
     def verify_fingerprint!
-      raise FingerprintError.new("Missing fingerprint") if fingerprint.nil?
-
-      certificate_fingerprint = Samlr::Tools::Certificate.fingerprint(x509)
-
-      if fingerprint.downcase.delete(":") != certificate_fingerprint.downcase.delete(":")
-        raise FingerprintError.new("Fingerprint mismatch #{fingerprint} vs. #{certificate_fingerprint}")
-      end
-
-      true
+      fingerprint.compare!(Samlr::Fingerprint.new(x509))
     end
 
     # Tests that the document content has not been edited

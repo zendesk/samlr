@@ -11,10 +11,6 @@ module Samlr
         @key_pair = options[:key_pair]
       end
 
-      def self.fingerprint(certificate)
-        OpenSSL::Digest::SHA1.new.hexdigest(certificate.to_der).upcase.scan(/../).join(":")
-      end
-
       def x509
         @x509 ||= begin
           domain = "example.org"
@@ -48,10 +44,6 @@ module Samlr
 
       def key_pair
         @key_pair ||= OpenSSL::PKey::RSA.new(key_size)
-      end
-
-      def fingerprint
-        Samlr::Tools::Certificate.fingerprint(x509)
       end
 
       def sign(string)

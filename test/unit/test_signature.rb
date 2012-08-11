@@ -25,18 +25,4 @@ describe Samlr::Signature do
       assert_match /^MIIBjTCCATegAwIBAg/, @signature.send(:certificate)
     end
   end
-
-  describe "verify_fingerprint!" do
-    it "matches case insensitively" do
-      @signature.fingerprint.downcase!
-      assert @signature.send(:verify_fingerprint!)
-      @signature.fingerprint.upcase!
-      assert @signature.send(:verify_fingerprint!)
-    end
-
-    it "doesn't care about semi colons" do
-      @signature.fingerprint << ":::"
-      assert @signature.send(:verify_fingerprint!)
-    end
-  end
 end

@@ -20,7 +20,7 @@ TEST_CERTIFICATE = Samlr::Tools::Certificate.load(FIXTURE_PATH, "default_samlr")
 
 def saml_response(options = {})
   fingerprint   = options[:fingerprint]
-  fingerprint ||= options[:certificate] ? options[:certificate].fingerprint : nil
+  fingerprint ||= options[:certificate] ? Samlr::Fingerprint.x509(options[:certificate].x509) : nil
 
   Samlr::Response.new(Samlr::Tools::ResponseBuilder.fixture(options), :fingerprint => fingerprint)
 end

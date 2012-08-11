@@ -10,12 +10,13 @@ module Samlr
     extend Forwardable
 
     def_delegators :assertion, :name_id, :attributes
-    attr_reader :document, :fingeprint, :options
+    attr_reader :document, :options
 
     def initialize(data, options)
-      @document    = Response.parse(data)
-      @fingerprint = Response.fingerprint(options)
-      @options     = options
+      @options  = options
+      @document = Response.parse(data)
+
+      @options[:fingerprint] = Samlr::Fingerprint.new(options[:fingerprint] || options[:certificate])
     end
 
     # The verification process assumes that all signatures are enveloped. Since this process
@@ -56,14 +57,6 @@ module Samlr
         rescue
           raise Samlr::FormatError.new(e.message)
         end
-      end
-    end
-
-    def self.fingerprint(options)
-      begin
-        options[:fingerprint] ||= Samlr::Tools::Certificate.fingerprint(options[:certificate])
-      rescue Exception => e
-        raise Samlr::SamlrError.new("Invalid or missing fingerprint data: #{e.message}")
       end
     end
   end
