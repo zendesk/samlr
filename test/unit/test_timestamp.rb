@@ -20,10 +20,10 @@ describe Samlr::Tools::Timestamp do
     end
   end
 
-  describe "::on_or_after?" do
+  describe "::not_on_or_after?" do
     describe "when no jitter is allowed" do
       it "disallows imprecision" do
-        assert !Samlr::Tools::Timestamp.on_or_after?(Time.now + 5)
+        assert Samlr::Tools::Timestamp.not_on_or_after?(Time.now + 5)
       end
     end
 
@@ -31,8 +31,8 @@ describe Samlr::Tools::Timestamp do
       before { Samlr::Tools::Timestamp.jitter = 10 }
 
       it "allows imprecision" do
-        assert Samlr::Tools::Timestamp.on_or_after?(Time.now + 5)
-        refute Samlr::Tools::Timestamp.on_or_after?(Time.now + 15)
+        assert Samlr::Tools::Timestamp.not_on_or_after?(Time.now - 5)
+        refute Samlr::Tools::Timestamp.not_on_or_after?(Time.now - 15)
       end
     end
   end
@@ -40,7 +40,7 @@ describe Samlr::Tools::Timestamp do
   describe "::before?" do
     describe "when no jitter is allowed" do
       it "disallows imprecision" do
-        refute Samlr::Tools::Timestamp.before?(Time.now - 5)
+        assert Samlr::Tools::Timestamp.not_before?(Time.now - 5)
       end
     end
 
@@ -48,8 +48,8 @@ describe Samlr::Tools::Timestamp do
       before { Samlr::Tools::Timestamp.jitter = 10 }
 
       it "allows imprecision" do
-        assert Samlr::Tools::Timestamp.before?(Time.now - 5)
-        refute Samlr::Tools::Timestamp.before?(Time.now - 15)
+        assert Samlr::Tools::Timestamp.not_before?(Time.now + 5)
+        refute Samlr::Tools::Timestamp.not_before?(Time.now + 15)
       end
     end
   end

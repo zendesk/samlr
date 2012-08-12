@@ -1,7 +1,5 @@
 require "forwardable"
 require "nokogiri"
-require "samlr/assertion"
-require "samlr/tools/certificate"
 
 module Samlr
 

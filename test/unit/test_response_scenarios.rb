@@ -26,6 +26,15 @@ describe Samlr do
     it "fails" do
       assert_raises(Samlr::ConditionsError) { subject.verify! }
     end
+
+    describe "when jitter is in effect" do
+      after  { Samlr::Tools::Timestamp.jitter = nil }
+
+      it "passes" do
+        Samlr::Tools::Timestamp.jitter = 500
+        assert subject.verify!
+      end
+    end
   end
 
   describe "an unsatisfied after condition" do
@@ -33,6 +42,15 @@ describe Samlr do
 
     it "fails" do
       assert_raises(Samlr::ConditionsError) { subject.verify! }
+    end
+
+    describe "when jitter is in effect" do
+      after  { Samlr::Tools::Timestamp.jitter = nil }
+
+      it "passes" do
+        Samlr::Tools::Timestamp.jitter = 500
+        assert subject.verify!
+      end
     end
   end
 

@@ -140,21 +140,6 @@ module Samlr
         builder.doc.root
       end
 
-      # Generates a response with bogus data
-      def self.fixture(options = {})
-        options = {
-          :destination     => "https://example.org/saml/endpoint",
-          :in_response_to  => Samlr::Tools.uuid,
-          :issue_instant   => Samlr::Tools::Timestamp.stamp,
-          :name_id         => "someone@example.org",
-          :audience        => "example.org",
-          :not_on_or_after => Samlr::Tools::Timestamp.stamp(Time.now + 60),
-          :not_before      => Samlr::Tools::Timestamp.stamp(Time.now - 60),
-          :response_id     => Samlr::Tools.uuid
-          }.merge(options)
-
-          build(options)
-        end
-      end
     end
   end
+end

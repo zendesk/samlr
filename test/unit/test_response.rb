@@ -19,7 +19,7 @@ describe Samlr::Response do
   end
 
   describe "::parse" do
-    before { @document = Samlr::Tools::ResponseBuilder.fixture(:certificate => TEST_CERTIFICATE) }
+    before { @document = saml_response_document(:certificate => TEST_CERTIFICATE) }
 
     describe "when given a raw XML response" do
       it "constructs and XML document" do

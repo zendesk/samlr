@@ -1,5 +1,4 @@
 require "samlr"
-require "samlr/tools/response_builder"
 
 module Samlr
   # Helper module for command line options

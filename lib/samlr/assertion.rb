@@ -1,5 +1,3 @@
-require "samlr/condition"
-
 module Samlr
   class Assertion
     attr_reader :document, :options

@@ -1,4 +1,3 @@
-require "samlr/tools/request_builder"
 require "cgi"
 
 module Samlr
