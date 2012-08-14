@@ -6,7 +6,7 @@ module Samlr
     # Use this for building the SAML auth request XML
     module RequestBuilder
       def self.build(options = {})
-        consumer_service_url = options[:customer_service_url]
+        consumer_service_url = options[:consumer_service_url]
         issuer               = options[:issuer]
         name_identity_format = options[:name_identity_format]
         allow_create         = options[:allow_create] || "true"

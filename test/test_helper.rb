@@ -25,7 +25,6 @@ def saml_response_document(options = {})
   options = {
     :destination     => "https://example.org/saml/endpoint",
     :in_response_to  => Samlr::Tools.uuid,
-    :issue_instant   => Samlr::Tools::Timestamp.stamp,
     :name_id         => "someone@example.org",
     :audience        => "example.org",
     :not_on_or_after => Samlr::Tools::Timestamp.stamp(Time.now + 60),

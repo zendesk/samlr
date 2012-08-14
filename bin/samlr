@@ -15,7 +15,8 @@ Usage examples:
   samlr --verify --fingerprint ab:23:cd --skip-conditions response.xml
   samlr --verify --skip-fingerprint --skip-conditions response.xml
   samlr --schema-validate response.xml
-  samlr --print response.xml.base64
+  samlr --print response.xml[.base64]
+
 Full list of options:
 EOS
 

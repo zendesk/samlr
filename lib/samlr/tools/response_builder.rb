@@ -13,7 +13,7 @@ module Samlr
         response_id     = options[:response_id]    || Samlr::Tools.uuid
         assertion_id    = options[:assertion_id]   || Samlr::Tools.uuid
         status_code     = options[:status_code]    || "urn:oasis:names:tc:SAML:2.0:status:Success"
-        name_id_format  = options[:name_id_format] || "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+        name_id_format  = options[:name_id_format] || EMAIL_FORMAT
         subject_conf_m  = options[:subject_conf_m] || "urn:oasis:names:tc:SAML:2.0:cm:bearer"
         version         = options[:version]        || "2.0"
         auth_context    = options[:auth_context]   || "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"

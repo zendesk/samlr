@@ -7,7 +7,7 @@ describe Samlr::Tools::RequestBuilder do
         :issuer               => "https://sp.example.com/saml2",
         :name_identity_format => "identity_format",
         :allow_create         => "true",
-        :customer_service_url => "https://support.sp.example.com/",
+        :consumer_service_url => "https://support.sp.example.com/",
         :authn_context        => "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport"
       })
 
