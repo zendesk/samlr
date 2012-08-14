@@ -5,7 +5,7 @@ module Samlr
     # of name id formats or asserion consumer services, build it if you need it.
     #
     #  :entity_id            => "https://sp.example.org/saml", # mandatory
-    #  :name_identity_format => "hello@example.org",
+    #  :name_identity_format => Samlr::EMAIL_FORMAT,
     #  :consumer_service_url => "https://sp.example.org/saml"
     class MetadataBuilder
 
