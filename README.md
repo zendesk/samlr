@@ -7,7 +7,7 @@ Samlr leverages Nokogiri for the heavy lifting and keeps things simple. Samlr al
 ### Initiating an authentication request
 
 ```ruby
-request = Samlr::Request.new(
+saml_request = Samlr::Request.new(
   :issuer               => request.host,
   :name_identity_format => Samlr::EMAIL_FORMAT,
   :consumer_service_url => "https://#{request.host}/auth/saml"
@@ -17,7 +17,7 @@ request = Samlr::Request.new(
 At this point you can access `request.param` if all you want is the encoded params, or you can get a fully valid request URL with an appropriate `RelayState` value:
 
 ```ruby
-redirect_to request.url(
+redirect_to saml_request.url(
   "https://idp.example.com/auth/saml", { :RelayState => request.url }
 )
 ```
@@ -29,34 +29,34 @@ Once the IdP receives the request, it prompts the user to authenticate, after wh
 You can validate a SAML response string using either of the below approaches. The fingerprint is a certificate fingerprint, and the certificate is the certificate PEM (from which Samlr will obtain the fingerprint).
 
 ```ruby
-response = Samlr::Response.new(response, :fingerprint => fingerprint)
+saml_response = Samlr::Response.new(params[:SAMLResponse], :fingerprint => fingerprint)
 ```
 
 Or using a certificate:
 
 ```ruby
-response = Samlr::Response.new(response, :certificate => certificate)
+saml_response = Samlr::Response.new(params[:SAMLResponse], :certificate => certificate)
 ```
 
 You then verify the response by calling
 
 ```ruby
-response.verify!
+saml_response.verify!
 ```
 
-If the verification fails for whatever reason, a `Samlr::Error` will be thrown. This error class has several subclasses and generally contains a useful error message that can help trouble shooting. The error also has a `Samlr::Error.detail` value, which contains potentially sensitive data (fingerprint values, canonicalization results).
+If the verification fails for whatever reason, a `Samlr::Error` will be thrown. This error class has several subclasses and generally contains a useful error message that can help trouble shooting. The error also has a `Samlr::Error#details` value, which contains potentially sensitive data (fingerprint values, canonicalization results).
 
 ```ruby
 begin
-  response.verify!
-  redirect_to success!(response.name_id)
+  saml_response.verify!
+  redirect_to success!(saml_response.name_id)
 rescue Samlr::SamlrError => e
   logger.warn("SAML error #{e.class} #{e.message} #{e.details}")
   flash[:error] = e.message
 end
 ```
 
-When the verification suceeds,the resulting response object will surface `response.name_id` (String) and `response.attributes` (Hash).
+When the verification suceeds,the resulting response object will surface `saml_response.name_id` (String) and `saml_response.attributes` (Hash).
 
 ### Metadata
 
