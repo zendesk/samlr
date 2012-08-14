@@ -75,7 +75,7 @@ module Samlr
       canoned   = node.canonicalize(C14N)
 
       unless x509.public_key.verify(signature_method.new, decoded_signature_value, canoned)
-        raise SignatureError.new("Signature validation error: Possible canonicalization mismatch: #{canoned}")
+        raise SignatureError.new("Signature validation error: Possible canonicalization mismatch", "This canonicalizer returns #{canoned}")
       end
     end
 

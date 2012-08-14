@@ -27,6 +27,16 @@ describe Samlr::Fingerprint do
       end
     end
 
+    it "stores fingerprints on the exception" do
+      begin
+        Samlr::Fingerprint.new("aa:34").compare!(Samlr::Fingerprint.new("bb:35"))
+        flunk "Exception expected"
+      rescue Samlr::FingerprintError => e
+        assert_equal "Fingerprint mismatch", e.message
+        assert_equal "AA:34 vs. BB:35", e.details
+      end
+    end
+
     it "doesn't raise when fingerprints are equal" do
       assert Samlr::Fingerprint.new("aa:34").compare!(Samlr::Fingerprint.new("aa:34"))
     end

@@ -16,6 +16,12 @@ module Samlr
   EMAIL_FORMAT = "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
 
   class SamlrError < StandardError
+    attr_reader :details
+
+    def initialize(*args)
+      super(args.shift)
+      @details = args.shift unless args.empty?
+    end
   end
 
   class FormatError < SamlrError

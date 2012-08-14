@@ -44,20 +44,15 @@ You then verify the response by calling
 response.verify!
 ```
 
-If the verification fails for whatever reason, a `Samlr::Error` will be thrown. This error class has several subclasses and generally contains a useful error message that can help trouble shooting. You may not want to render the message directly to the consumer as some of them will contain sensitive data (specifically the fingerprint error will contain the two prints).
+If the verification fails for whatever reason, a `Samlr::Error` will be thrown. This error class has several subclasses and generally contains a useful error message that can help trouble shooting. The error also has a `Samlr::Error.detail` value, which contains potentially sensitive data (fingerprint values, canonicalization results).
 
 ```ruby
 begin
   response.verify!
   redirect_to success!(response.name_id)
-rescue Samlr::FormatError => e
-  flash[:error] = "Could not parse SAMLResponse, please verify the validity of the parameter data"
-rescue Samlr::FingerprintError => e
-  flash[:error] = "Fingerprint mismatch. Please check account settings and IdP condfiguration."
-rescue Samlr::SignatureError => e
+rescue Samlr::Error => e
+  logger.warn("SAML error: #{e.message} #{e.detail}")
   flash[:error] = e.message
-rescue Samlr::ConditionsError => e
-  flash[:error] = "Failed to satisfy all assertion conditions. Please check your server clock."
 end
 ```
 
@@ -94,6 +89,7 @@ Usage examples:
   samlr --verify --skip-fingerprint --skip-conditions response.xml
   samlr --schema-validate response.xml
   samlr --print response.xml.base64
+
 Full list of options:
             --verify, -v:   Verify a SAML response document
    --fingerprint, -f <s>:   The fingerprint to verify the certificate against
@@ -116,7 +112,7 @@ rake
 
 Please help adding IdP's or IdP services you find to work with Samlr
 
-* Novell/NetID
+* Novell/NetIQ
 * MS ADFS 2.0
 * http://simplesamlphp.org/
 * http://www.ssoeasy.com/

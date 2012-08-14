@@ -17,7 +17,7 @@ module Samlr
 
     def compare!(other)
       if self != other
-        raise FingerprintError.new("Fingerprint mismatch: #{self} vs. #{other}")
+        raise FingerprintError.new("Fingerprint mismatch", "#{self} vs. #{other}")
       else
         true
       end
