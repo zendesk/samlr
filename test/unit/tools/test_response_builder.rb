@@ -13,8 +13,6 @@ describe Samlr::Tools::ResponseBuilder do
     end
 
     it "validates against schemas" do
-      skip unless ENV["TRAVIS"]
-
       result = Samlr::Tools.validate(:document => subject)
       assert_match(/ validates$/, result)
     end

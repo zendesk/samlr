@@ -18,8 +18,6 @@ describe Samlr::Tools::MetadataBuilder do
     end
 
     it "validates against schemas" do
-      skip unless ENV["TRAVIS"]
-
       result = Samlr::Tools.validate(:document => @xml, :schema => saml_schema("saml-schema-metadata-2.0.xsd"))
       assert_match(/ validates$/, result)
     end
