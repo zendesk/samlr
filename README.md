@@ -1,10 +1,30 @@
 ## Samlr [![Build Status](https://secure.travis-ci.org/morten/samlr.png)](http://travis-ci.org/morten/samlr)
 
-Samlr is a clean room implementation of SAML for Ruby.
+Samlr is a clean room implementation of SAML for Ruby. It's focused on implementing the service provider (SP) side rather than the identity provider (IdP).
 
-The objective is to keep things simple and leverage Nokogiri for the heavy lifting. Samlr allows you to receive and validate SAML authentication requests. It's SAML 2.0 only, doesn't support everything and makes liberal assumptions about the input - none of which cannot be improved going forward.
+Samlr leverages Nokogiri for the heavy lifting and keeps things simple. Samlr allows you to receive and validate SAML authentication requests. It's SAML 2.0 only, doesn't support everything and makes liberal assumptions about the input - none of which cannot be improved going forward.
 
-### Verifying a response
+### Initiating an authentication request
+
+```ruby
+request = Samlr::Request.new(
+  :issuer               => request.host,
+  :name_identity_format => Samlr::EMAIL_FORMAT,
+  :consumer_service_url => "https://#{request.host}/auth/saml"
+)
+```
+
+At this point you can access `request.param` if all you want is the encoded params, or you can get a fully valid request URL with an appropriate `RelayState` value:
+
+```ruby
+redirect_to request.url(
+  "https://idp.example.com/auth/saml", { :RelayState => request.url }
+)
+```
+
+Once the IdP receives the request, it prompts the user to authenticate, after which it sends the SAML response to your application.
+
+### Verifying a SAML response
 
 You can validate a SAML response string using either of the below approaches. The fingerprint is a certificate fingerprint, and the certificate is the certificate PEM (from which Samlr will obtain the fingerprint).
 
@@ -14,7 +34,7 @@ response = Samlr::Response.new(response, :fingerprint => fingerprint)
 
 Or using a certificate:
 
-```
+```ruby
 response = Samlr::Response.new(response, :certificate => certificate)
 ```
 
@@ -24,9 +44,24 @@ You then verify the response by calling
 response.verify!
 ```
 
-If the verification fails for whatever reason, a `Samlr::Error` will be thrown. This error class has several subclasses and generally contains a useful error message that can help trouble shooting.
+If the verification fails for whatever reason, a `Samlr::Error` will be thrown. This error class has several subclasses and generally contains a useful error message that can help trouble shooting. You may not want to render the message directly to the consumer as some of them will contain sensitive data (specifically the fingerprint error will contain the two prints).
 
-When the verification suceeds,the resulting response object will surface `response.name_id` and `response.attributes`
+```ruby
+begin
+  response.verify!
+  redirect_to success!(response.name_id)
+rescue Samlr::FormatError => e
+  flash[:error] = "Could not parse SAMLResponse, please verify the validity of the parameter data"
+rescue Samlr::FingerprintError => e
+  flash[:error] = "Fingerprint mismatch. Please check account settings and IdP condfiguration."
+rescue Samlr::SignatureError => e
+  flash[:error] = e.message
+rescue Samlr::ConditionsError => e
+  flash[:error] = "Failed to satisfy all assertion conditions. Please check your server clock."
+end
+```
+
+When the verification suceeds,the resulting response object will surface `response.name_id` (String) and `response.attributes` (Hash).
 
 ### Command line
 
@@ -68,6 +103,13 @@ rake
 ### Supported IdPs
 
 Please help adding IdP's or IdP services you find to work with Samlr
+
+* Novell/NetID
+* MS ADFS 2.0
+* http://www.ssoeasy.com/
+* http://www.okta.com/
+* http://www.onelogin.com/
+* Salesforce SAML IdP
 
 ### Contributing
 

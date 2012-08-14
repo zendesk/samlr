@@ -24,7 +24,7 @@ module Samlr
   class SignatureError < SamlrError
   end
 
-  class FingerprintError < SignatureError
+  class FingerprintError < SamlrError
   end
 
   class ConditionsError < SamlrError
