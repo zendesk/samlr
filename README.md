@@ -50,8 +50,8 @@ If the verification fails for whatever reason, a `Samlr::Error` will be thrown. 
 begin
   response.verify!
   redirect_to success!(response.name_id)
-rescue Samlr::Error => e
-  logger.warn("SAML error: #{e.message} #{e.detail}")
+rescue Samlr::SamlrError => e
+  logger.warn("SAML error #{e.class} #{e.message} #{e.details}")
   flash[:error] = e.message
 end
 ```
