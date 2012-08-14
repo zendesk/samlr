@@ -25,7 +25,7 @@ module Samlr
       end
 
       signature.verify! unless signature.missing?
-      assertion.verify! unless assertion.signature.missing?
+      assertion.verify!
 
       true
     end

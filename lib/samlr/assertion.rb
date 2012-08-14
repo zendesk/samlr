@@ -8,8 +8,9 @@ module Samlr
     end
 
     def verify!
+      verify_assertion!
       verify_conditions! unless skip_conditions?
-      signature.verify!  unless unsigned?
+      signature.verify!  unless signature.missing?
 
       true
     end
@@ -20,10 +21,6 @@ module Samlr
 
     def signature
       @signature ||= Samlr::Signature.new(document, location, options)
-    end
-
-    def unsigned?
-      !signature.present?
     end
 
     def attributes
@@ -59,6 +56,10 @@ module Samlr
 
     def verify_conditions!
       conditions.verify!
+    end
+
+    def verify_assertion!
+      raise Samlr::FormatError.new("Invalid SAML response, missing assertion") if assertion.nil?
     end
 
   end

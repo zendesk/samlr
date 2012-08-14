@@ -32,6 +32,9 @@ module Samlr
         sign_assertion  = [ true, false ].member?(options[:sign_assertion]) ? options[:sign_assertion] : true
         sign_response   = [ true, false ].member?(options[:sign_response]) ? options[:sign_response] : true
 
+        # Fixture controls
+        skip_assertion  = options[:skip_assertion]
+
         builder = Nokogiri::XML::Builder.new(:encoding => "UTF-8") do |xml|
           xml.Response("xmlns:samlp" => NS_MAP["samlp"], "ID" => response_id, "InResponseTo" => in_response_to, "Version" => version, "IssueInstant" => issue_instant, "Destination" => destination) do
             xml.doc.root.add_namespace_definition("saml", NS_MAP["saml"])
@@ -40,34 +43,36 @@ module Samlr
             xml["saml"].Issuer(issuer)
             xml["samlp"].Status { |xml| xml["samlp"].StatusCode("Value" => status_code) }
 
-            xml["saml"].Assertion("xmlns:saml" => NS_MAP["saml"], "ID" => assertion_id, "IssueInstant" => issue_instant, "Version" => "2.0") do
-              xml["saml"].Issuer(issuer)
+            unless skip_assertion
+              xml["saml"].Assertion("xmlns:saml" => NS_MAP["saml"], "ID" => assertion_id, "IssueInstant" => issue_instant, "Version" => "2.0") do
+                xml["saml"].Issuer(issuer)
 
-              xml["saml"].Subject do
-                xml["saml"].NameID(name_id, "Format" => name_id_format)
+                xml["saml"].Subject do
+                  xml["saml"].NameID(name_id, "Format" => name_id_format)
 
-                xml["saml"].SubjectConfirmation("Method" => subject_conf_m) do
-                  xml["saml"].SubjectConfirmationData("InResponseTo" => in_response_to, "NotOnOrAfter" => not_on_or_after, "Recipient" => destination)
+                  xml["saml"].SubjectConfirmation("Method" => subject_conf_m) do
+                    xml["saml"].SubjectConfirmationData("InResponseTo" => in_response_to, "NotOnOrAfter" => not_on_or_after, "Recipient" => destination)
+                  end
                 end
-              end
 
-              xml["saml"].Conditions("NotBefore" => not_before, "NotOnOrAfter" => not_on_or_after) do
-                xml["saml"].AudienceRestriction do
-                  xml["saml"].Audience(audience)
+                xml["saml"].Conditions("NotBefore" => not_before, "NotOnOrAfter" => not_on_or_after) do
+                  xml["saml"].AudienceRestriction do
+                    xml["saml"].Audience(audience)
+                  end
                 end
-              end
 
-              xml["saml"].AuthnStatement("AuthnInstant" => issue_instant, "SessionIndex" => assertion_id) do
-                xml["saml"].AuthnContext do
-                  xml["saml"].AuthnContextClassRef(auth_context)
+                xml["saml"].AuthnStatement("AuthnInstant" => issue_instant, "SessionIndex" => assertion_id) do
+                  xml["saml"].AuthnContext do
+                    xml["saml"].AuthnContextClassRef(auth_context)
+                  end
                 end
-              end
 
-              unless attributes.empty?
-                xml["saml"].AttributeStatement do
-                  attributes.each_pair do |name, value|
-                    xml["saml"].Attribute("Name" => name) do
-                      xml["saml"].AttributeValue(value, "xmlns:xsi" => NS_MAP["xsi"], "xsi:type" => "xs:string")
+                unless attributes.empty?
+                  xml["saml"].AttributeStatement do
+                    attributes.each_pair do |name, value|
+                      xml["saml"].Attribute("Name" => name) do
+                        xml["saml"].AttributeValue(value, "xmlns:xsi" => NS_MAP["xsi"], "xsi:type" => "xs:string")
+                      end
                     end
                   end
                 end
