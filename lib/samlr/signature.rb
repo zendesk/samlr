@@ -33,7 +33,7 @@ module Samlr
     def verify!
       raise SigntureError.new("No signature at #{prefix}/ds:Signature") unless present?
 
-      verify_fingerprint!
+      verify_fingerprint! unless options[:skip_fingerprint]
       verify_digests!
       verify_signature!
 
