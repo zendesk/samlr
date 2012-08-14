@@ -20,6 +20,10 @@ require "samlr/tools/certificate"
 FIXTURE_PATH     = File.join(File.dirname(__FILE__), "fixtures")
 TEST_CERTIFICATE = Samlr::Tools::Certificate.load(FIXTURE_PATH, "default_samlr")
 
+def saml_schema(schema = "saml-schema-protocol-2.0.xsd")
+  File.join(File.dirname(__FILE__), "..", "config", "schemas", schema)
+end
+
 def saml_response_document(options = {})
   # Test defaults
   options = {

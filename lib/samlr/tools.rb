@@ -81,7 +81,9 @@ module Samlr
         options[:path] = output.path
       end
 
-      result = `xmllint --noout --schema #{SCHEMA} #{options[:path]} 2>&1`.chomp
+      schema = options[:schema] || saml_schema
+
+      result = `xmllint --noout --schema #{schema} #{options[:path]} 2>&1`.chomp
       result
     end
 

@@ -3,7 +3,6 @@ require "nokogiri"
 module Samlr
   C14N    = Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0
   COMPACT = { :indent => 0, :save_with => Nokogiri::XML::Node::SaveOptions::AS_XML }
-  SCHEMA  = File.join(File.dirname(__FILE__), "..", "config", "schemas", "saml-schema-protocol-2.0.xsd")
 
   NS_MAP  = {
     "c14n"  => "http://www.w3.org/2001/10/xml-exc-c14n#",

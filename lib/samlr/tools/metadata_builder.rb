@@ -25,10 +25,10 @@ module Samlr
               unless name_identity_format.nil?
                 xml["md"].NameIDFormat(name_identity_format)
               end
-            end
 
-            unless consumer_service_url.nil?
-              xml["md"].AssertionConsumerService("Binding" => consumer_service_binding, "Location" => consumer_service_url)
+              unless consumer_service_url.nil?
+                xml["md"].AssertionConsumerService("index" => "0", "Binding" => consumer_service_binding, "Location" => consumer_service_url)
+              end
             end
           end
         end
