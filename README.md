@@ -63,6 +63,18 @@ end
 
 When the verification suceeds,the resulting response object will surface `response.name_id` (String) and `response.attributes` (Hash).
 
+### Metadata
+
+Currently no support for signing, but that should be fairly easy to extract from the `Samlr::Tools::ResponseBuilder`. Get a metadata XML document like this:
+
+```ruby
+xml = Samlr::Tools::MetadataBuilder.build({
+  :entity_id            => "https://sp.example.com/saml",
+  :name_identity_format => Samlr::EMAIL_FORMAT,
+  :consumer_service_url => "https://sp.example.com/saml"
+})
+```
+
 ### Command line
 
 Useful to work with files, e.g.
@@ -106,6 +118,7 @@ Please help adding IdP's or IdP services you find to work with Samlr
 
 * Novell/NetID
 * MS ADFS 2.0
+* http://simplesamlphp.org/
 * http://www.ssoeasy.com/
 * http://www.okta.com/
 * http://www.onelogin.com/
