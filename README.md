@@ -110,7 +110,7 @@ rake
 
 ### Supported IdPs
 
-Please help adding IdP's or IdP services you find to work with Samlr
+Please help adding IdP's or IdP services you find to work with Samlr. The below list of are known to work:
 
 * Novell/NetIQ
 * MS ADFS 2.0
