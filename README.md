@@ -118,7 +118,7 @@ Please help adding IdP's or IdP services you find to work with Samlr. The below 
 * http://www.ssoeasy.com/
 * http://www.okta.com/
 * http://www.onelogin.com/
-* Salesforce SAML IdP
+* [Salesforce SAML IdP](https://login.salesforce.com/help/doc/en/identity_provider_about.htm)
 
 ### Contributing
 
