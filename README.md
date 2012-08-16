@@ -85,19 +85,30 @@ Run `samlr -h` for options.
 SAML response command line tool.
 
 Usage examples:
-  samlr --verify --fingerprint ab:23:cd --skip-conditions response.xml
-  samlr --verify --skip-fingerprint --skip-conditions response.xml
+  samlr --verify --fingerprint ab:23:cd --skip-conditions <response.xml|directory of responses>
+  samlr --verify --skip-fingerprint --skip-conditions <response.xml|directory of responses>
   samlr --schema-validate response.xml
-  samlr --print response.xml.base64
+  samlr --print response.xml[.base64]
+
+Try it with the gem example:
+  ruby -Ilib bin/samlr -v -s -f 44:D2:9D:98:49:66:27:30:3A:67:A2:5D:97:62:31:65:57:9F:57:D1 test/fixtures/sample_response.xml
 
 Full list of options:
             --verify, -v:   Verify a SAML response document
    --fingerprint, -f <s>:   The fingerprint to verify the certificate against
    --skip-conditions, -s:   Skip conditions check
-  --skip-fingerprint, -k:   Skip certificate fingerprint check
+   --skip-validation, -k:   Skip schema validation rejection
+           --logging, -l:   Log to STDOUT
+  --skip-fingerprint, -i:   Skip certificate fingerprint check
    --schema-validate, -c:   Perform a schema validation against the input
              --print, -p:   Pretty prints the XML
               --help, -h:   Show this message
+```
+
+You can also validate/test manually using e.g. `xmllint`:
+
+```
+xmllint --noout --schema schema.xsd file.xml
 ```
 
 ### Testing

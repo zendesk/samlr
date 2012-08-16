@@ -29,7 +29,7 @@ module Samlr
   self.schema_location = File.join(File.dirname(__FILE__), "..", "config", "schemas")
   self.validation_mode = :reject
   self.jitter          = 0
-  self.logger          = Logger.new(STDOUT)
+  self.logger          = Logger.new(STDERR)
   self.logger.level    = Logger::UNKNOWN
 end
 
