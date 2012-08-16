@@ -1,6 +1,6 @@
 describe Samlr::Tools::Timestamp do
-  before { Samlr::Tools::Timestamp.jitter = nil }
-  after  { Samlr::Tools::Timestamp.jitter = nil }
+  before { Samlr.jitter = nil }
+  after  { Samlr.jitter = nil }
 
   describe "::parse" do
     before { @time = ::Time.now }
@@ -28,7 +28,7 @@ describe Samlr::Tools::Timestamp do
     end
 
     describe "when jitter is allowed" do
-      before { Samlr::Tools::Timestamp.jitter = 10 }
+      before { Samlr.jitter = 10 }
 
       it "allows imprecision" do
         assert Samlr::Tools::Timestamp.not_on_or_after?(Time.now - 5)
@@ -45,7 +45,7 @@ describe Samlr::Tools::Timestamp do
     end
 
     describe "when jitter is allowed" do
-      before { Samlr::Tools::Timestamp.jitter = 10 }
+      before { Samlr.jitter = 10 }
 
       it "allows imprecision" do
         assert Samlr::Tools::Timestamp.not_before?(Time.now + 5)

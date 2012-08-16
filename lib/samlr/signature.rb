@@ -54,13 +54,13 @@ module Samlr
     # Tests that the document content has not been edited
     def verify_digests!
       references.each do |reference|
-        node = document.at("//*[@ID='#{reference.uri}']")
+        nodes = document.xpath("//*[@ID='#{reference.uri}']")
 
-        if node.nil?
-          raise SignatureError.new("Reference validation error: Could not find signed element #{reference}")
+        if nodes.size != 1
+          raise SignatureError.new("Reference validation error: Invalid element references", "Expected 1 element with id #{reference.uri}, found #{nodes.size}")
         end
 
-        canoned = node.canonicalize(C14N, reference.namespaces)
+        canoned = nodes.first.canonicalize(C14N, reference.namespaces)
         digest  = reference.digest_method.digest(canoned)
 
         if digest != reference.decoded_digest_value

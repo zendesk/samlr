@@ -25,4 +25,21 @@ describe Samlr::Signature do
       assert_match /^MIIBjTCCATegAwIBAg/, @signature.send(:certificate)
     end
   end
+
+  describe "#verify_digests!" do
+    describe "when there are duplicate element ids" do
+      before do
+        @signature.document.at("/samlp:Response/saml:Assertion")["ID"] = @signature.document.root["ID"]
+      end
+
+      it "should raise" do
+        begin
+          @signature.send(:verify_digests!)
+          flunk("Excepted to raise due to duplicate elements")
+        rescue Samlr::SignatureError => e
+          assert_equal "Reference validation error: Invalid element references", e.message
+        end
+      end
+    end
+  end
 end

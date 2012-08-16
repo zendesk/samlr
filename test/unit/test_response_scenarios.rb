@@ -28,10 +28,10 @@ describe Samlr do
     end
 
     describe "when jitter is in effect" do
-      after  { Samlr::Tools::Timestamp.jitter = nil }
+      after  { Samlr.jitter = nil }
 
       it "passes" do
-        Samlr::Tools::Timestamp.jitter = 500
+        Samlr.jitter = 500
         assert subject.verify!
       end
     end
@@ -45,10 +45,10 @@ describe Samlr do
     end
 
     describe "when jitter is in effect" do
-      after  { Samlr::Tools::Timestamp.jitter = nil }
+      after  { Samlr.jitter = nil }
 
       it "passes" do
-        Samlr::Tools::Timestamp.jitter = 500
+        Samlr.jitter = 500
         assert subject.verify!
       end
     end
@@ -73,6 +73,14 @@ describe Samlr do
 
   describe "when there's no assertion" do
     subject { saml_response(:certificate => TEST_CERTIFICATE, :sign_assertion => false, :skip_assertion => true) }
+
+    it "fails" do
+      assert_raises(Samlr::FormatError) { subject.verify! }
+    end
+  end
+
+  describe "duplicate element ids" do
+    subject { saml_response(:certificate => TEST_CERTIFICATE, :response_id => "abcdef", :assertion_id => "abcdef") }
 
     it "fails" do
       assert_raises(Samlr::FormatError) { subject.verify! }

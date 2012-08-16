@@ -68,28 +68,40 @@ module Samlr
       inflated
     end
 
-    # Validate a SAML request or response against an XSD. Supply either :path or :document in the options.
-    def self.validate(options = {})
-      if options[:document]
-        document = options[:document]
-      else
-        document = File.read(options[:path])
-      end
-
-      schema = options[:schema] || SAML_SCHEMA
-      curdir = Dir.pwd
-
-      begin
-        Dir.chdir(SCHEMA_DIR)
-
-        xml = Nokogiri::XML(document)
-        xsd = Nokogiri::XML::Schema(File.read(schema))
-
-        xsd.valid?(xml)
-      ensure
-        Dir.chdir(curdir)
-      end
+    def self.validate!(options = {})
+      validate(options.merge(:bang => true))
     end
 
+    # Validate a SAML request or response against an XSD. Supply either :path or :document in the options and
+    # a :schema (defaults to SAML validation)
+    def self.validate(options = {})
+      document = options[:document] || File.read(options[:path])
+      schema   = options.fetch(:schema, SAML_SCHEMA)
+      bang     = options.fetch(:bang, false)
+
+      if document.is_a?(Nokogiri::XML::Document)
+        xml = document
+      else
+        xml = Nokogiri::XML(document) { |c| c.strict }
+      end
+
+      # All bundled schemas are using relative schemaLocation. This means we'll have to
+      # change working directory to find them during validation.
+      Dir.chdir(Samlr.schema_location) do
+        if schema.is_a?(Nokogiri::XML::Schema)
+          xsd = schema
+        else
+          xsd = Nokogiri::XML::Schema(File.read(schema))
+        end
+
+        result = xsd.validate(xml)
+
+        if bang && result.length != 0
+          raise Samlr::FormatError.new("Schema validation failed", "XSD validation errors: #{result.join(", ")}")
+        else
+          result.length == 0
+        end
+      end
+    end
   end
 end

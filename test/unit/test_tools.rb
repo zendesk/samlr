@@ -53,4 +53,47 @@ describe Samlr::Tools do
     end
   end
 
+  describe "::validate" do
+    subject { saml_response_document(:certificate => TEST_CERTIFICATE) }
+
+    it "returns true for valid documents" do
+      assert Samlr::Tools.validate(:document => subject)
+    end
+
+    it "returns false for invalid documents" do
+      mangled = subject.gsub("Assertion", "AyCaramba")
+      refute Samlr::Tools.validate(:document => mangled)
+    end
+
+    it "does not change the working directory" do
+      path = Dir.pwd
+      assert Samlr::Tools.validate(:document => subject)
+      assert_equal path, Dir.pwd
+    end
+  end
+
+  describe "::validate!" do
+    subject { saml_response_document(:certificate => TEST_CERTIFICATE) }
+
+    it "returns true for valid documents" do
+      assert Samlr::Tools.validate!(:document => subject)
+    end
+
+    it "raises for invalid documents" do
+      mangled = subject.gsub("Assertion", "AyCaramba")
+
+      begin
+        Samlr::Tools.validate!(:document => mangled)
+        flunk "Errors expected"
+      rescue Samlr::FormatError => e
+        assert_equal "Schema validation failed", e.message
+      end
+    end
+
+    it "does not change the working directory" do
+      path = Dir.pwd
+      assert Samlr::Tools.validate!(:document => subject)
+      assert_equal path, Dir.pwd
+    end
+  end
 end

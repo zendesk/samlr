@@ -6,7 +6,7 @@ describe Samlr::Reference do
 
   describe "#uri" do
     it "should return the normalized URI" do
-      assert_equal "123", @reference.uri
+      assert_equal "samlr123", @reference.uri
     end
   end
 
@@ -18,7 +18,7 @@ describe Samlr::Reference do
 
   describe "#digest_value" do
     it "should return the verbatim value" do
-      assert_equal "U48VqveFHTauwFk+r05utDObSx4=", @reference.digest_value
+      assert_equal "HCMtn+s6Ri4M0DadAwJXq0tSEN8=", @reference.digest_value
     end
   end
 

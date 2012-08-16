@@ -1,5 +1,4 @@
 require File.expand_path("test/test_helper")
-require "tempfile"
 
 describe Samlr::Tools::ResponseBuilder do
   before { @certificate = TEST_CERTIFICATE }
