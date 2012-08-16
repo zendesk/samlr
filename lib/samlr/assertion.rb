@@ -59,7 +59,15 @@ module Samlr
     end
 
     def verify_assertion!
-      raise Samlr::FormatError.new("Invalid SAML response, missing assertion") if assertion.nil?
+      assertion_count = document.xpath(location, NS_MAP).size
+
+      if assertion_count == 0
+        raise Samlr::FormatError.new("Invalid SAML response: assertion missing")
+      elsif assertion_count != 1
+        raise Samlr::FormatError.new("Invalid SAML response: unexpected number of assertions")
+      end
+
+      true
     end
 
   end

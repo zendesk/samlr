@@ -34,6 +34,7 @@ module Samlr
 
         # Fixture controls
         skip_assertion  = options[:skip_assertion]
+        skip_conditions = options[:skip_conditions]
 
         builder = Nokogiri::XML::Builder.new(:encoding => "UTF-8") do |xml|
           xml.Response("xmlns:samlp" => NS_MAP["samlp"], "ID" => response_id, "InResponseTo" => in_response_to, "Version" => version, "IssueInstant" => issue_instant, "Destination" => destination) do
@@ -55,9 +56,11 @@ module Samlr
                   end
                 end
 
-                xml["saml"].Conditions("NotBefore" => not_before, "NotOnOrAfter" => not_on_or_after) do
-                  xml["saml"].AudienceRestriction do
-                    xml["saml"].Audience(audience)
+                unless skip_conditions
+                  xml["saml"].Conditions("NotBefore" => not_before, "NotOnOrAfter" => not_on_or_after) do
+                    xml["saml"].AudienceRestriction do
+                      xml["saml"].Audience(audience)
+                    end
                   end
                 end
 
