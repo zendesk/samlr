@@ -70,7 +70,6 @@ describe Samlr do
     end
   end
 
-
   describe "when there's no assertion" do
     subject { saml_response(:certificate => TEST_CERTIFICATE, :sign_assertion => false, :skip_assertion => true) }
 

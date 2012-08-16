@@ -119,6 +119,34 @@ Please help adding IdP's or IdP services you find to work with Samlr. The below 
 * http://www.onelogin.com/
 * [Salesforce SAML IdP](https://login.salesforce.com/help/doc/en/identity_provider_about.htm)
 
+### Security
+
+As part of keeping things secure, Samlr does schema validation on all response documents. You can control what it should do in case of invalid documents:
+
+1. Reject the request. This is the recommended and default.
+2. Log the errorneous document. In case you're transitioning to Samlr and want reassurance.
+
+You control this by setting the schema validation mode in e.g. an initializer
+
+```ruby
+Samlr.validation_mode = :reject
+Samlr.validation_mode = :log
+```
+
+### Logging
+
+Samlr has a (silent) default logger that prints to STDOUT. You can change the log level of this logger if you want to see the output:
+
+```ruby
+Samlr.logger.level = Logger::DEBUG
+```
+
+Or you can replace the logger altogether
+
+```ruby
+Samlr.logger = Rails.logger
+```
+
 ### Contributing
 
 Pull requests very welcome. Write tests. Adhere to standards employed (indentation, spaces vs. tabs etc.).

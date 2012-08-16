@@ -40,5 +40,23 @@ describe Samlr::Response do
         assert_raises(Samlr::FormatError) { Samlr::Response.parse("hello") }
       end
     end
+
+    describe "when given a malformed XML response" do
+      subject { saml_response_document(:certificate => TEST_CERTIFICATE).gsub("Assertion", "AyCaramba") }
+      after   { Samlr.validation_mode = :reject }
+
+      describe "and Samlr.validation_mode == :log" do
+        before { Samlr.validation_mode = :log }
+        it "does not raise" do
+          assert Samlr::Response.parse(subject)
+        end
+      end
+
+      describe "and Samlr.validation_mode != :log" do
+        it "raises" do
+          assert_raises(Samlr::FormatError) { Samlr::Response.parse(subject) }
+        end
+      end
+    end
   end
 end

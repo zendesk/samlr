@@ -1,4 +1,5 @@
 require "nokogiri"
+require "logger"
 
 module Samlr
   C14N    = Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0
@@ -20,13 +21,16 @@ module Samlr
 
   class << self
     attr_accessor :schema_location
-    attr_accessor :schema_validation
+    attr_accessor :validation_mode
     attr_accessor :jitter
+    attr_accessor :logger
   end
 
-  self.schema_location   = File.join(File.dirname(__FILE__), "..", "config", "schemas")
-  self.schema_validation = true
-  self.jitter            = 0
+  self.schema_location = File.join(File.dirname(__FILE__), "..", "config", "schemas")
+  self.validation_mode = :reject
+  self.jitter          = 0
+  self.logger          = Logger.new(STDOUT)
+  self.logger.level    = Logger::UNKNOWN
 end
 
 unless Object.new.respond_to?(:try)

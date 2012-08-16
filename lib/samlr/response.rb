@@ -12,7 +12,7 @@ module Samlr
 
     def initialize(data, options)
       @options  = options
-      @document = Response.parse(data, options)
+      @document = Response.parse(data)
 
       @options[:fingerprint] = Samlr::Fingerprint.new(options[:fingerprint] || options[:certificate])
     end
@@ -46,7 +46,7 @@ module Samlr
     # Tries to parse the SAML response. First, it assumes it to be Base64 encoded
     # If this fails, it subsequently attempts to parse the raw input as select IdP's
     # send that rather than a Base64 encoded value
-    def self.parse(data, options = {})
+    def self.parse(data)
       begin
         document = Nokogiri::XML(Base64.decode64(data)) { |config| config.strict }
       rescue Nokogiri::XML::SyntaxError => e
@@ -57,8 +57,11 @@ module Samlr
         end
       end
 
-      if options.fetch(:validate, Samlr.schema_validation)
+      begin
         Samlr::Tools.validate!(:document => document)
+      rescue Samlr::SamlrError => e
+        Samlr.logger.warn("Accepting non schema conforming response: #{e.message}, #{e.details}")
+        raise e unless Samlr.validation_mode == :log
       end
 
       document
