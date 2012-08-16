@@ -69,22 +69,26 @@ module Samlr
     end
 
     # Validate a SAML request or response against an XSD. Supply either :path or :document in the options.
-    # TODO: This is dog slow. There must be a way to define local schemas.
     def self.validate(options = {})
-      raise Samlr::SamlrError.new("No xmllint installed") if `which xmllint`.empty?
-
       if options[:document]
-        output = Tempfile.new("#{Samlr::Tools.uuid}.xml")
-        output.write(options[:document])
-        output.flush
-
-        options[:path] = output.path
+        document = options[:document]
+      else
+        document = File.read(options[:path])
       end
 
-      schema = options[:schema] || saml_schema
+      schema = options[:schema] || SAML_SCHEMA
+      curdir = Dir.pwd
 
-      result = `xmllint --noout --schema #{schema} #{options[:path]} 2>&1`.chomp
-      result
+      begin
+        Dir.chdir(SCHEMA_DIR)
+
+        xml = Nokogiri::XML(document)
+        xsd = Nokogiri::XML::Schema(File.read(schema))
+
+        xsd.valid?(xml)
+      ensure
+        Dir.chdir(curdir)
+      end
     end
 
   end

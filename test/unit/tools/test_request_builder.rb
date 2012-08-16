@@ -28,7 +28,7 @@ describe Samlr::Tools::RequestBuilder do
 
     it "validates against schemas" do
       result = Samlr::Tools.validate(:document => @xml)
-      assert_match(/ validates$/, result)
+      assert result
     end
 
   end

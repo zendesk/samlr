@@ -15,6 +15,10 @@ module Samlr
 
   EMAIL_FORMAT = "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
 
+  SCHEMA_DIR   = File.join(File.dirname(__FILE__), "..", "config", "schemas")
+  SAML_SCHEMA  = "saml-schema-protocol-2.0.xsd"
+  META_SCHEMA  = "saml-schema-metadata-2.0.xsd"
+
   class SamlrError < StandardError
     attr_reader :details
 

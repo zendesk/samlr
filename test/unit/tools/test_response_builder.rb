@@ -14,7 +14,7 @@ describe Samlr::Tools::ResponseBuilder do
 
     it "validates against schemas" do
       result = Samlr::Tools.validate(:document => subject)
-      assert_match(/ validates$/, result)
+      assert result
     end
   end
 end

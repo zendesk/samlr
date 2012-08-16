@@ -95,8 +95,7 @@ Full list of options:
    --fingerprint, -f <s>:   The fingerprint to verify the certificate against
    --skip-conditions, -s:   Skip conditions check
   --skip-fingerprint, -k:   Skip certificate fingerprint check
-   --schema-validate, -c:   Perform a schema validation against the input,
-                            requires xmllint installed
+   --schema-validate, -c:   Perform a schema validation against the input
              --print, -p:   Pretty prints the XML
               --help, -h:   Show this message
 ```
