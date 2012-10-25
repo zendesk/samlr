@@ -1,3 +1,5 @@
+require File.expand_path("test/test_helper")
+
 describe Samlr::Request do
   before { @request = Samlr::Request.new }
 

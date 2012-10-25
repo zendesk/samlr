@@ -1,3 +1,4 @@
+require File.expand_path("test/test_helper")
 require "openssl"
 
 describe Samlr::Tools do

@@ -1,3 +1,5 @@
+require File.expand_path("test/test_helper")
+
 def condition(before, after)
   Samlr::Condition.new(
     "NotBefore"    => before ? before.utc.iso8601 : nil,

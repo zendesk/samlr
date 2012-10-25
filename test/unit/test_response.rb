@@ -1,3 +1,5 @@
+require File.expand_path("test/test_helper")
+
 describe Samlr::Response do
 
   subject { fixed_saml_response }

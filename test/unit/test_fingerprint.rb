@@ -1,3 +1,4 @@
+require File.expand_path("test/test_helper")
 
 describe Samlr::Fingerprint do
   describe "#new" do

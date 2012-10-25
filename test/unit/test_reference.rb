@@ -1,3 +1,5 @@
+require File.expand_path("test/test_helper")
+
 describe Samlr::Reference do
   before do
     @response  = fixed_saml_response
