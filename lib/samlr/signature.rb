@@ -54,13 +54,8 @@ module Samlr
     # Tests that the document content has not been edited
     def verify_digests!
       references.each do |reference|
-        nodes = document.xpath("//*[@ID='#{reference.uri}']")
-
-        if nodes.size != 1
-          raise SignatureError.new("Reference validation error: Invalid element references", "Expected 1 element with id #{reference.uri}, found #{nodes.size}")
-        end
-
-        canoned = nodes.first.canonicalize(C14N, reference.namespaces)
+        node    = referenced_node(reference.uri)
+        canoned = node.canonicalize(C14N, reference.namespaces)
         digest  = reference.digest_method.digest(canoned)
 
         if digest != reference.decoded_digest_value
@@ -77,6 +72,17 @@ module Samlr
       unless x509.public_key.verify(signature_method.new, decoded_signature_value, canoned)
         raise SignatureError.new("Signature validation error: Possible canonicalization mismatch", "This canonicalizer returns #{canoned}")
       end
+    end
+
+    # Looks up node by id, checks that there's only a single node with a given id
+    def referenced_node(id)
+      nodes = document.xpath("//*[@ID='#{id}']")
+
+      if nodes.size != 1
+        raise SignatureError.new("Reference validation error: Invalid element references", "Expected 1 element with id #{id}, found #{nodes.size}")
+      end
+
+      nodes.first
     end
 
     def references
