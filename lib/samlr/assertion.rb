@@ -27,8 +27,16 @@ module Samlr
       @attributes ||= begin
         {}.tap do |attrs|
           assertion.xpath("./saml:AttributeStatement/saml:Attribute", NS_MAP).each do |statement|
-            name  = statement["Name"]
-            value = statement.at("./saml:AttributeValue", NS_MAP).text
+            name   = statement["Name"]
+            values = statement.xpath("./saml:AttributeValue", NS_MAP)
+
+            if values.size == 0
+              next
+            elsif values.size == 1
+              value = values.first.text
+            else
+              value = values.map { |value| value.text }
+            end
 
             attrs[name] = attrs[name.to_sym] = value
           end

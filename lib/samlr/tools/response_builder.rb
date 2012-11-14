@@ -72,9 +72,11 @@ module Samlr
 
                 unless attributes.empty?
                   xml["saml"].AttributeStatement do
-                    attributes.each_pair do |name, value|
+                    attributes.each_pair do |name, values|
                       xml["saml"].Attribute("Name" => name) do
-                        xml["saml"].AttributeValue(value, "xmlns:xsi" => NS_MAP["xsi"], "xmlns:xs" => NS_MAP["xs"], "xsi:type" => "xs:string")
+                        Array(values).each do |value|
+                          xml["saml"].AttributeValue(value, "xmlns:xsi" => NS_MAP["xsi"], "xmlns:xs" => NS_MAP["xs"], "xsi:type" => "xs:string")
+                        end
                       end
                     end
                   end

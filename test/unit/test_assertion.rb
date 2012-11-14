@@ -16,6 +16,10 @@ describe Samlr::Assertion do
       assert_equal subject.attributes[:tags], "mean horse"
       assert_equal subject.attributes["tags"], "mean horse"
     end
+
+    it "turns multiple attribute values into an array" do
+      assert_equal subject.attributes["things"].sort, [ "one", "two", "three" ].sort
+    end
   end
 
   describe "#name_id" do
