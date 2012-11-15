@@ -59,7 +59,7 @@ module Samlr
         digest  = reference.digest_method.digest(canoned)
 
         if digest != reference.decoded_digest_value
-          raise SignatureError.new("Reference validation error: Digest mismatch for #{reference}")
+          raise SignatureError.new("Reference validation error: Digest mismatch for #{reference.uri}")
         end
       end
     end
