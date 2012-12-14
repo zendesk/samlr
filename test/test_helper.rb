@@ -9,7 +9,6 @@ Bundler.require
 require "time"
 require "base64"
 require "tmpdir"
-require "debugger" unless ENV["TRAVIS"]
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
