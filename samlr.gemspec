@@ -3,7 +3,7 @@ Gem::Specification.new "samlr", "1.0.0" do |s|
   s.description = "Helps you implement a SAML SP"
   s.authors     = ["Morten Primdahl"]
   s.email       = "primdahl@me.com"
-  s.homepage    = "http://github.com/morten/samlr"
+  s.homepage    = "http://github.com/zendesk/samlr"
   s.files       = `git ls-files`.split("\n")
   s.license     = "Apache License Version 2.0"
 

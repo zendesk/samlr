@@ -1,4 +1,4 @@
-## Samlr [![Build Status](https://secure.travis-ci.org/morten/samlr.png)](http://travis-ci.org/morten/samlr)
+## Samlr [![Build Status](https://secure.travis-ci.org/zendesk/samlr.png)](http://travis-ci.org/zendesk/samlr)
 
 Samlr is a clean room implementation of SAML for Ruby. It's focused on implementing the service provider (SP) side rather than the identity provider (IdP).
 
