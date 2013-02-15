@@ -25,6 +25,14 @@ describe Samlr::Signature do
     it "should extract the base 64 encoded certificate" do
       assert_match /^MIIBjTCCATegAwIBAg/, @signature.send(:certificate)
     end
+
+    describe "when there is no X509 certificate" do
+      it "should raise a signature error" do
+        @signature.stub(:certificate_node, nil) do
+          assert_raises(Samlr::SignatureError) { @signature.send(:certificate) }
+        end
+      end
+    end
   end
 
   describe "#verify_digests!" do

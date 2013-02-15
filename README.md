@@ -165,3 +165,7 @@ Pull requests very welcome. Write tests. Adhere to standards employed (indentati
 ### Error reporting
 
 Pull requests with a failing test case much preferred.
+
+### License
+
+Released under the Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html

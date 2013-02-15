@@ -108,7 +108,17 @@ module Samlr
     end
 
     def certificate
-      @certificate ||= signature.at("./ds:KeyInfo/ds:X509Data/ds:X509Certificate", NS_MAP).text
+      @certificate ||= begin
+        if node = certificate_node
+          node.text
+        else
+          raise SignatureError.new("No X509Certificate element in response signature. Cannot validate signature.")
+        end
+      end
+    end
+
+    def certificate_node
+      signature.at("./ds:KeyInfo/ds:X509Data/ds:X509Certificate", NS_MAP)
     end
 
     def decoded_certificate
