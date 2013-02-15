@@ -158,6 +158,10 @@ Or you can replace the logger altogether
 Samlr.logger = Rails.logger
 ```
 
+### Known Issues
+
+Does not build on JRuby. See issue #2.
+
 ### Contributing
 
 Pull requests very welcome. Write tests. Adhere to standards employed (indentation, spaces vs. tabs etc.).
