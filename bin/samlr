@@ -13,18 +13,21 @@ SAML response command line tool.
 
 Usage examples:
   samlr --verify --fingerprint ab:23:cd --skip-conditions <response.xml|directory of responses>
+  samlr --verify --certificate <x509_certificate.crt> --skip-conditions <response.xml|directory of responses> 
   samlr --verify --skip-fingerprint --skip-conditions <response.xml|directory of responses>
   samlr --schema-validate response.xml
   samlr --print response.xml[.base64]
 
-Try it with the gem example:
+Try it with the gem examples:
   ruby -Ilib bin/samlr -v -s -f 44:D2:9D:98:49:66:27:30:3A:67:A2:5D:97:62:31:65:57:9F:57:D1 test/fixtures/sample_response.xml
+  ruby -Ilib bin/samlr -v -s -c test/fixtures/default_samlr_certificate.pem                 test/fixtures/no_cert_response.xml
 
 Full list of options:
 EOS
 
   opt :verify, "Verify a SAML response document"
   opt :fingerprint, "The fingerprint to verify the certificate against", :type => String
+  opt :certificate, "A certificate (PEM or DER) to validate the signature against (assuming no certificate embedded in the response)", :type => IO
   opt :skip_conditions, "Skip conditions check"
   opt :skip_validation, "Skip schema validation rejection"
   opt :skip_fingerprint, "Skip certificate fingerprint check"
@@ -37,5 +40,7 @@ if ARGV.empty? || !File.exist?(ARGV[0])
   puts "Input file not given or does not exist"
   exit 1
 end
+
+opts[:certificate] &&= opts[:certificate].read
 
 puts Samlr::Command.execute(opts, ARGV[0])

@@ -14,10 +14,10 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
 require "samlr"
 require "samlr/tools/response_builder"
-require "samlr/tools/certificate"
+require "samlr/tools/certificate_builder"
 
 FIXTURE_PATH     = File.join(File.dirname(__FILE__), "fixtures")
-TEST_CERTIFICATE = Samlr::Tools::Certificate.load(FIXTURE_PATH, "default_samlr")
+TEST_CERTIFICATE = Samlr::Tools::CertificateBuilder.load(FIXTURE_PATH, "default_samlr")
 
 def saml_response_document(options = {})
   # Test defaults

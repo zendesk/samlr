@@ -70,6 +70,28 @@ describe Samlr do
     end
   end
 
+  describe "when there is no keyinfo" do
+    subject { saml_response(:certificate => TEST_CERTIFICATE, :skip_keyinfo => true) }
+
+    it "fails" do
+      assert_raises(Samlr::SignatureError) { subject.verify! }
+    end
+
+    describe "when a matching external cert is provided" do
+      it "passes" do
+        subject.options[:certificate] = TEST_CERTIFICATE.x509
+        assert subject.verify!
+      end
+    end
+
+    describe "when a non-matching external cert is provided" do
+      it "fails" do
+        subject.options[:certificate] = Samlr::Tools::CertificateBuilder.new.x509
+        assert_raises(Samlr::FingerprintError) { subject.verify! }
+      end
+    end
+  end
+
   describe "when there's no assertion" do
     subject { saml_response(:certificate => TEST_CERTIFICATE, :sign_assertion => false, :skip_assertion => true) }
 
