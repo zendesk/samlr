@@ -13,8 +13,6 @@ module Samlr
     def initialize(data, options)
       @options  = options
       @document = Response.parse(data)
-
-      @options[:fingerprint] = Samlr::Fingerprint.new(options[:fingerprint] || options[:certificate])
     end
 
     # The verification process assumes that all signatures are enveloped. Since this process

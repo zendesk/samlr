@@ -5,7 +5,7 @@ require "cgi"
 require "zlib"
 
 require "samlr/tools/timestamp"
-require "samlr/tools/certificate"
+require "samlr/tools/certificate_builder"
 require "samlr/tools/request_builder"
 require "samlr/tools/response_builder"
 require "samlr/tools/metadata_builder"

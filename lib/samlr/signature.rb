@@ -1,5 +1,6 @@
 require "openssl"
 require "base64"
+require "samlr/certificate"
 require "samlr/reference"
 
 module Samlr
@@ -19,7 +20,11 @@ module Samlr
         @signature.remove # enveloped signatures only
       end
 
-      @fingerprint = options.fetch(:fingerprint)
+      @fingerprint = if options[:fingerprint]
+        Fingerprint.new(options[:fingerprint])
+      elsif options[:certificate]
+        Certificate.new(options[:certificate]).fingerprint
+      end
     end
 
     def present?
@@ -43,12 +48,12 @@ module Samlr
     private
 
     def x509
-      @x509 ||= OpenSSL::X509::Certificate.new(decoded_certificate)
+      @x509 ||= certificate.x509
     end
 
     # Establishes trust that the remote party is who you think
     def verify_fingerprint!
-      fingerprint.compare!(Samlr::Fingerprint.new(x509))
+      fingerprint.compare!(certificate.fingerprint)
     end
 
     # Tests that the document content has not been edited
@@ -110,7 +115,9 @@ module Samlr
     def certificate
       @certificate ||= begin
         if node = certificate_node
-          node.text
+          Certificate.new(Base64.decode64(node.text))
+        elsif cert = options[:certificate]
+          Certificate.new(cert)
         else
           raise SignatureError.new("No X509Certificate element in response signature. Cannot validate signature.")
         end
@@ -119,10 +126,6 @@ module Samlr
 
     def certificate_node
       signature.at("./ds:KeyInfo/ds:X509Data/ds:X509Certificate", NS_MAP)
-    end
-
-    def decoded_certificate
-      @decoded_certificate ||= Base64.decode64(certificate)
     end
   end
 end

@@ -97,11 +97,12 @@ module Samlr
       end
 
       def self.sign(document, element_id, options)
-        certificate = options[:certificate] || Samlr::Tools::Certificate.new
-        element     = document.at("//*[@ID='#{element_id}']")
-        digest      = digest(document, element, options)
-        canoned     = digest.at("./ds:SignedInfo", NS_MAP).canonicalize(C14N)
-        signature   = certificate.sign(canoned)
+        certificate  = options[:certificate] || Samlr::Tools::CertificateBuilder.new
+        element      = document.at("//*[@ID='#{element_id}']")
+        digest       = digest(document, element, options)
+        canoned      = digest.at("./ds:SignedInfo", NS_MAP).canonicalize(C14N)
+        signature    = certificate.sign(canoned)
+        skip_keyinfo = options[:skip_keyinfo]
 
         Nokogiri::XML::Builder.with(digest) do |xml|
           xml.SignatureValue(signature)
@@ -109,7 +110,7 @@ module Samlr
             xml.X509Data do
               xml.X509Certificate(certificate.x509_as_pem)
             end
-          end
+          end unless skip_keyinfo
         end
         # digest.root.last_element_child.after "<SignatureValue>#{signature}</SignatureValue>"
         element.at("./saml:Issuer", NS_MAP).add_next_sibling(digest)

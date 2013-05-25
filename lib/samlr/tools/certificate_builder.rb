@@ -2,7 +2,7 @@ module Samlr
   module Tools
 
     # Container for generating/referencing X509 and keys
-    class Certificate
+    class CertificateBuilder
       attr_reader :key_size
 
       def initialize(options = {})
@@ -54,6 +54,10 @@ module Samlr
         key_pair.public_key.verify(OpenSSL::Digest::SHA1.new, Base64.decode64(signature), string)
       end
 
+      def to_certificate
+        Samlr::Certificate.new(x509)
+      end
+
       def self.dump(path, certificate, id = "samlr")
         File.open(File.join(path, "#{id}_private_key.pem"), "w") { |f| f.write(certificate.key_pair.to_pem) }
         File.open(File.join(path, "#{id}_certificate.pem"), "w") { |f| f.write(certificate.x509.to_pem) }
@@ -66,6 +70,5 @@ module Samlr
         new(:key_pair => key_pair, :x509 => x509_cert)
       end
     end
-
   end
 end
