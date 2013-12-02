@@ -9,6 +9,7 @@ require "samlr/tools/certificate_builder"
 require "samlr/tools/request_builder"
 require "samlr/tools/response_builder"
 require "samlr/tools/metadata_builder"
+require "samlr/tools/logout_request_builder"
 
 module Samlr
   module Tools
