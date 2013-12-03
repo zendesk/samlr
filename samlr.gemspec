@@ -1,4 +1,4 @@
-Gem::Specification.new "samlr", "1.1.1" do |s|
+Gem::Specification.new "samlr", "1.1.2" do |s|
   s.summary     = "Ruby tools for SAML"
   s.description = "Helps you implement a SAML SP"
   s.authors     = ["Morten Primdahl"]
@@ -7,7 +7,7 @@ Gem::Specification.new "samlr", "1.1.1" do |s|
   s.files       = `git ls-files`.split("\n")
   s.license     = "Apache License Version 2.0"
 
-  s.add_runtime_dependency("nokogiri", ">= 1.5.0")
+  s.add_runtime_dependency("nokogiri", ">= 1.5.5")
   s.add_runtime_dependency("uuidtools", ">= 2.1.3")
   s.add_runtime_dependency("trollop", ">= 1.16.2")
 
