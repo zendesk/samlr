@@ -7,7 +7,7 @@ Gem::Specification.new "samlr", "1.1.0" do |s|
   s.files       = `git ls-files`.split("\n")
   s.license     = "Apache License Version 2.0"
 
-  s.add_runtime_dependency("nokogiri", ">= 1.6.0")
+  s.add_runtime_dependency("nokogiri", ">= 1.5.0")
   s.add_runtime_dependency("uuidtools", ">= 2.1.3")
   s.add_runtime_dependency("trollop", ">= 1.16.2")
 
