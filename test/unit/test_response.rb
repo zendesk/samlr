@@ -20,6 +20,31 @@ describe Samlr::Response do
     end
   end
 
+  describe "XSW attack" do
+    it "should not validate if SAML response is hacked" do
+      document = saml_response_document(:certificate => TEST_CERTIFICATE)
+
+      modified_document = Nokogiri::XML(document)
+
+      original_assertion = modified_document.xpath("/samlp:Response/saml:Assertion", Samlr::NS_MAP).first
+
+      response_signature = modified_document.xpath("/samlp:Response/ds:Signature", Samlr::NS_MAP).first
+
+      extensions = Nokogiri::XML::Node.new "Extensions", modified_document
+      extensions << original_assertion.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML)
+      response_signature.add_next_sibling(extensions)
+      response_signature.remove()
+
+      modified_document.xpath("/samlp:Response/samlp:Extensions/saml:Assertion/ds:Signature", Samlr::NS_MAP).remove()
+      modified_document.xpath("/samlp:Response/saml:Assertion/saml:Subject/saml:NameID", Samlr::NS_MAP).first.content="evil@example.org"
+      modified_document.xpath("/samlp:Response/saml:Assertion", Samlr::NS_MAP).first["ID"] = "evil_id"
+
+      response = Samlr::Response.new(modified_document.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML), {:certificate => TEST_CERTIFICATE.x509})
+      assert_equal true, response.verify!
+      assert_equal "someone@example.org", response.name_id
+    end
+  end
+
   describe "::parse" do
     before { @document = saml_response_document(:certificate => TEST_CERTIFICATE) }
 
