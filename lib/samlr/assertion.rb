@@ -92,6 +92,5 @@ module Samlr
 
       true
     end
-
   end
 end
