@@ -15,7 +15,6 @@ module Samlr
       @document = original.dup
       @prefix   = prefix
       @options  = options
-      @verified = false
 
       if @signature = document.at("#{prefix}/ds:Signature", NS_MAP)
         @signature.remove # enveloped signatures only
@@ -36,10 +35,6 @@ module Samlr
       signature.nil?
     end
 
-    def verified?
-      @verified
-    end
-
     def verify!
       raise SignatureError.new("No signature at #{prefix}/ds:Signature") unless present?
 
@@ -47,7 +42,7 @@ module Samlr
       verify_digests!
       verify_signature!
 
-      @verified = true
+      true
     end
 
     def references
