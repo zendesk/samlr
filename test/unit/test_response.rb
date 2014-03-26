@@ -46,8 +46,7 @@ describe Samlr::Response do
       modified_document.xpath("/samlp:Response/saml:Assertion", Samlr::NS_MAP).first["ID"] = "evil_id"
 
       response = Samlr::Response.new(modified_document.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML), {:certificate => TEST_CERTIFICATE.x509})
-      assert_equal true, response.verify!
-      assert_equal "someone@example.org", response.name_id
+      assert_raises(Samlr::FormatError) { response.verify! }
     end
   end
 
