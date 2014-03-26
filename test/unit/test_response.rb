@@ -20,6 +20,12 @@ describe Samlr::Response do
     end
   end
 
+  describe "#location" do
+    it "should return proper assertion location" do
+      assert_equal "//saml:Assertion[@ID='samlr456']", subject.assertion.location
+    end
+  end
+
   describe "XSW attack" do
     it "should not validate if SAML response is hacked" do
       document = saml_response_document(:certificate => TEST_CERTIFICATE)
@@ -35,7 +41,7 @@ describe Samlr::Response do
       response_signature.add_next_sibling(extensions)
       response_signature.remove()
 
-      modified_document.xpath("/samlp:Response/samlp:Extensions/saml:Assertion/ds:Signature", Samlr::NS_MAP).remove()
+      modified_document.xpath("/samlp:Response/samlp:Extensions/saml:Assertion/ds:Signature", Samlr::NS_MAP).remove
       modified_document.xpath("/samlp:Response/saml:Assertion/saml:Subject/saml:NameID", Samlr::NS_MAP).first.content="evil@example.org"
       modified_document.xpath("/samlp:Response/saml:Assertion", Samlr::NS_MAP).first["ID"] = "evil_id"
 

@@ -18,12 +18,7 @@ module Samlr
     def location
       @location ||= if !signature.missing?
         verify_signature!
-
-        if signature.references.any?
-          "//saml:Assertion[@ID='#{signature.references.first.uri}']"
-        else
-          raise SignatureError.new("Missing references inside checked signature")
-        end
+        "//saml:Assertion[@ID='#{signature.references.first.uri}']"
       else
         DEFAULT_LOCATION
       end
