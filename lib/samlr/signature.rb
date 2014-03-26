@@ -15,6 +15,7 @@ module Samlr
       @document = original.dup
       @prefix   = prefix
       @options  = options
+      @verified = false
 
       if @signature = document.at("#{prefix}/ds:Signature", NS_MAP)
         @signature.remove # enveloped signatures only
@@ -35,6 +36,10 @@ module Samlr
       signature.nil?
     end
 
+    def verified?
+      @verified
+    end
+
     def verify!
       raise SignatureError.new("No signature at #{prefix}/ds:Signature") unless present?
 
@@ -42,7 +47,15 @@ module Samlr
       verify_digests!
       verify_signature!
 
-      true
+      @verified = true
+    end
+
+    def references
+      @references ||= [].tap do |refs|
+        original.xpath("#{prefix}/ds:Signature/ds:SignedInfo/ds:Reference[@URI]", NS_MAP).each do |ref|
+          refs << Samlr::Reference.new(ref)
+        end
+      end
     end
 
     private
@@ -88,16 +101,6 @@ module Samlr
       end
 
       nodes.first
-    end
-
-    def references
-      @references ||= begin
-        [].tap do |refs|
-          original.xpath("#{prefix}/ds:Signature/ds:SignedInfo/ds:Reference[@URI]", NS_MAP).each do |ref|
-            refs << Samlr::Reference.new(ref)
-          end
-        end
-      end
     end
 
     def signature_method
