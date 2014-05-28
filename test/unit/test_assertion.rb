@@ -29,8 +29,16 @@ describe Samlr::Assertion do
   end
 
   describe "#verify!" do
+    let(:condition) do
+      Class.new do
+        def verify!
+          raise Samlr::ConditionsError, 'error'
+        end
+      end
+    end
+
     before do
-      @unsatisfied_condition = Samlr::Condition.new("NotBefore" => Samlr::Tools::Timestamp.stamp(Time.now + 60))
+      @unsatisfied_condition = condition.new
     end
 
     describe "when conditions are not met" do
