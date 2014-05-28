@@ -51,6 +51,11 @@ module Samlr
       @name_id ||= assertion.at("./saml:Subject/saml:NameID", NS_MAP).text
     end
 
+
+    def conditions
+      @conditions ||= Condition.new(assertion.at("./saml:Conditions", NS_MAP), options)
+    end
+
     private
 
     def assertion
@@ -66,10 +71,6 @@ module Samlr
 
     def skip_conditions?
       !!options[:skip_conditions]
-    end
-
-    def conditions
-      @conditions ||= Condition.new(assertion.at("./saml:Conditions", NS_MAP))
     end
 
     def verify_conditions!
