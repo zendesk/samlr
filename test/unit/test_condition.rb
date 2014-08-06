@@ -8,6 +8,12 @@ def condition(before, after)
   Samlr::Condition.new(element, {})
 end
 
+def verify!
+  Time.stub(:now, Time.at(1344379365)) do
+    subject.verify!
+  end
+end
+
 describe Samlr::Condition do
   before do
     @not_before = (Time.now - 10*60)
@@ -25,17 +31,13 @@ describe Samlr::Condition do
         end
 
         it "raises an exception" do
-          Time.stub(:now, Time.at(1344379365)) do
-            assert subject.not_on_or_after_satisfied?
-            assert subject.not_before_satisfied?
-            refute subject.audience_satisfied?
+          refute subject.audience_satisfied?
 
-            begin
-              subject.verify!
-              flunk "Expected exception"
-            rescue Samlr::ConditionsError => e
-              assert_match /Audience/, e.message
-            end
+          begin
+            verify!
+            flunk "Expected exception"
+          rescue Samlr::ConditionsError => e
+            assert_match /Audience/, e.message
           end
         end
       end
@@ -46,8 +48,35 @@ describe Samlr::Condition do
         end
 
         it "does not raise an exception" do
-          Time.stub(:now, Time.at(1344379365)) do
-            assert subject.verify!
+          assert verify!
+        end
+      end
+
+      describe "using a regex" do
+        describe "valid regex" do
+          before do
+            response.options[:audience] = /example\.(org|com)/
+          end
+
+          it "does not raise an exception" do
+            assert verify!
+          end
+        end
+
+        describe "invalid regex" do
+          before do
+            response.options[:audience] = /\A[a-z]\z/
+          end
+
+          it "raises an exception" do
+            refute subject.audience_satisfied?
+
+            begin
+              verify!
+              flunk "Expected exception"
+            rescue Samlr::ConditionsError => e
+              assert_match /Audience/, e.message
+            end
           end
         end
       end
