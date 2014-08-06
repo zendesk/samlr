@@ -35,8 +35,7 @@ module Samlr
 
     def audience_satisfied?
       audience.nil? || options[:audience].nil? ||
-        audience == options[:audience] ||
-        (options[:audience].is_a?(Regexp) && audience =~ options[:audience])
+        options[:audience] === audience
     end
 
     private
