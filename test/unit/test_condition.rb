@@ -51,6 +51,18 @@ describe Samlr::Condition do
           end
         end
       end
+
+      describe "using a regex" do
+        before do
+          response.options[:audience] = /example\.(org|com)/
+        end
+
+        it "does not raise an exception" do
+          Time.stub(:now, Time.at(1344379365)) do
+            assert subject.verify!
+          end
+        end
+      end
     end
 
     describe "when the lower time has not been met" do
