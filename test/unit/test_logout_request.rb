@@ -1,11 +1,15 @@
 require File.expand_path("test/test_helper")
 
 describe Samlr::LogoutRequest do
-  before do
-    @request = Samlr::LogoutRequest.new(
+  let(:options) {
+    {
       :issuer => "https://sp.example.com/saml2",
       :name_id => "test@test.com"
-    )
+    }
+  }
+
+  before do
+    @request = Samlr::LogoutRequest.new(options)
   end
 
   describe "#body" do
@@ -34,6 +38,36 @@ describe Samlr::LogoutRequest do
       @request.stub(:param, "hello") do
         assert_equal("https://foo.com/?SAMLRequest=hello&foo=bar", @request.url("https://foo.com/", :foo => "bar"))
       end
+    end
+  end
+
+  describe "with optional params" do
+    it "understands name_id_format" do
+      options.merge!(:name_id_format => "some format")
+      request = Samlr::LogoutRequest.new(options)
+
+      assert_match /<saml:NameID Format="some format">/, request.body
+    end
+
+    it "understands [:name_id_options][:format]" do
+      options.merge!(:name_id_options => {:format => "some format"})
+      request = Samlr::LogoutRequest.new(options)
+
+      assert_match /<saml:NameID Format="some format">/, request.body
+    end
+
+    it "understands NameQualifier" do
+      options.merge!(:name_id_options => {:name_qualifier => "Some name qualifier"})
+      request = Samlr::LogoutRequest.new(options)
+
+      assert_match /NameQualifier="Some name qualifier"/, request.body
+    end
+
+    it "understands SPNameQualifier" do
+      options.merge!(:name_id_options => {:spname_qualifier => "Some SPName qualifier"})
+      request = Samlr::LogoutRequest.new(options)
+
+      assert_match /SPNameQualifier="Some SPName qualifier"/, request.body
     end
   end
 end
