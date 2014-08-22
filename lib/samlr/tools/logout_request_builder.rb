@@ -22,7 +22,7 @@ module Samlr
 
       def self.logout_options(options)
         name_id_options  = options[:name_id_options] || {}
-        options = { "Format" => format_option(options)}
+        options = { "Format" => format_option(options) }
         options.merge!("NameQualifier" => name_id_options[:name_qualifier]) if name_id_options[:name_qualifier]
         options.merge!("SPNameQualifier" => name_id_options[:spname_qualifier]) if name_id_options[:spname_qualifier]
         options
