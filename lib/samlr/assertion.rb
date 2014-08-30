@@ -51,6 +51,10 @@ module Samlr
       @name_id ||= assertion.at("./saml:Subject/saml:NameID", NS_MAP).text
     end
 
+    def name_id_options
+      @name_id_options ||= Hash[assertion.at("./saml:Subject/saml:NameID", NS_MAP).attributes.map{|k,v| [k, v.value]}]
+    end
+
     def conditions
       @conditions ||= Condition.new(assertion.at("./saml:Conditions", NS_MAP), options)
     end
