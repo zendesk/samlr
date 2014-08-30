@@ -48,11 +48,11 @@ module Samlr
     end
 
     def name_id
-      @name_id ||= assertion.at("./saml:Subject/saml:NameID", NS_MAP).text
+      @name_id ||= name_id_node.text
     end
 
     def name_id_options
-      @name_id_options ||= Hash[assertion.at("./saml:Subject/saml:NameID", NS_MAP).attributes.map{|k,v| [k, v.value]}]
+      @name_id_options ||= Hash[name_id_node.attributes.map{|k,v| [k, v.value]}]
     end
 
     def conditions
@@ -60,6 +60,10 @@ module Samlr
     end
 
     private
+
+    def name_id_node
+      @name_id_node ||= assertion.at("./saml:Subject/saml:NameID", NS_MAP)
+    end
 
     def assertion
       @assertion ||= document.at(location, NS_MAP)
