@@ -28,6 +28,15 @@ describe Samlr::Assertion do
     end
   end
 
+  describe "#name_id_options" do
+    subject { fixed_saml_response(:name_qualifier => 'portal-happyservice-idp', :sp_name_qualifier => 'happyservice.zendesk.com').assertion }
+
+    it "returns the options for the NameID element" do
+      expected = {"Format"=>"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress", "NameQualifier"=>"portal-happyservice-idp", "SPNameQualifier"=>"happyservice.zendesk.com"}
+      assert_equal expected, subject.name_id_options
+    end
+  end
+
   describe "#verify!" do
     let(:condition) do
       Class.new do

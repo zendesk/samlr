@@ -7,7 +7,7 @@ module Samlr
   class Response
     extend Forwardable
 
-    def_delegators :assertion, :name_id, :attributes
+    def_delegators :assertion, :name_id, :attributes, :name_id_options
     attr_reader :document, :options
 
     def initialize(data, options)
