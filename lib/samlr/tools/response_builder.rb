@@ -9,16 +9,18 @@ module Samlr
     module ResponseBuilder
 
       def self.build(options = {})
-        issue_instant   = options[:issue_instant]  || Samlr::Tools::Timestamp.stamp
-        response_id     = options[:response_id]    || Samlr::Tools.uuid
-        assertion_id    = options[:assertion_id]   || Samlr::Tools.uuid
-        status_code     = options[:status_code]    || "urn:oasis:names:tc:SAML:2.0:status:Success"
-        name_id_format  = options[:name_id_format] || EMAIL_FORMAT
-        subject_conf_m  = options[:subject_conf_m] || "urn:oasis:names:tc:SAML:2.0:cm:bearer"
-        version         = options[:version]        || "2.0"
-        auth_context    = options[:auth_context]   || "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"
-        issuer          = options[:issuer]         || "ResponseBuilder IdP"
-        attributes      = options[:attributes]     || {}
+        issue_instant     = options[:issue_instant]  || Samlr::Tools::Timestamp.stamp
+        response_id       = options[:response_id]    || Samlr::Tools.uuid
+        assertion_id      = options[:assertion_id]   || Samlr::Tools.uuid
+        status_code       = options[:status_code]    || "urn:oasis:names:tc:SAML:2.0:status:Success"
+        name_id_format    = options[:name_id_format] || EMAIL_FORMAT
+        subject_conf_m    = options[:subject_conf_m] || "urn:oasis:names:tc:SAML:2.0:cm:bearer"
+        version           = options[:version]        || "2.0"
+        auth_context      = options[:auth_context]   || "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"
+        issuer            = options[:issuer]         || "ResponseBuilder IdP"
+        attributes        = options[:attributes]     || {}
+        name_qualifier    = options[:name_qualifier]
+        sp_name_qualifier = options[:sp_name_qualifier]
 
         # Mandatory for responses
         destination     = options.fetch(:destination)
@@ -49,7 +51,11 @@ module Samlr
                 xml["saml"].Issuer(issuer)
 
                 xml["saml"].Subject do
-                  xml["saml"].NameID(name_id, "Format" => name_id_format)
+                  name_id_options = { "Format" => name_id_format}
+                  name_id_options.merge!("NameQualifier" => name_qualifier) unless name_qualifier.nil?
+                  name_id_options.merge!("SPNameQualifier" => sp_name_qualifier) unless sp_name_qualifier.nil?
+
+                  xml["saml"].NameID(name_id, name_id_options)
 
                   xml["saml"].SubjectConfirmation("Method" => subject_conf_m) do
                     xml["saml"].SubjectConfirmationData("InResponseTo" => in_response_to, "NotOnOrAfter" => not_on_or_after, "Recipient" => destination)
