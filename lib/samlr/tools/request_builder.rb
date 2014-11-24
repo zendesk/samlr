@@ -7,6 +7,7 @@ module Samlr
     module RequestBuilder
       def self.build(options = {})
         consumer_service_url = options[:consumer_service_url]
+        destination_url      = options[:destination_url]
         issuer               = options[:issuer]
         name_identity_format = options[:name_identity_format]
         allow_create         = options[:allow_create] || "true"
@@ -18,6 +19,10 @@ module Samlr
 
             unless consumer_service_url.nil?
               xml.doc.root["AssertionConsumerServiceURL"] = consumer_service_url
+            end
+
+            unless destination_url.nil?
+              xml.doc.root["Destination"] = destination_url
             end
 
             unless issuer.nil?

@@ -69,6 +69,13 @@ module Samlr
 
         new(:key_pair => key_pair, :x509 => x509_cert)
       end
+
+      def self.read(private_key_pem, certificate_pem)
+        key_pair  = OpenSSL::PKey::RSA.new(private_key_pem)
+        x509_cert = OpenSSL::X509::Certificate.new(certificate_pem)
+
+        new(:key_pair => key_pair, :x509 => x509_cert)
+      end
     end
   end
 end

@@ -22,6 +22,27 @@ redirect_to saml_request.url(
 )
 ```
 
+### Initiating a signed authentication request
+
+The signed SAML request must have a Destination node, specified as `destination_url`
+
+```ruby
+saml_request = Samlr::Request.new(
+  :issuer               => request.host,
+  :name_identity_format => Samlr::EMAIL_FORMAT,
+  :consumer_service_url => "https://#{request.host}/auth/saml",
+  :sign_requests => true,
+  :destination_url => "https://adfs.company.com/adfs/ls/",
+  :signing_certificate => Samlr::Tools::CertificateBuilder.read(private_key_pem, certifictate_pem)
+)
+```
+This will sign the URL with your private key and look something like this:
+
+```
+https://foo.com/?SAMLRequest=...Base64 Encoded SAML Request...&SigAlg=http%3A%2F%2Fwww.w3.org%2F2000%2F09%2Fxmldsig%23rsa-sha1&Signature=tvY57vi6IXHP1gHAMRQoRP5CZQlUniPwSeuwOUypqbjim04svTkk72njvbxzUE27U5PhK0Cwzq4ZdZ08i%2BuVAw%3D%3D
+```
+
+
 Once the IdP receives the request, it prompts the user to authenticate, after which it sends the SAML response to your application.
 
 ### Verifying a SAML response
