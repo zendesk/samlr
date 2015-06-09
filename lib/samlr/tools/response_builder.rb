@@ -95,9 +95,11 @@ module Samlr
 
         # The core response is ready, not on to signing
         response = builder.doc
+        assertion_options = options.merge(:skip_keyinfo => options[:skip_assertion_keyinfo])
+        response = sign(response, assertion_id, assertion_options) if sign_assertion
 
-        response = sign(response, assertion_id, options) if sign_assertion
-        response = sign(response, response_id, options)  if sign_response
+        response_options = options.merge(:skip_keyinfo => options[:skip_response_keyinfo])
+        response = sign(response, response_id, response_options)  if sign_response
 
         response.to_xml(COMPACT)
       end

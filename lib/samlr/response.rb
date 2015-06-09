@@ -19,7 +19,7 @@ module Samlr
     # is destructive the document needs to verify itself first, and then any signed assertions
     def verify!
       if signature.missing? && assertion.signature.missing?
-        raise Samlr::SignatureError.new("Neither response nor assertion signed")
+        raise Samlr::SignatureError.new("Neither response nor assertion signed with a certificate")
       end
 
       signature.verify! unless signature.missing?

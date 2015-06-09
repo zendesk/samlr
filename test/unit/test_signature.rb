@@ -21,15 +21,15 @@ describe Samlr::Signature do
     end
   end
 
-  describe "#certificate" do
+  describe "#certificate!" do
     it "should extract the certificate" do
-      assert_equal TEST_CERTIFICATE.to_certificate, @signature.send(:certificate)
+      assert_equal TEST_CERTIFICATE.to_certificate, @signature.send(:certificate!)
     end
 
     describe "when there is no X509 certificate" do
       it "should raise a signature error" do
         @signature.stub(:certificate_node, nil) do
-          assert_raises(Samlr::SignatureError) { @signature.send(:certificate) }
+          assert_raises(Samlr::SignatureError) { @signature.send(:certificate!) }
         end
       end
     end
