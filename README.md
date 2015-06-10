@@ -124,6 +124,7 @@ Please help adding IdP's or IdP services you find to work with Samlr. The below 
 
 * Novell/NetIQ
 * MS ADFS 2.0
+* Oracle WebLogic
 * http://simplesamlphp.org/
 * http://www.ssoeasy.com/
 * http://www.okta.com/

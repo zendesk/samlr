@@ -71,7 +71,7 @@ describe Samlr do
   end
 
   describe "when there is no keyinfo" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :skip_keyinfo => true) }
+    subject { saml_response(:certificate => TEST_CERTIFICATE, :skip_response_keyinfo => true, :skip_assertion_keyinfo => true) }
 
     it "fails" do
       assert_raises(Samlr::SignatureError) { subject.verify! }
@@ -108,4 +108,19 @@ describe Samlr do
     end
   end
 
+  describe "when only the response signature is missing a certificate" do
+    subject { saml_response(:certificate => TEST_CERTIFICATE, :skip_response_keyinfo => true) }
+
+    it "verifies" do
+      assert subject.verify!
+    end
+  end
+
+  describe "when only the assertion signature is missing a certificate" do
+    subject { saml_response(:certificate => TEST_CERTIFICATE, :skip_assertion_keyinfo => true) }
+
+    it "verifies" do
+      assert subject.verify!
+    end
+  end
 end

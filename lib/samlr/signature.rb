@@ -32,7 +32,7 @@ module Samlr
     end
 
     def missing?
-      signature.nil?
+      signature.nil? || certificate.nil?
     end
 
     def verify!
@@ -56,12 +56,12 @@ module Samlr
     private
 
     def x509
-      @x509 ||= certificate.x509
+      @x509 ||= certificate!.x509
     end
 
     # Establishes trust that the remote party is who you think
     def verify_fingerprint!
-      fingerprint.compare!(certificate.fingerprint)
+      fingerprint.compare!(certificate!.fingerprint)
     end
 
     # Tests that the document content has not been edited
@@ -117,9 +117,13 @@ module Samlr
         elsif cert = options[:certificate]
           Certificate.new(cert)
         else
-          raise SignatureError.new("No X509Certificate element in response signature. Cannot validate signature.")
+          nil
         end
       end
+    end
+
+    def certificate!
+      certificate || raise(SignatureError.new("No X509Certificate element in response signature. Cannot validate signature."))
     end
 
     def certificate_node
