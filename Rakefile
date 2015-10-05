@@ -1,12 +1,11 @@
+require 'bundler/setup'
 require 'bundler/gem_tasks'
 require 'rake/testtask'
+require 'bump/tasks'
 
 Rake::TestTask.new do |test|
-  test.libs << 'lib'
   test.pattern = 'test/**/test_*.rb'
   test.verbose = true
 end
 
-task :default do
-  sh "bundle exec rake test"
-end
+task default: :test
