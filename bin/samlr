@@ -1,19 +1,21 @@
 #!/usr/bin/env ruby
 
 require "samlr"
+require "samlr/version"
 require "samlr/command"
 
-require "trollop"
+require "optparse"
 
 ARGV << "--help" if ARGV.empty?
 
-opts = Trollop.options do
-  banner <<-EOS
+options = {}
+OptionParser.new do |opt|
+  opt.banner = <<-EOS
 SAML response command line tool.
 
 Usage examples:
   samlr --verify --fingerprint ab:23:cd --skip-conditions <response.xml|directory of responses>
-  samlr --verify --certificate <x509_certificate.crt> --skip-conditions <response.xml|directory of responses> 
+  samlr --verify --certificate <x509_certificate.crt> --skip-conditions <response.xml|directory of responses>
   samlr --verify --skip-fingerprint --skip-conditions <response.xml|directory of responses>
   samlr --schema-validate response.xml
   samlr --print response.xml[.base64]
@@ -25,22 +27,24 @@ Try it with the gem examples:
 Full list of options:
 EOS
 
-  opt :verify, "Verify a SAML response document"
-  opt :fingerprint, "The fingerprint to verify the certificate against", :type => String
-  opt :certificate, "A certificate (PEM or DER) to validate the signature against (assuming no certificate embedded in the response)", :type => IO
-  opt :skip_conditions, "Skip conditions check"
-  opt :skip_validation, "Skip schema validation rejection"
-  opt :skip_fingerprint, "Skip certificate fingerprint check"
-  opt :verbose, "Log to STDOUT"
-  opt :schema_validate, "Perform a schema validation against the input"
-  opt :print, "Pretty prints the XML"
-end
+  opt.on("-v", "--verify", "Verify a SAML response document") { options[:verify] = true }
+  opt.on("-f", "--fingerprint FINGERPRINT", "The fingerprint to verify the certificate against") { |c| options[:fingerprint] = c }
+  opt.on("-c", "--certificate FILE", "A certificate (PEM or DER) to validate the signature against (assuming no certificate embedded in the response)") { |c| options[:certificate] = File.open(c) }
+  opt.on("--skip-conditions", "Skip conditions check") { options[:skip_conditions] = true }
+  opt.on("--skip-validation", "Skip schema validation rejection") { options[:skip_validation] = true }
+  opt.on("--skip-fingerprint", "Skip certificate fingerprint check") { options[:skip_fingerprint] = true }
+  opt.on("--verbose", "Log to STDOUT") { options[:verbose] = true }
+  opt.on("--schema-validate", "Perform a schema validation against the input") { options[:schema_validate] = true }
+  opt.on("--print", "Pretty prints the XML") { options[:print] = true }
+  opt.on("-h", "--help", "Show this.") { puts opt; exit }
+  opt.on("--version", "Show Version"){ puts Samlr::VERSION; exit}
+end.parse!
 
 if ARGV.empty? || !File.exist?(ARGV[0])
   puts "Input file not given or does not exist"
   exit 1
 end
 
-opts[:certificate] &&= opts[:certificate].read
+options[:certificate] &&= options[:certificate].read
 
-puts Samlr::Command.execute(opts, ARGV[0])
+puts Samlr::Command.execute(options, ARGV[0])

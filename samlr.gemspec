@@ -1,4 +1,6 @@
-Gem::Specification.new "samlr", "2.1.0" do |s|
+require './lib/samlr/version'
+
+Gem::Specification.new "samlr", Samlr::VERSION do |s|
   s.summary     = "Ruby tools for SAML"
   s.description = "Helps you implement a SAML SP"
   s.authors     = ["Morten Primdahl"]
@@ -11,7 +13,6 @@ Gem::Specification.new "samlr", "2.1.0" do |s|
 
   s.add_runtime_dependency("nokogiri", ">= 1.5.5")
   s.add_runtime_dependency("uuidtools", ">= 2.1.3")
-  s.add_runtime_dependency("trollop", ">= 1.16.2")
 
   s.add_development_dependency("rake")
   s.add_development_dependency("bundler")
