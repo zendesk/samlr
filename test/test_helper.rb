@@ -1,13 +1,9 @@
-require "bundler"
+require "bundler/setup"
 require "minitest/autorun"
-
-Bundler.require
 
 require "time"
 require "base64"
 require "tmpdir"
-
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
 require "samlr"
 require "samlr/tools/response_builder"
