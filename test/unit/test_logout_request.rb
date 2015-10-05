@@ -42,11 +42,23 @@ describe Samlr::LogoutRequest do
   end
 
   describe "with optional params" do
+    def capture_stderr
+      old, $stderr = $stderr, StringIO.new
+      result = yield
+      [result, $stderr.string]
+    ensure
+      $stderr = old
+    end
+
     it "understands name_id_format" do
       options.merge!(:name_id_format => "some format")
-      request = Samlr::LogoutRequest.new(options)
+      body, stderr = capture_stderr do
+        request = Samlr::LogoutRequest.new(options)
+        request.body
+      end
 
-      assert_match /<saml:NameID Format="some format">/, request.body
+      body.must_include '<saml:NameID Format="some format">'
+      stderr.must_equal "[DEPRECATION] options[:name_id_format] is deprecated. Please use options[:name_id_options][:format] instead\n"
     end
 
     it "understands [:name_id_options][:format]" do
