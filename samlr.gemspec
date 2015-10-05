@@ -3,8 +3,8 @@ Gem::Specification.new "samlr", "2.1.0" do |s|
   s.description = "Helps you implement a SAML SP"
   s.authors     = ["Morten Primdahl"]
   s.email       = "primdahl@me.com"
-  s.homepage    = "http://github.com/zendesk/samlr"
-  s.files       = `git ls-files`.split("\n")
+  s.homepage    = "https://github.com/zendesk/samlr"
+  s.files       = `git ls-files lib bin config README.md LICENSE`.split("\n")
   s.license     = "Apache License Version 2.0"
 
   s.add_runtime_dependency("nokogiri", ">= 1.5.5")
