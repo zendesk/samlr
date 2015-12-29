@@ -13,6 +13,26 @@ describe Samlr do
     end
   end
 
+  describe "a valid response with a SHA1 fingerprint" do
+    let(:fp) { OpenSSL::Digest::SHA1.new.hexdigest(TEST_CERTIFICATE.x509.to_der) }
+    subject { saml_response(:certificate => TEST_CERTIFICATE, :fingerprint => fp) }
+
+    it "verifies" do
+      assert subject.verify!
+      assert_equal "someone@example.org", subject.name_id
+    end
+  end
+
+  describe "a valid response with a SHA256 fingerprint" do
+    let(:fp) { OpenSSL::Digest::SHA256.new.hexdigest(TEST_CERTIFICATE.x509.to_der) }
+    subject { saml_response(:certificate => TEST_CERTIFICATE, :fingerprint => fp) }
+
+    it "verifies" do
+      assert subject.verify!
+      assert_equal "someone@example.org", subject.name_id
+    end
+  end
+
   describe "an invalid fingerprint" do
     subject { saml_response(:certificate => TEST_CERTIFICATE, :fingerprint => "hello") }
     it "fails" do

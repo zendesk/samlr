@@ -21,7 +21,7 @@ module Samlr
       end
 
       @fingerprint = if options[:fingerprint]
-        Fingerprint.new(options[:fingerprint])
+        Fingerprint.from_string(options[:fingerprint])
       elsif options[:certificate]
         Certificate.new(options[:certificate]).fingerprint
       end
@@ -61,7 +61,7 @@ module Samlr
 
     # Establishes trust that the remote party is who you think
     def verify_fingerprint!
-      fingerprint.compare!(certificate!.fingerprint)
+      fingerprint.verify!(certificate!)
     end
 
     # Tests that the document content has not been edited

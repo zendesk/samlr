@@ -4,9 +4,18 @@ module Samlr
 
     def initialize(value)
       if value.is_a?(OpenSSL::X509::Certificate)
-        @value = Fingerprint.x509(value)
+        @value = self.class.x509(value)
       else
-        @value = Fingerprint.normalize(value)
+        @value = self.class.normalize(value)
+      end
+    end
+
+    def self.from_string(string)
+      normalized = normalize(string)
+      if string.gsub(':', '').length == 64
+        FingerprintSHA256.new(normalized)
+      else
+        FingerprintSHA1.new(normalized)
       end
     end
 
@@ -23,6 +32,10 @@ module Samlr
       end
     end
 
+    def verify!(certificate)
+      compare!(self.class.new(self.class.x509(certificate.x509)))
+    end
+
     def valid?
       value =~ /([A-F0-9]:?)+/
     end
@@ -33,7 +46,7 @@ module Samlr
 
     # Extracts a fingerprint for an x509 certificate
     def self.x509(certificate)
-      normalize(OpenSSL::Digest::SHA1.new.hexdigest(certificate.to_der))
+      raise NotImplementedError, 'subclass must implement x509'
     end
 
     # Converts a string to fingerprint normal form
