@@ -1,7 +1,7 @@
 module Samlr
   class Certificate
     attr_reader :x509
-    
+
     def initialize(value)
       @x509 = if value.is_a?(OpenSSL::X509::Certificate)
         value
@@ -13,7 +13,7 @@ module Samlr
     end
 
     def fingerprint
-      @fingerprint ||= Fingerprint.new(@x509)
+      @fingerprint ||= FingerprintSHA256.new(@x509)
     end
 
     def ==(other)

@@ -29,7 +29,7 @@ end
 
 def saml_response(options = {})
   fingerprint   = options[:fingerprint]
-  fingerprint ||= options[:certificate] ? Samlr::Fingerprint.x509(options[:certificate].x509) : nil
+  fingerprint ||= options[:certificate] ? Samlr::FingerprintSHA256.x509(options[:certificate].x509) : nil
 
   Samlr::Response.new(saml_response_document(options), :fingerprint => fingerprint)
 end
