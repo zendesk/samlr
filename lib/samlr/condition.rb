@@ -34,8 +34,10 @@ module Samlr
     end
 
     def audience_satisfied?
-      audience.nil? || options[:audience].nil? ||
-        options[:audience] === audience
+      options[:audience].nil? ||
+      audience.nil?           ||
+      audience.empty?         ||
+      audience.any? { |a| options[:audience] === a }
     end
 
     private
@@ -43,11 +45,13 @@ module Samlr
     def extract_audience(condition)
       return unless condition
 
-      audience_node = condition.at("./saml:AudienceRestriction/saml:Audience", NS_MAP)
+      audience_restriction_node = condition.at('./saml:AudienceRestriction', NS_MAP)
+      return unless audience_restriction_node
 
-      return unless audience_node
+      audience_nodes = audience_restriction_node.search('./saml:Audience', NS_MAP)
+      return unless audience_nodes.any?
 
-      audience_node.text
+      audience_nodes.map(&:text)
     end
   end
 end
