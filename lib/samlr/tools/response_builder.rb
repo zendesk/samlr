@@ -64,8 +64,12 @@ module Samlr
 
                 unless skip_conditions
                   xml["saml"].Conditions("NotBefore" => not_before, "NotOnOrAfter" => not_on_or_after) do
-                    xml["saml"].AudienceRestriction do
-                      xml["saml"].Audience(audience)
+                    Array(audience).each do |audience_nodes|
+                      xml["saml"].AudienceRestriction do
+                        Array(audience_nodes).each do |audience_value|
+                          xml["saml"].Audience(audience_value)
+                        end
+                      end
                     end
                   end
                 end
