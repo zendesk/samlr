@@ -48,7 +48,11 @@ module Samlr
     end
 
     def name_id
-      @name_id ||= name_id_node.text
+      if !name_id_node
+        raise Samlr::FormatError.new("Invalid SAML response: name_id missing")
+      else
+        @name_id ||= name_id_node.text
+      end
     end
 
     def name_id_options

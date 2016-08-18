@@ -26,6 +26,12 @@ describe Samlr::Assertion do
     it "returns the body of the NameID element" do
       assert_equal "someone@example.org", subject.name_id
     end
+
+    it "throws an exception if name_id is missing" do
+      assert_raises(Samlr::FormatError, "Invalid SAML response: name_id missing") do
+        fixed_saml_response(name_id: nil).assertion.name_id
+      end
+    end
   end
 
   describe "#name_id_options" do

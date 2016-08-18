@@ -15,5 +15,10 @@ describe Samlr::Tools::ResponseBuilder do
       result = Samlr::Tools.validate(:document => subject)
       assert result
     end
+
+    it "doesn't include the name_id when nil" do
+      result = saml_response_document(:certificate => @certificate, :name_id => nil)
+      refute_match /nameid/i, result
+    end
   end
 end
