@@ -19,13 +19,13 @@ module Samlr
         auth_context      = options[:auth_context]   || "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"
         issuer            = options[:issuer]         || "ResponseBuilder IdP"
         attributes        = options[:attributes]     || {}
+        name_id           = options[:name_id]
         name_qualifier    = options[:name_qualifier]
         sp_name_qualifier = options[:sp_name_qualifier]
 
         # Mandatory for responses
         destination     = options.fetch(:destination)
         in_response_to  = options.fetch(:in_response_to)
-        name_id         = options.fetch(:name_id)
         not_on_or_after = options.fetch(:not_on_or_after)
         not_before      = options.fetch(:not_before)
         audience        = options.fetch(:audience)
@@ -55,7 +55,7 @@ module Samlr
                   name_id_options.merge!("NameQualifier" => name_qualifier) unless name_qualifier.nil?
                   name_id_options.merge!("SPNameQualifier" => sp_name_qualifier) unless sp_name_qualifier.nil?
 
-                  xml["saml"].NameID(name_id, name_id_options)
+                  xml["saml"].NameID(name_id, name_id_options) unless name_id.nil?
 
                   xml["saml"].SubjectConfirmation("Method" => subject_conf_m) do
                     xml["saml"].SubjectConfirmationData("InResponseTo" => in_response_to, "NotOnOrAfter" => not_on_or_after, "Recipient" => destination)
