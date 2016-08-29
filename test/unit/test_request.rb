@@ -31,4 +31,13 @@ describe Samlr::Request do
       end
     end
   end
+
+  describe "#signed_url" do
+    let(:signed_request) {Samlr::Request.new(:sign_requests => true, :signing_certificate => TEST_CERTIFICATE)}
+    it "returns a signed URL" do
+      signed_request.stub(:param, "hello") do
+        assert_equal("https://foo.com/?SAMLRequest=hello&SigAlg=http%3A%2F%2Fwww.w3.org%2F2000%2F09%2Fxmldsig%23rsa-sha1&Signature=tvY57vi6IXHP1gHAMRQoRP5CZQlUniPwSeuwOUypqbjim04svTkk72njvbxzUE27U5PhK0Cwzq4ZdZ08i%2BuVAw%3D%3D&foo=bar", signed_request.url("https://foo.com/", :foo => "bar"))
+      end
+    end
+  end
 end
