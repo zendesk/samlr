@@ -10,6 +10,7 @@ require "samlr/tools/request_builder"
 require "samlr/tools/response_builder"
 require "samlr/tools/metadata_builder"
 require "samlr/tools/logout_request_builder"
+require "samlr/tools/logout_response_builder"
 
 module Samlr
   module Tools

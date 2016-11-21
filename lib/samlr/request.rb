@@ -18,13 +18,17 @@ module Samlr
       @body ||= Samlr::Tools::RequestBuilder.build(options)
     end
 
+    def type
+      "SAMLRequest"
+    end
+
     # Utility method to get the full redirect destination, Request#url("https://idp.example.com/saml", { :RelayState => "https://sp.example.com/saml" })
     def url(root, params = {})
       dest = root.dup
       if dest.include?("?")
-        dest << "&SAMLRequest=#{param}"
+        dest << "&#{type}=#{param}"
       else
-        dest << "?SAMLRequest=#{param}"
+        dest << "?#{type}=#{param}"
       end
 
       params.each_pair do |key, value|
