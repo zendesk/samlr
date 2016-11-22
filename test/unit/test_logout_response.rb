@@ -1,4 +1,4 @@
-require File.expand_path("test/test_helper")
+require_relative "../test_helper"
 
 describe Samlr::LogoutResponse do
   before do
@@ -18,7 +18,7 @@ describe Samlr::LogoutResponse do
     end
 
     it "has correct status when not passed in" do
-      assert_includes request.body, "urn:oasis:names:tc:SAML:2.0:status:Success"
+      assert_includes @request.body, "urn:oasis:names:tc:SAML:2.0:status:Success"
     end
   end
 
@@ -43,25 +43,25 @@ describe Samlr::LogoutResponse do
 
     it 'understands [:in_response_to]' do
       options.merge!(:in_response_to => "some_in_response_to")
-      request = Samlr::LogoutResponse.new(options)
+      request = Samlr::LogoutResponse.new(nil, options)
       assert_includes request.body, "InResponseTo=\"some_in_response_to\""
     end
 
     it 'understands [:destination]' do
       options.merge!(:destination => "some_destinatino")
-      request = Samlr::LogoutResponse.new(options)
+      request = Samlr::LogoutResponse.new(nil, options)
       assert_includes request.body, "Destination=\"some_destinatino\""
     end
 
     it 'understands [:issuer]' do
       options.merge!(:issuer => "some_issuer")
-      request = Samlr::LogoutResponse.new(options)
+      request = Samlr::LogoutResponse.new(nil, options)
       assert_includes request.body, "<saml:Issuer>some_issuer</saml:Issuer>"
     end
 
     it 'understands [:status_code]' do
       options.merge!(:status_code => "urn:oasis:names:tc:SAML:2.0:status:Requester")
-      request = Samlr::LogoutResponse.new(options)
+      request = Samlr::LogoutResponse.new(nil, options)
       assert_includes request.body, "urn:oasis:names:tc:SAML:2.0:status:Requester"
     end
   end

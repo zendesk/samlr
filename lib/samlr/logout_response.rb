@@ -5,7 +5,7 @@ module Samlr
     end
 
     def type
-    	"SAMLResponse"
+      "SAMLResponse"
     end
   end
 end

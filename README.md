@@ -7,12 +7,13 @@ Samlr leverages Nokogiri for the heavy lifting and keeps things simple. Samlr al
 ### Initiating an authentication request
 
 ```ruby
-saml_request = Samlr::Request.new(
-  :issuer               => request.host,
-  :name_identity_format => Samlr::EMAIL_FORMAT,
-  :consumer_service_url => "https://#{request.host}/auth/saml"
-)
+saml_request = Samlr::Request.new(nil, {
+    :issuer               => request.host,
+    :name_identity_format => Samlr::EMAIL_FORMAT,
+    :consumer_service_url => "https://#{request.host}/auth/saml"
+  })
 ```
+
 
 At this point you can access `request.param` if all you want is the encoded params, or you can get a fully valid request URL with an appropriate `RelayState` value:
 
@@ -57,6 +58,30 @@ end
 ```
 
 When the verification suceeds,the resulting response object will surface `saml_response.name_id` (String) and `saml_response.attributes` (Hash).
+
+### Handling a LogoutRequest from the IdP
+
+i.e. (https://example.com/logout?SAMLRequest=encoded_saml_logout_request)
+
+**Decode the request**
+
+```ruby
+idp_logout_request = Samlr::LogoutRequest.new(params["SAMLRequest"])
+```
+
+From this you can view the decoded request by calling `idp_logout_request.document` get the request id by calling `idp_logout_request.id` or get any other element or attribute using `get_attribute_or_element(xpath, attribute=nil)`.
+
+Then after logging out the user out you can get a fully valid response URL by:
+
+```ruby
+logout_response_options = {
+  :destination => remote_logout_url,
+  :in_response_to => idp_logout_request.id
+}
+logout_response = Samlr::LogoutResponse.new(nil, logout_response_options)
+
+logout_response.url(authentication.remote_logout_url)
+```
 
 ### Metadata
 

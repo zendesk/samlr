@@ -1,4 +1,4 @@
-require File.expand_path("test/test_helper")
+require_relative "../test_helper"
 
 describe Samlr::Tools::LogoutResponseBuilder do
   describe "#build" do
