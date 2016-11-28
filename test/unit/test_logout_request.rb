@@ -91,7 +91,7 @@ describe Samlr::LogoutRequest do
 
     describe "#id" do
       it 'returns the correct value if present' do
-        assert_includes @sample_doc, @request_with_data.id
+        assert_equal Nokogiri::XML(@sample_doc).xpath("//samlp:LogoutRequest").attr("ID").to_s, @request_with_data.id
       end
 
       it 'raises error if no data' do

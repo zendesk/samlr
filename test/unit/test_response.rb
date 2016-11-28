@@ -50,12 +50,12 @@ describe Samlr::Response do
     end
   end
 
-  describe "::parse" do
+  describe ".parse" do
     before { @document = saml_response_document(:certificate => TEST_CERTIFICATE) }
 
     describe "when given a raw XML response" do
       it "constructs and XML document" do
-        assert_equal Nokogiri::XML::Document, Samlr::Response.parse(@document).class
+        assert_instance_of Nokogiri::XML::Document, Samlr::Response.parse(@document)
       end
     end
 
@@ -63,7 +63,7 @@ describe Samlr::Response do
       subject { Base64.encode64(@document) }
 
       it "constructs and XML document" do
-        assert_equal Nokogiri::XML::Document, Samlr::Response.parse(subject).class
+        assert_instance_of Nokogiri::XML::Document, Samlr::Response.parse(subject)
       end
     end
 

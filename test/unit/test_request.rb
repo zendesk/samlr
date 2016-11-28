@@ -1,38 +1,40 @@
 require_relative "../test_helper"
 
 describe Samlr::Request do
-  before { @request = Samlr::Request.new }
+  let(:data) { Base64.encode64(Samlr::Tools::LogoutRequestBuilder.build({:issuer => "https://sp.example.com/saml2", :name_id => "test@test.com"}))}
+  let(:request) { Samlr::Request.new }
+  let(:request_with_data) { Samlr::Request.new(data) }
 
   describe "#body" do
     it "should return the generated XML" do
-      document = Nokogiri::XML(@request.body) { |c| c.strict }
+      document = Nokogiri::XML(request.body) { |c| c.strict }
       assert document.at("/samlp:AuthnRequest", Samlr::NS_MAP)
     end
 
     it "should delegate the building to the RequestBuilder" do
       Samlr::Tools::RequestBuilder.stub(:build, "hello") do
-        assert_match "hello", @request.body
+        assert_match "hello", request.body
       end
     end
   end
 
   describe "#param" do
     it "returns the encoded body" do
-      @request.stub(:body, "hello") do
-        assert_equal Samlr::Tools.encode("hello"), @request.param
+      request.stub(:body, "hello") do
+        assert_equal Samlr::Tools.encode("hello"), request.param
       end
     end
   end
 
   describe "#url" do
     it "returns a valid URL" do
-      @request.stub(:param, "hello") do
-        assert_equal("https://foo.com/?SAMLRequest=hello&foo=bar", @request.url("https://foo.com/", :foo => "bar"))
+      request.stub(:param, "hello") do
+        assert_equal("https://foo.com/?SAMLRequest=hello&foo=bar", request.url("https://foo.com/", :foo => "bar"))
       end
     end
   end
 
-  describe "::parse" do
+  describe ".parse" do
     let(:document){ Samlr::Tools::RequestBuilder.build }
 
     it "returns nil when given no data" do
@@ -40,7 +42,7 @@ describe Samlr::Request do
     end
 
     it "constructs and XML document when given a raw XML request" do
-      assert_equal Nokogiri::XML::Document, Samlr::Request.parse(document).class
+      assert_instance_of Nokogiri::XML::Document, Samlr::Request.parse(document)
     end
 
     it "fails when given an invalid string" do
@@ -48,7 +50,7 @@ describe Samlr::Request do
     end
 
     it "constructs and XML document when given a Base64 encoded response" do
-      assert_equal Nokogiri::XML::Document, Samlr::Request.parse("fVJLb4MwDP4rKHcIjxRKRCtN66VSd1mrHnaZDJgVDRKGHWnqrx%2BlqtZJU29O8r1spyDou0Hv7Id1%2FIo0WEPoffedIT0%2FrYQbjbZALWkDPZLmSu%2BfXnY6DkI9jJZtZTtxR3nMACIcubVGeNvNSryrsMniZV6WC4CsTpcQZ3FaJmmSI1ZlA1laNxmWcYTCO%2BJIE3MlJqGJTuRwa4jB8HQVRqkfLv0wOcSRjpROwjfhbZC4NcAz68Q8kJaSvlx7Bkc8QtdCpJI0T5JFqoIzmhrpM6hsL6GqkEh282AmM3MbzsGuxKXN0Vdq2cT5ZLvIy8aPIkx9COvGx6pRZVmhUgsl1sUFrOew4%2FoWARyfgjlHYJDlBeK39TAXsbxUPTLUwBAMp6GQ9xrFdWV7Bnb09%2FRsa%2FSO0Dl8vASa0Xrv5iaFXF8dfkXlf99i%2FQM%3D").class
+      assert_instance_of Nokogiri::XML::Document, Samlr::Request.parse(data)
     end
 
     describe "when given a malformed XML request" do
@@ -71,32 +73,26 @@ describe Samlr::Request do
   end
 
   describe "#get_attribute_or_element" do
-    let(:request_with_data) { Samlr::Request.new("fVJLb4MwDP4rKHcIjxRKRCtN66VSd1mrHnaZDJgVDRKGHWnqrx%2BlqtZJU29O8r1spyDou0Hv7Id1%2FIo0WEPoffedIT0%2FrYQbjbZALWkDPZLmSu%2BfXnY6DkI9jJZtZTtxR3nMACIcubVGeNvNSryrsMniZV6WC4CsTpcQZ3FaJmmSI1ZlA1laNxmWcYTCO%2BJIE3MlJqGJTuRwa4jB8HQVRqkfLv0wOcSRjpROwjfhbZC4NcAz68Q8kJaSvlx7Bkc8QtdCpJI0T5JFqoIzmhrpM6hsL6GqkEh282AmM3MbzsGuxKXN0Vdq2cT5ZLvIy8aPIkx9COvGx6pRZVmhUgsl1sUFrOew4%2FoWARyfgjlHYJDlBeK39TAXsbxUPTLUwBAMp6GQ9xrFdWV7Bnb09%2FRsa%2FSO0Dl8vASa0Xrv5iaFXF8dfkXlf99i%2FQM%3D") }
-
     it "raises NoDataError when no data present" do
       assert_raises Samlr::NoDataError do
-        @request.get_attribute_or_element("//samlp:LogoutResponse","ID")
+        request.get_attribute_or_element("//samlp:LogoutRequest","ID")
       end
     end
 
     it "returns correct element when present" do
-      assert_equal "https://auth.squiz.net/saml-idp/saml2/idp/metadata.php", request_with_data.get_attribute_or_element("//samlp:LogoutResponse/saml:Issuer").text
+      assert_equal "https://sp.example.com/saml2", request_with_data.get_attribute_or_element("//samlp:LogoutRequest/saml:Issuer").text
     end
 
     it "returns correct attribute when present" do
-      assert_equal "_40f7289bb5aa7d68a2726b3639eecbfa76df7eb21e", request_with_data.get_attribute_or_element("//samlp:LogoutResponse","ID")
+      assert_equal Nokogiri::XML(Base64.decode64(data)).xpath("//samlp:LogoutRequest/@ID").to_s, request_with_data.get_attribute_or_element("//samlp:LogoutRequest","ID")
     end
 
-    it "raises NoDataError when element not present" do
-      assert_raises Samlr::NoDataError do
-        request_with_data.get_attribute_or_element("//samlp:LogoutResponse/saml:DNE")
-      end
+    it "returns nil when element not present" do
+      assert_nil request_with_data.get_attribute_or_element("//samlp:LogoutRequest/saml:DNE")
     end
 
-    it "raises NoDataError when attribute not present" do
-      assert_raises Samlr::NoDataError do
-        puts request_with_data.get_attribute_or_element("//samlp:LogoutResponse","ID2")
-      end
+    it "returns nil when attribute not present" do
+      assert_nil request_with_data.get_attribute_or_element("//samlp:LogoutResponse","ID2")
     end
   end
 end

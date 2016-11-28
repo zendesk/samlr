@@ -1,7 +1,7 @@
 require_relative "../test_helper"
 
 describe Samlr::Tools::LogoutResponseBuilder do
-  describe "#build" do
+  describe ".build" do
     before do
       @xml = Samlr::Tools::LogoutResponseBuilder.build(
         :issuer => "https://sp.example.com/saml2",
@@ -18,8 +18,7 @@ describe Samlr::Tools::LogoutResponseBuilder do
     end
 
     it "validates against schemas" do
-      result = Samlr::Tools.validate(:document => @xml)
-      assert result
+      assert Samlr::Tools.validate(:document => @xml)
     end
   end
 end

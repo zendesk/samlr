@@ -1,7 +1,7 @@
 require File.expand_path("test/test_helper")
 
 describe Samlr::Tools::RequestBuilder do
-  describe "#build" do
+  describe ".build" do
     before do
       @xml = Samlr::Tools::RequestBuilder.build({
         :issuer               => "https://sp.example.com/saml2",

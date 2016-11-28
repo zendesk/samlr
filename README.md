@@ -69,8 +69,6 @@ i.e. (https://example.com/logout?SAMLRequest=encoded_saml_logout_request)
 idp_logout_request = Samlr::LogoutRequest.new(params["SAMLRequest"])
 ```
 
-From this you can view the decoded request by calling `idp_logout_request.document` get the request id by calling `idp_logout_request.id` or get any other element or attribute using `get_attribute_or_element(xpath, attribute=nil)`.
-
 Then after logging out the user out you can get a fully valid response URL by:
 
 ```ruby
