@@ -19,4 +19,7 @@ module Samlr
 
   class ConditionsError < SamlrError
   end
+
+  class NoDataError < SamlrError
+  end
 end

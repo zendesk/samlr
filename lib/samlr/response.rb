@@ -41,28 +41,8 @@ module Samlr
       @assertion ||= Samlr::Assertion.new(document, options)
     end
 
-    # Tries to parse the SAML response. First, it assumes it to be Base64 encoded
-    # If this fails, it subsequently attempts to parse the raw input as select IdP's
-    # send that rather than a Base64 encoded value
     def self.parse(data)
-      begin
-        document = Nokogiri::XML(Base64.decode64(data)) { |config| config.strict }
-      rescue Nokogiri::XML::SyntaxError => e
-        begin
-          document = Nokogiri::XML(data) { |config| config.strict }
-        rescue
-          raise Samlr::FormatError.new(e.message)
-        end
-      end
-
-      begin
-        Samlr::Tools.validate!(:document => document)
-      rescue Samlr::SamlrError => e
-        Samlr.logger.warn("Accepting non schema conforming response: #{e.message}, #{e.details}")
-        raise e unless Samlr.validation_mode == :log
-      end
-
-      document
+      Samlr::Tools.parse(data)
     end
   end
 end

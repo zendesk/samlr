@@ -10,6 +10,7 @@ require "samlr/tools/request_builder"
 require "samlr/tools/response_builder"
 require "samlr/tools/metadata_builder"
 require "samlr/tools/logout_request_builder"
+require "samlr/tools/logout_response_builder"
 
 module Samlr
   module Tools
@@ -103,6 +104,42 @@ module Samlr
           result.length == 0
         end
       end
+    end
+
+    # Tries to parse the SAML request, returns nil if no data passed.
+    # First, it assumes it to be Base64 encoded.
+    # If this fails, it subsequently attempts to parse the raw input as select IdP's
+    # send that rather than a Base64 encoded value
+    def self.parse(data, compressed: false)
+      return unless data
+      decoded = Base64.decode64(data)
+      decoded = self.inflate(decoded) if compressed
+      begin
+        doc = Nokogiri::XML(decoded) { |config| config.strict }
+      rescue Nokogiri::XML::SyntaxError => e
+        begin
+          doc = Nokogiri::XML(data) { |config| config.strict }
+        rescue
+          raise Samlr::FormatError.new(e.message)
+        end
+      end
+
+      begin
+        Samlr::Tools.validate!(:document => doc)
+      rescue Samlr::SamlrError => e
+        Samlr.logger.warn("Accepting non schema conforming response: #{e.message}, #{e.details}")
+        raise e unless Samlr.validation_mode == :log
+      end
+      doc
+    end
+
+    def self.inflate(data)
+      inflater  = Zlib::Inflate.new(-Zlib::MAX_WBITS)
+      decoded = inflater.inflate(data)
+
+      inflater.finish
+      inflater.close
+      decoded
     end
   end
 end
