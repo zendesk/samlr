@@ -110,38 +110,36 @@ module Samlr
     # First, it assumes it to be Base64 encoded.
     # If this fails, it subsequently attempts to parse the raw input as select IdP's
     # send that rather than a Base64 encoded value
-    def self.parse(data, request=false)
-      if data == nil
-        data
-      else
-        decoded = Base64.decode64(data)
-        if request
-          inflater  = Zlib::Inflate.new(-Zlib::MAX_WBITS)
-          decoded = inflater.inflate(Base64.decode64(data))
-
-          inflater.finish
-          inflater.close
-        end
-
+    def self.parse(data, compressed: false)
+      return unless data
+      decoded = Base64.decode64(data)
+      decoded = self.inflate(decoded) if compressed
+      begin
+        doc = Nokogiri::XML(decoded) { |config| config.strict }
+      rescue Nokogiri::XML::SyntaxError => e
         begin
-          doc = Nokogiri::XML(decoded) { |config| config.strict }
-        rescue Nokogiri::XML::SyntaxError => e
-          begin
-            doc = Nokogiri::XML(data) { |config| config.strict }
-          rescue
-            raise Samlr::FormatError.new(e.message)
-          end
+          doc = Nokogiri::XML(data) { |config| config.strict }
+        rescue
+          raise Samlr::FormatError.new(e.message)
         end
-
-        begin
-          Samlr::Tools.validate!(:document => doc)
-        rescue Samlr::SamlrError => e
-          Samlr.logger.warn("Accepting non schema conforming response: #{e.message}, #{e.details}")
-          raise e unless Samlr.validation_mode == :log
-        end
-
-        doc
       end
+
+      begin
+        Samlr::Tools.validate!(:document => doc)
+      rescue Samlr::SamlrError => e
+        Samlr.logger.warn("Accepting non schema conforming response: #{e.message}, #{e.details}")
+        raise e unless Samlr.validation_mode == :log
+      end
+      doc
+    end
+
+    def self.inflate(data)
+      inflater  = Zlib::Inflate.new(-Zlib::MAX_WBITS)
+      decoded = inflater.inflate(data)
+
+      inflater.finish
+      inflater.close
+      decoded
     end
   end
 end

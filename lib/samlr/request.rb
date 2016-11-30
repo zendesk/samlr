@@ -38,7 +38,7 @@ module Samlr
     end
 
     def self.parse(data)
-      Samlr::Tools.parse(data, true)
+      Samlr::Tools.parse(data, compressed: true)
     end
 
     def get_attribute_or_element(x_path,attribute=nil)

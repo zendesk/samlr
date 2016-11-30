@@ -1,7 +1,7 @@
 require_relative "../test_helper"
 
 describe Samlr::Request do
-  let(:data) { Base64.encode64(Samlr::Tools::LogoutRequestBuilder.build({:issuer => "https://sp.example.com/saml2", :name_id => "test@test.com"}))}
+  let(:data) { deflate(Samlr::Tools::LogoutRequestBuilder.build({:issuer => "https://sp.example.com/saml2", :name_id => "test@test.com"}).to_s)}
   let(:request) { Samlr::Request.new }
   let(:request_with_data) { Samlr::Request.new(data) }
 
@@ -35,7 +35,7 @@ describe Samlr::Request do
   end
 
   describe ".parse" do
-    let(:document){ Samlr::Tools::RequestBuilder.build }
+    let(:document){ deflate(Samlr::Tools::RequestBuilder.build.to_s) }
 
     it "returns nil when given no data" do
       assert_nil Samlr::Request.parse(nil)
@@ -46,7 +46,7 @@ describe Samlr::Request do
     end
 
     it "fails when given an invalid string" do
-      assert_raises(Samlr::FormatError) { Samlr::Request.parse("hello") }
+      assert_raises(Samlr::FormatError) { Samlr::Request.parse(deflate("hello")) }
     end
 
     it "constructs and XML document when given a Base64 encoded response" do
@@ -54,7 +54,7 @@ describe Samlr::Request do
     end
 
     describe "when given a malformed XML request" do
-      subject { saml_response_document(:certificate => TEST_CERTIFICATE).gsub("Assertion", "AyCaramba") }
+      subject { deflate(saml_request_document.gsub("Assertion", "AyCaramba").to_s) }
       after   { Samlr.validation_mode = :reject }
 
       describe "and Samlr.validation_mode == :log" do
@@ -84,7 +84,8 @@ describe Samlr::Request do
     end
 
     it "returns correct attribute when present" do
-      assert_equal Nokogiri::XML(Base64.decode64(data)).xpath("//samlp:LogoutRequest/@ID").to_s, request_with_data.get_attribute_or_element("//samlp:LogoutRequest","ID")
+      inflated = Samlr::Tools.inflate(Base64.decode64(data))
+      assert_equal Nokogiri::XML(inflated).xpath("//samlp:LogoutRequest/@ID").to_s, request_with_data.get_attribute_or_element("//samlp:LogoutRequest","ID")
     end
 
     it "returns nil when element not present" do

@@ -9,7 +9,7 @@ Gem::Specification.new "samlr", Samlr::VERSION do |s|
   s.files       = `git ls-files lib bin config README.md LICENSE`.split("\n")
   s.license     = "Apache License Version 2.0"
 
-  s.required_ruby_version = '>= 1.9.3'
+  s.required_ruby_version = '>= 2.1.10'
 
   s.add_runtime_dependency("nokogiri", ">= 1.5.5")
   s.add_runtime_dependency("uuidtools", ">= 2.1.3")

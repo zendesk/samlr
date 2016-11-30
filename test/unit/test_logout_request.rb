@@ -86,7 +86,7 @@ describe Samlr::LogoutRequest do
   describe "with data" do
     before do
       @sample_doc = Samlr::Tools::LogoutRequestBuilder.build(options)
-      @request_with_data = Samlr::LogoutRequest.new(@sample_doc)
+      @request_with_data = Samlr::LogoutRequest.new(deflate(@sample_doc.to_s))
     end
 
     describe "#id" do
