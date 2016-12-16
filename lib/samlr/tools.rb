@@ -114,6 +114,7 @@ module Samlr
       return unless data
       decoded = Base64.decode64(data)
       decoded = self.inflate(decoded) if compressed
+      return unless decoded
       begin
         doc = Nokogiri::XML(decoded) { |config| config.strict }
       rescue Nokogiri::XML::SyntaxError => e
@@ -136,10 +137,11 @@ module Samlr
     def self.inflate(data)
       inflater  = Zlib::Inflate.new(-Zlib::MAX_WBITS)
       decoded = inflater.inflate(data)
-
       inflater.finish
       inflater.close
       decoded
+    rescue Zlib::BufError, Zlib::DataError
+      nil
     end
   end
 end
