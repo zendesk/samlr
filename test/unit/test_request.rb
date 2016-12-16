@@ -45,8 +45,12 @@ describe Samlr::Request do
       assert_instance_of Nokogiri::XML::Document, Samlr::Request.parse(document)
     end
 
-    it "fails when given an invalid string" do
-      assert_raises(Samlr::FormatError) { Samlr::Request.parse(deflate("hello")) }
+    it "returns nill when given an invalid string" do
+      assert_nil Samlr::Request.parse("broken")
+    end
+
+    it 'returns nill when given empty string' do
+      assert_nil Samlr::Request.parse("")
     end
 
     it "constructs and XML document when given a Base64 encoded response" do
