@@ -42,7 +42,7 @@ module Samlr
             value = values.map { |value| value.text }
           end
 
-          attrs[name] = attrs[name.to_sym] = value
+          attrs[name] = value
         end
       end
     end
