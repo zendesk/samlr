@@ -13,7 +13,6 @@ describe Samlr::Assertion do
 
   describe "#attributes" do
     it "returns a hash of assertion attributes" do
-      assert_equal subject.attributes[:tags], "mean horse"
       assert_equal subject.attributes["tags"], "mean horse"
     end
 
