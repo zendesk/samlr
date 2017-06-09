@@ -20,7 +20,7 @@ describe Samlr::Reference do
 
   describe "#digest_value" do
     it "should return the verbatim value" do
-      assert_equal "OSVXSTu8W+eGao6muxUHXcKQwZU=", @reference.digest_value
+      assert_equal "05/ZoKG4L2PiMssuD+msQ9BBl9A=", @reference.digest_value
     end
   end
 
