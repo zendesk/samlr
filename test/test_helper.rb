@@ -54,7 +54,7 @@ def fixed_saml_response(options = {})
     :response_id     => "samlr123",
     :assertion_id    => "samlr456",
     :in_response_to  => "samlr789",
-    :attributes      => { "tags" => "mean horse", "things" => [ "one", "two", "three" ] },
+    :attributes      => { "tags" => "mean horse", "things" => [ "one", "two", "three" ], "integer" => nil, "text" => "" },
     :not_on_or_after => Samlr::Tools::Timestamp.stamp(Time.at(1344379365 + 60)),
     :not_before      => Samlr::Tools::Timestamp.stamp(Time.at(1344379365 - 60))
   }.merge(options)

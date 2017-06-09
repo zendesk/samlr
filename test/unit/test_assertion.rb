@@ -16,6 +16,16 @@ describe Samlr::Assertion do
       assert_equal subject.attributes["tags"], "mean horse"
     end
 
+    it "includes attributes that are nil" do
+      assert_includes subject.attributes.keys, "integer"
+      assert_nil subject.attributes["integer"]
+    end
+
+    it "includes blank attributes" do
+      assert_includes subject.attributes.keys, "text"
+      assert_equal "", subject.attributes["text"]
+    end
+
     it "turns multiple attribute values into an array" do
       assert_equal subject.attributes["things"].sort, [ "one", "two", "three" ].sort
     end

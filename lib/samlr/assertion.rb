@@ -35,7 +35,7 @@ module Samlr
           values = statement.xpath("./saml:AttributeValue", NS_MAP)
 
           if values.size == 0
-            next
+            value = nil
           elsif values.size == 1
             value = values.first.text
           else
