@@ -22,6 +22,10 @@ module Samlr
         raise Samlr::SignatureError.new("Neither response nor assertion signed with a certificate")
       end
 
+      if document.xpath("//samlp:Response", Samlr::NS_MAP).size > 1
+        raise Samlr::FormatError.new("multiple responses")
+      end
+
       signature.verify! unless signature.missing?
       assertion.verify!
 

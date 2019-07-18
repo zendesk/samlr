@@ -1,0 +1,54 @@
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:blah="http://idp-integration.com/" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ID="_80fbdf5d0fb4f9f47b2986dbce496d6b" Version="2.0" IssueInstant="2016-12-30T04:46:50Z" Destination="https://freeflysecurity.zendesk.com/access/saml/">
+      <saml:Issuer>https://idp.freeflysecurity.com</saml:Issuer><ds:Signature><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference URI="#_feb5592aae7275c9146447c49a388a47"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>dgvyqRK9rb+5M+9WveNG31GAm4oqz0S4EvHpfQlDcnw=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>ODrTB5sYHVqTDChoWoZj/IClJ3GSh2eJIVyk2FxiU/mT5U6XU9g6oegNN4YXZdIHmlMHKdoHNNEHxz2rhOWia2Ohw4OpsqIigzm+5e1TBFJVCcG+uYcA/LXSHsmyGprCNs9F2kdURk23AveK9CCDmdZmnZBHiICr87t5FAokuJeyOK3iG8pyqD6Fwfd2c+HelW1uNRlUgPXvR0mp0JxvTeo6bZRes9dEFlJld6SID0mVkTJtWn4xgWe/fJ0V4/Pl3z4srVZuZi3u/oWbtgGM5RVRhJ8sd5PgsmGcgFQyHd0Wv6VjwxcQ9CvaA6sYK/6Wn3H2jL9JyrL0DYyC6jI2eA==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDPjCCAiagAwIBAgIJAMhYt8Uu0MDwMA0GCSqGSIb3DQEBBQUAMB4xHDAaBgNV
+BAMTE2ZyZWVmbHlzZWN1cml0eS5jb20wHhcNMTYxMjI5MjExODIzWhcNMjYxMjI3
+MjExODIzWjAeMRwwGgYDVQQDExNmcmVlZmx5c2VjdXJpdHkuY29tMIIBIjANBgkq
+hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0EQwZLVH9Dy0Xnpnca4Lh8ovaT796IKF
+4GrEJoGUa1HBV8sCmwVTbFPxHImzL2b+m/7faNF+454Wh9Q+Za4EoQJO631pS50X
+AIMvSlNLuEmn/ijzF5YeCl8fIgZl2xGCDyo/PXWjYxvWzoGBg+IR4XMMHqb8SqjY
+ZqMirRdTrkS1RmT1kTtrZ+ZaBcYgmID1l7Qdsiy3NaTZE1qaFTwOte99D6KiGnEx
+cuQb8JOEnlXGKguxL0SEpd9BIOIFZgUL0XMrKbmH1uyt0uJEdGFNOa0hjYwvudFw
+wDwebm9uXEBcX1/u06ACoOYvJQEd2VmvSYUBEb2mPzPV6JGVWbbwVQIDAQABo38w
+fTAdBgNVHQ4EFgQUumqox77wly/AOSU+QBwCzTg95tkwTgYDVR0jBEcwRYAUumqo
+x77wly/AOSU+QBwCzTg95tmhIqQgMB4xHDAaBgNVBAMTE2ZyZWVmbHlzZWN1cml0
+eS5jb22CCQDIWLfFLtDA8DAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBBQUAA4IB
+AQANi7uNw0sbavQeQ4sV4TZpEKMfb887At+zkacpEGGiXQsd5pN+cz+QpWzVEocb
+SCmBVYFZ7rv6wpucJvgn3G01Stwzlwq8kiyTEUSgp2jBA8WMTsdv176hB2h7EY3L
+D3z3GahGEO0iOIe3waHU2EH/FpSRtaeyxba31odnVL82HTVceDvLLc4bEwvzMjNW
+97gfjtAXI28xD16XLDWRCWg92TjWieT+gUehTugz6rT3SO3KPR/efa8sIYPAvYZC
+uDoy5Tyz2Q2DHnmObAQz+UFdALA3ciWzbAKMYlc6gNqXgffpW1zKJQMNjYo9pKwr
+wEUYSUMom9ry5L54HbT8eVn3
+</ds:X509Certificate></ds:X509Data></ds:KeyInfo></ds:Signature><samlp:Status>
+        <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/>
+      <samlp:StatusDetail><object><samlp:Response Version="2.0" ID="_feb5592aae7275c9146447c49a388a47" IssueInstant="2016-12-30T04:46:50Z" Destination="https://freeflysecurity.zendesk.com/access/saml/">
+      <saml:Issuer>https://idp.freeflysecurity.com</saml:Issuer><samlp:Status>
+        <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Requester">
+          <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:InvalidNameIDPolicy"/>
+        </samlp:StatusCode>
+        <samlp:StatusMessage>Internal Server Error</samlp:StatusMessage>
+      </samlp:Status>
+    </samlp:Response> </object></samlp:StatusDetail></samlp:Status>
+    <saml:Assertion xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="_3cf2f58c0c79a7c5128a7bddb25b4114" Version="2.0" IssueInstant="2016-12-30T04:46:50Z">
+        <saml:Issuer>https://idp.freeflysecurity.com</saml:Issuer><saml:Subject>
+          <saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified">target_user@freeflysecurity.com</saml:NameID>
+          <saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+            <saml:SubjectConfirmationData NotOnOrAfter="2016-12-30T04:52:50Z" Recipient="https://freeflysecurity.zendesk.com/access/saml/"/>
+          </saml:SubjectConfirmation>
+        </saml:Subject>
+        <saml:Conditions NotBefore="2016-12-30T04:46:50Z" NotOnOrAfter="2016-12-30T04:52:50Z">
+          <saml:AudienceRestriction>
+            <saml:Audience>https://freeflysecurity.zendesk.com/access/saml/</saml:Audience>
+          </saml:AudienceRestriction>
+        </saml:Conditions>
+        <saml:AuthnStatement AuthnInstant="2016-12-30T04:46:50Z" SessionNotOnOrAfter="2016-12-30T04:52:50Z" SessionIndex="_b991eab7d99647470b3453f3ad9f8528">
+          <saml:AuthnContext>
+            <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:Password</saml:AuthnContextClassRef>
+          </saml:AuthnContext>
+        </saml:AuthnStatement>
+    <saml:AttributeStatement>
+                <saml:Attribute Name="first_name" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+                    <saml:AttributeValue xsi:type="xs:string">joe</saml:AttributeValue>
+                </saml:Attribute>
+                <saml:Attribute Name="last_name" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+                    <saml:AttributeValue xsi:type="xs:string">user</saml:AttributeValue>
+                </saml:Attribute>
+            </saml:AttributeStatement></saml:Assertion></samlp:Response>
