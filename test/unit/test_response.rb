@@ -44,9 +44,10 @@ describe Samlr::Response do
       modified_document.xpath("/samlp:Response/samlp:Extensions/saml:Assertion/ds:Signature", Samlr::NS_MAP).remove
       modified_document.xpath("/samlp:Response/saml:Assertion/saml:Subject/saml:NameID", Samlr::NS_MAP).first.content="evil@example.org"
       modified_document.xpath("/samlp:Response/saml:Assertion", Samlr::NS_MAP).first["ID"] = "evil_id"
-
-      response = Samlr::Response.new(modified_document.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML), {:certificate => TEST_CERTIFICATE.x509})
-      assert_raises(Samlr::FormatError) { response.verify! }
+      assert_raises(Samlr::FormatError) do
+        response = Samlr::Response.new(modified_document.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML), {:certificate => TEST_CERTIFICATE.x509})
+        response.verify!
+      end
     end
   end
 
