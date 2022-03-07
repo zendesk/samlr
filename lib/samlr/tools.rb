@@ -46,7 +46,7 @@ module Samlr
 
     # Generate an xs:NCName conforming UUID
     def self.uuid
-      "samlr-#{UUIDTools::UUID.timestamp_create}"
+      "samlr-#{UUIDTools::UUID.random_create}"
     end
 
     # Deflates, Base64 encodes and CGI escapes a string
