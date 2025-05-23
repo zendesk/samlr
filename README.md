@@ -14,7 +14,6 @@ saml_request = Samlr::Request.new(nil, {
   })
 ```
 
-
 At this point you can access `request.param` if all you want is the encoded params, or you can get a fully valid request URL with an appropriate `RelayState` value:
 
 ```ruby
@@ -189,6 +188,20 @@ Does not build on JRuby. See issue #2.
 ### Contributing
 
 Pull requests very welcome. Write tests. Adhere to standards employed (indentation, spaces vs. tabs etc.).
+
+### Releasing a new version
+A new version is published to RubyGems.org every time a change to `version.rb` is pushed to the `main` branch.
+In short, follow these steps:
+1. Update `version.rb`,
+2. merge this change into `main`, and
+3. look at [the action](https://github.com/zendesk/samlr/actions/workflows/publish.yml) for output.
+
+To create a pre-release from a non-main branch:
+1. change the version in `version.rb` to something like `1.2.0.pre.1` or `2.0.0.beta.2`,
+2. push this change to your branch,
+3. go to [Actions → “Publish to RubyGems.org” on GitHub](https://github.com/zendesk/samlr/actions/workflows/publish.yml),
+4. click the “Run workflow” button,
+5. pick your branch from a dropdown.
 
 ### Error reporting
 
