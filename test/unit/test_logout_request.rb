@@ -57,29 +57,29 @@ describe Samlr::LogoutRequest do
         request.body
       end
 
-      body.must_include '<saml:NameID Format="some format">'
-      stderr.must_equal "[DEPRECATION] options[:name_id_format] is deprecated. Please use options[:name_id_options][:format] instead\n"
+      _(body).must_include '<saml:NameID Format="some format">'
+      _(stderr).must_equal "[DEPRECATION] options[:name_id_format] is deprecated. Please use options[:name_id_options][:format] instead\n"
     end
 
     it "understands [:name_id_options][:format]" do
       options.merge!(:name_id_options => {:format => "some format"})
       request = Samlr::LogoutRequest.new(nil, options)
 
-      assert_match /<saml:NameID Format="some format">/, request.body
+      assert_match %r{<saml:NameID Format="some format">}, request.body
     end
 
     it "understands NameQualifier" do
       options.merge!(:name_id_options => {:name_qualifier => "Some name qualifier"})
       request = Samlr::LogoutRequest.new(nil, options)
 
-      assert_match /NameQualifier="Some name qualifier"/, request.body
+      assert_match %r{NameQualifier="Some name qualifier"}, request.body
     end
 
     it "understands SPNameQualifier" do
       options.merge!(:name_id_options => {:spname_qualifier => "Some SPName qualifier"})
       request = Samlr::LogoutRequest.new(nil, options)
 
-      assert_match /SPNameQualifier="Some SPName qualifier"/, request.body
+      assert_match %r{SPNameQualifier="Some SPName qualifier"}, request.body
     end
   end
 

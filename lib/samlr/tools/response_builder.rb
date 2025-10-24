@@ -125,7 +125,11 @@ module Samlr
           end unless skip_keyinfo
         end
         # digest.root.last_element_child.after "<SignatureValue>#{signature}</SignatureValue>"
-        element.at("./saml:Issuer", NS_MAP).add_next_sibling(digest)
+        if element.at("./saml:Issuer", NS_MAP)
+          element.at("./saml:Issuer", NS_MAP).add_next_sibling(digest)
+        else
+          element.children.first.add_previous_sibling(digest)
+        end
 
         document
       end
