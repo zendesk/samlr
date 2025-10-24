@@ -13,12 +13,14 @@ module Samlr
         name_identity_format     = options[:name_identity_format]
         consumer_service_url     = options[:consumer_service_url]
         consumer_service_binding = options[:consumer_service_binding] || "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+        metadata_id              = options[:metadata_id] || Samlr::Tools.uuid
+        sign_metadata            = options[:sign_metadata] || false
 
         # Mandatory
-        entity_id                 = options.fetch(:entity_id)
+        entity_id                = options.fetch(:entity_id)
 
         builder = Nokogiri::XML::Builder.new do |xml|
-          xml.EntityDescriptor("xmlns:md" => NS_MAP["md"], "entityID" => entity_id) do
+          xml.EntityDescriptor("xmlns:md" => NS_MAP["md"], "ID" => metadata_id, "entityID" => entity_id) do
             xml.doc.root.namespace = xml.doc.root.namespace_definitions.find { |ns| ns.prefix == "md" }
 
             xml["md"].SPSSODescriptor("protocolSupportEnumeration" => NS_MAP["samlp"]) do
@@ -33,9 +35,15 @@ module Samlr
           end
         end
 
-        builder.to_xml(COMPACT)
-      end
+        metadata = builder.doc
 
+        if sign_metadata
+          metadata_options = options.merge(namespaces: [])
+          metadata = ResponseBuilder.sign(metadata, metadata_id, metadata_options)
+        end
+
+        metadata.to_xml(COMPACT)
+      end
     end
   end
 end

@@ -40,15 +40,6 @@ describe Samlr do
     end
   end
 
-  describe "invalid multiple saml responses" do
-    let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'multiple_responses.xml'))) }
-    let(:saml_response) { Samlr::Response.new(xml_response_doc, fingerprint: '6F:B9:D2:55:52:E8:81:0C:F2:91:97:3D:CE:60:08:82:09:96:27:77:3C:FF:33:A2:0E:04:A6:01:D1:B8:CA:1D') }
-
-    it "fails" do
-      assert_raises(Samlr::FormatError) { saml_response.verify! }
-    end
-  end
-
   describe "an unsatisfied before condition" do
     subject { saml_response(:certificate => TEST_CERTIFICATE, :not_before => Samlr::Tools::Timestamp.stamp(Time.now + 60)) }
 

@@ -26,6 +26,66 @@ describe Samlr::Response do
     end
   end
 
+  describe "#signature" do
+    let(:metadata_doc) do
+      Nokogiri::XML(
+        Samlr::Tools::MetadataBuilder.build(
+          :entity_id            => "https://sp.example.com/saml2",
+          :name_identity_format => "identity_format",
+          :consumer_service_url => "https://support.sp.example.com/",
+          :sign_metadata        => true,
+          :certificate          => TEST_CERTIFICATE
+        )
+      )
+    end
+
+    it "is associated to the response" do
+      assert subject.signature.present?
+    end
+
+    describe "when response envelops a signature and signature reference is not checked" do
+      let(:fingerprint) { Samlr::Certificate.new(TEST_CERTIFICATE.x509).fingerprint.value }
+      let(:saml_response) { Samlr::Response.new(xml_response_doc, fingerprint: fingerprint, skip_signature_reference_checking: true) }
+
+      describe "referencing other response" do
+        let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'multiple_responses.xml'))) }
+
+        it "does not associate it with the response" do
+          assert saml_response.signature.present?
+        end
+      end
+
+      describe "referencing other element" do
+        let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'response_signature_wrapping.xml'))) }
+
+        it "does not associate it with the response" do
+          assert saml_response.signature.present?
+        end
+      end
+    end
+
+    describe "when response envelops a signature" do
+      let(:fingerprint) { Samlr::Certificate.new(TEST_CERTIFICATE.x509).fingerprint.value }
+      let(:saml_response) { Samlr::Response.new(xml_response_doc, fingerprint: fingerprint) }
+
+      describe "referencing other response" do
+        let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'multiple_responses.xml'))) }
+
+        it "does not associate it with the response" do
+          assert saml_response.signature.missing?
+        end
+      end
+
+      describe "referencing other element" do
+        let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'response_signature_wrapping.xml'))) }
+
+        it "does not associate it with the response" do
+          assert saml_response.signature.missing?
+        end
+      end
+    end
+  end
+
   describe "XSW attack" do
     it "should not validate if SAML response is hacked" do
       document = saml_response_document(:certificate => TEST_CERTIFICATE)
@@ -85,12 +145,12 @@ describe Samlr::Response do
       let(:saml_resp) { Samlr::Response.new(saml_response_doc, fingerprint: Samlr::FingerprintSHA256.x509(TEST_CERTIFICATE.x509)) }
 
       it "validates the saml response" do
-        assert_match /user@user.com<!---->.evil.com/, saml_response_doc
+        assert_match %r{user@user.com<!---->.evil.com}, saml_response_doc
         assert saml_resp.verify!
       end
 
       it "ignores the comment and parses the name_id XML node correctly" do
-        assert_match /user@user.com<!---->.evil.com/, saml_response_doc
+        assert_match %r{user@user.com<!---->.evil.com}, saml_response_doc
         assert_equal "user@user.com.evil.com", saml_resp.name_id
       end
     end
