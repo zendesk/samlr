@@ -1,3 +1,3 @@
 module Samlr
-  VERSION = "2.7.1.pre.2"
+  VERSION = "2.7.1"
 end

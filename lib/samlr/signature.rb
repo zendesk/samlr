@@ -17,13 +17,8 @@ module Samlr
       @options  = options
       @signature = nil
 
-      # TODO: This option exists only in a pre-release version to allow testing the feature; remove it from the final release
-      if options[:skip_signature_reference_checking]
-        @signature = @document.at("#{prefix}/ds:Signature", NS_MAP)
-      else
-        id = @document.at("#{prefix}", NS_MAP)&.attribute('ID')
-        @signature = @document.at("#{prefix}/ds:Signature/ds:SignedInfo/ds:Reference[@URI='##{id}']", NS_MAP)&.parent&.parent if id
-      end
+      id = @document.at("#{prefix}", NS_MAP)&.attribute('ID')
+      @signature = @document.at("#{prefix}/ds:Signature/ds:SignedInfo/ds:Reference[@URI='##{id}']", NS_MAP)&.parent&.parent if id
       @signature.remove if @signature # enveloped signatures only
 
       @fingerprint = if options[:fingerprint]

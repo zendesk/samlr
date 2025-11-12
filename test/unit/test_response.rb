@@ -43,27 +43,6 @@ describe Samlr::Response do
       assert subject.signature.present?
     end
 
-    describe "when response envelops a signature and signature reference is not checked" do
-      let(:fingerprint) { Samlr::Certificate.new(TEST_CERTIFICATE.x509).fingerprint.value }
-      let(:saml_response) { Samlr::Response.new(xml_response_doc, fingerprint: fingerprint, skip_signature_reference_checking: true) }
-
-      describe "referencing other response" do
-        let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'multiple_responses.xml'))) }
-
-        it "does not associate it with the response" do
-          assert saml_response.signature.present?
-        end
-      end
-
-      describe "referencing other element" do
-        let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'response_signature_wrapping.xml'))) }
-
-        it "does not associate it with the response" do
-          assert saml_response.signature.present?
-        end
-      end
-    end
-
     describe "when response envelops a signature" do
       let(:fingerprint) { Samlr::Certificate.new(TEST_CERTIFICATE.x509).fingerprint.value }
       let(:saml_response) { Samlr::Response.new(xml_response_doc, fingerprint: fingerprint) }
