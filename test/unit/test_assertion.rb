@@ -52,6 +52,22 @@ describe Samlr::Assertion do
     end
   end
 
+  describe "#signature" do
+    it "is associated to the assertion" do
+      assert subject.signature.present?
+    end
+
+    describe "when assertion envelops a signature referencing other element" do
+      let(:fingerprint) { Samlr::Certificate.new(TEST_CERTIFICATE.x509).fingerprint.value }
+      let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'assertion_signature_wrapping.xml'))) }
+      subject { Samlr::Response.new(xml_response_doc, fingerprint: fingerprint).assertion }
+
+      it "does not associate it with the assertion" do
+        assert subject.signature.missing?
+      end
+    end
+  end
+
   describe "#verify!" do
     let(:condition) do
       Class.new do

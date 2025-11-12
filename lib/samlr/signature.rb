@@ -15,10 +15,11 @@ module Samlr
       @document = original.dup
       @prefix   = prefix
       @options  = options
+      @signature = nil
 
-      if @signature = document.at("#{prefix}/ds:Signature", NS_MAP)
-        @signature.remove # enveloped signatures only
-      end
+      id = @document.at("#{prefix}", NS_MAP)&.attribute('ID')
+      @signature = @document.at("#{prefix}/ds:Signature/ds:SignedInfo/ds:Reference[@URI='##{id}']", NS_MAP)&.parent&.parent if id
+      @signature.remove if @signature # enveloped signatures only
 
       @fingerprint = if options[:fingerprint]
         Fingerprint.from_string(options[:fingerprint])
