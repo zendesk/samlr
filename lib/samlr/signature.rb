@@ -20,11 +20,11 @@ module Samlr
       # TODO: This option exists only in a pre-release version to allow testing the feature; remove it from the final release
       if options[:skip_signature_reference_checking]
         @signature = @document.at("#{prefix}/ds:Signature", NS_MAP)
+        @signature.remove if @signature # enveloped signatures only
       else
         id = @document.at("#{prefix}", NS_MAP)&.attribute('ID')
-        @signature = @document.at("#{prefix}/ds:Signature/ds:SignedInfo/ds:Reference[@URI='##{id}']", NS_MAP)&.parent&.parent if id
+        @signature = find_signature_for_element_id(id) if id
       end
-      @signature.remove if @signature # enveloped signatures only
 
       @fingerprint = if options[:fingerprint]
         Fingerprint.from_string(options[:fingerprint])
@@ -45,17 +45,30 @@ module Samlr
       raise SignatureError.new("No signature at #{prefix}/ds:Signature") unless present?
 
       verify_fingerprint! unless options[:skip_fingerprint]
-      verify_digests!
-      verify_signature!
+      if options[:skip_signature_reference_checking]
+        verify_digests!
+        verify_signature!
+      else
+        verify_signature!  # <- Do this first while signature is still available
+        verify_digests!    # <- This can remove the signature
+      end
 
       true
     end
 
     def references
       @references ||= [].tap do |refs|
-        original.xpath("#{prefix}/ds:Signature/ds:SignedInfo/ds:Reference[@URI]", NS_MAP).each do |ref|
-          refs << Samlr::Reference.new(ref)
+        if options[:skip_signature_reference_checking]
+          original.xpath("#{prefix}/ds:Signature/ds:SignedInfo/ds:Reference[@URI]", NS_MAP).each do |ref|
+            refs << Samlr::Reference.new(ref)
+          end
+        else
+          refs_xpath = @signature.xpath("./ds:SignedInfo/ds:Reference[@URI]", NS_MAP)
+          refs_xpath.each do |ref|
+            refs << Samlr::Reference.new(ref)
+          end
         end
+
       end
     end
 
@@ -72,24 +85,58 @@ module Samlr
 
     # Tests that the document content has not been edited
     def verify_digests!
-      references.each do |reference|
-        node    = referenced_node(reference.uri)
-        canoned = node.canonicalize(C14N, reference.namespaces)
-        digest  = reference.digest_method.digest(canoned)
+      if options[:skip_signature_reference_checking]
+        references.each do |reference|
+          node    = referenced_node(reference.uri)
+          canoned = node.canonicalize(C14N, reference.namespaces)
+          digest  = reference.digest_method.digest(canoned)
 
-        if digest != reference.decoded_digest_value
-          raise SignatureError.new("Reference validation error: Digest mismatch for #{reference.uri}")
+          if digest != reference.decoded_digest_value
+            raise SignatureError.new("Reference validation error: Digest mismatch for #{reference.uri}")
+          end
+        end
+      else
+        # Check if we need to remove an enveloped signature
+        if @signature && !@signature_removed
+          signed_element = @document.at("#{prefix}", NS_MAP)
+          is_enveloped = signed_element&.xpath(".//ds:Signature", NS_MAP)&.include?(@signature)
+
+          # Remove enveloped signature for digest verification
+          if is_enveloped
+            @signature.remove
+            @signature_removed = true
+          end
+        end
+
+        references.each do |reference|
+          node    = referenced_node(reference.uri)
+          canoned = node.canonicalize(C14N, reference.namespaces)
+          digest  = reference.digest_method.digest(canoned)
+
+          if digest != reference.decoded_digest_value
+            raise SignatureError.new("Reference validation error: Digest mismatch for #{reference.uri}")
+          end
         end
       end
     end
 
     # Tests correctness of the signature (and hence digests)
     def verify_signature!
-      node      = original.at("#{prefix}/ds:Signature/ds:SignedInfo", NS_MAP)
-      canoned   = node.canonicalize(C14N)
-
-      unless x509.public_key.verify(signature_method.new, decoded_signature_value, canoned)
-        raise SignatureError.new("Signature validation error: Possible canonicalization mismatch", "This canonicalizer returns #{canoned}")
+      if options[:skip_signature_reference_checking]
+        node = original.at("#{prefix}/ds:Signature/ds:SignedInfo", NS_MAP)
+        canoned = node.canonicalize(C14N)
+        unless x509.public_key.verify(signature_method.new, decoded_signature_value, canoned)
+          raise SignatureError.new("Signature validation error: Possible canonicalization mismatch", "This canonicalizer returns #{canoned}")
+        end
+      else
+        # Cache the canonicalized SignedInfo to avoid DOM issues with multiple verifications
+        unless @canonicalized_signed_info
+          node = @signature.at("./ds:SignedInfo", NS_MAP)
+          @canonicalized_signed_info = node.canonicalize(C14N)
+        end
+        unless x509.public_key.verify(signature_method.new, decoded_signature_value, @canonicalized_signed_info)
+          raise SignatureError.new("Signature validation error: Possible canonicalization mismatch", "This canonicalizer returns #{@canonicalized_signed_info}")
+        end
       end
     end
 
@@ -135,5 +182,13 @@ module Samlr
     def certificate_node
       signature.at("./ds:KeyInfo/ds:X509Data/ds:X509Certificate", NS_MAP)
     end
+
+    def find_signature_for_element_id(element_id)
+      return nil unless element_id
+
+      return @document.at_xpath("//ds:Signature[ds:SignedInfo/ds:Reference[@URI='##{element_id}']]", NS_MAP)
+
+    end
+
   end
 end

@@ -62,7 +62,7 @@ describe Samlr::Assertion do
       let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'assertion_signature_wrapping.xml'))) }
       subject { Samlr::Response.new(xml_response_doc, fingerprint: fingerprint, skip_signature_reference_checking: true).assertion }
 
-      it "does not associate it with the assertion" do
+      it "errantly associates it with the assertion" do
         assert subject.signature.present?
       end
     end
@@ -74,6 +74,24 @@ describe Samlr::Assertion do
 
       it "does not associate it with the assertion" do
         assert subject.signature.missing?
+      end
+    end
+
+    describe "is located in the response (detached)" do
+      let(:fingerprint) { Samlr::Certificate.new(TEST_CERTIFICATE.x509).fingerprint.value }
+      let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'sample_response_detached.xml'))) }
+      describe "when signature reference is not checked" do
+        subject { Samlr::Response.new(xml_response_doc, fingerprint: fingerprint, skip_signature_reference_checking: true).assertion }
+        it "is not associated to the assertion" do
+          refute subject.signature.present?
+        end
+      end
+
+      describe "when signature reference is checked" do
+        subject { Samlr::Response.new(xml_response_doc, fingerprint: fingerprint).assertion }
+        it "is associated to the assertion" do
+          assert subject.signature.present?
+        end
       end
     end
   end

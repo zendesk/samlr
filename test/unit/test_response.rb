@@ -50,7 +50,7 @@ describe Samlr::Response do
       describe "referencing other response" do
         let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'multiple_responses.xml'))) }
 
-        it "does not associate it with the response" do
+        it "errantly associates it with the response" do
           assert saml_response.signature.present?
         end
       end
@@ -58,7 +58,7 @@ describe Samlr::Response do
       describe "referencing other element" do
         let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'response_signature_wrapping.xml'))) }
 
-        it "does not associate it with the response" do
+        it "errantly associates it with the response" do
           assert saml_response.signature.present?
         end
       end
