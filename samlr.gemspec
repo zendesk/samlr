@@ -17,8 +17,14 @@ Gem::Specification.new "samlr", Samlr::VERSION do |s|
 
   s.add_development_dependency("rake")
   s.add_development_dependency("bundler")
-  s.add_development_dependency("minitest")
   s.add_development_dependency("bump")
+
+  if RUBY_VERSION >= "3.2"
+    s.add_development_dependency("minitest", "~> 6.0")
+    s.add_development_dependency("minitest-mock")
+  else
+    s.add_development_dependency("minitest", "~> 5.0")
+  end
 
   s.executables << "samlr"
 end
