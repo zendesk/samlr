@@ -9,18 +9,13 @@ Gem::Specification.new "samlr", Samlr::VERSION do |s|
   s.files       = `git ls-files lib bin config README.md LICENSE`.split("\n")
   s.license     = "Apache License Version 2.0"
 
-  s.required_ruby_version = ">= 2.7"
+  s.required_ruby_version = ">= 3.2"
 
   s.add_dependency("base64")
   s.add_dependency("cgi")
   s.add_dependency("logger")
   s.add_dependency("nokogiri", ">= 1.5.5")
   s.add_dependency("uuidtools", ">= 2.1.3")
-
-  s.add_development_dependency("rake")
-  s.add_development_dependency("bundler")
-  s.add_development_dependency("minitest", "~> 5")
-  s.add_development_dependency("bump")
 
   s.executables << "samlr"
 end
