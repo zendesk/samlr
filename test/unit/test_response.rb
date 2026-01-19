@@ -85,12 +85,12 @@ describe Samlr::Response do
       let(:saml_resp) { Samlr::Response.new(saml_response_doc, fingerprint: Samlr::FingerprintSHA256.x509(TEST_CERTIFICATE.x509)) }
 
       it "validates the saml response" do
-        assert_match /user@user.com<!---->.evil.com/, saml_response_doc
+        assert_match(/user@user.com<!---->.evil.com/, saml_response_doc)
         assert saml_resp.verify!
       end
 
       it "ignores the comment and parses the name_id XML node correctly" do
-        assert_match /user@user.com<!---->.evil.com/, saml_response_doc
+        assert_match(/user@user.com<!---->.evil.com/, saml_response_doc)
         assert_equal "user@user.com.evil.com", saml_resp.name_id
       end
     end
