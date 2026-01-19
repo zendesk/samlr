@@ -57,8 +57,8 @@ describe Samlr::LogoutRequest do
         request.body
       end
 
-      body.must_include '<saml:NameID Format="some format">'
-      stderr.must_equal "[DEPRECATION] options[:name_id_format] is deprecated. Please use options[:name_id_options][:format] instead\n"
+      assert_includes body, '<saml:NameID Format="some format">'
+      assert_equal "[DEPRECATION] options[:name_id_format] is deprecated. Please use options[:name_id_options][:format] instead\n", stderr
     end
 
     it "understands [:name_id_options][:format]" do
