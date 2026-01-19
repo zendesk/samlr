@@ -7,3 +7,4 @@ gem "byebug", platforms: :mri
 gem "minitest", "~> 6"
 gem "minitest-mock"
 gem "rake"
+gem "standard"

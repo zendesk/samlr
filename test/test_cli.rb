@@ -1,13 +1,13 @@
 require_relative "test_helper"
 
 describe "CLI" do
-  def sh(command, options={})
+  def sh(command, options = {})
     result = Bundler.with_unbundled_env { `#{command}` }
     raise "#{options[:fail] ? "SUCCESS" : "FAIL"} #{command}\n#{result}" if $?.success? == !!options[:fail]
     result
   end
 
-  def samlr(arguments, options={})
+  def samlr(arguments, options = {})
     sh("ruby -Ilib -r bundler/setup ./bin/samlr #{arguments}", options)
   end
 
@@ -23,7 +23,7 @@ describe "CLI" do
 
   it "shows version with --version" do
     out = samlr("--version")
-    assert_match(/^#{Regexp.escape(Samlr::VERSION)}$/, out)
+    assert_match(/^#{Regexp.escape(Samlr::VERSION)}$/o, out)
   end
 
   it "fails with argument" do

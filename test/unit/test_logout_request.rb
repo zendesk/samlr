@@ -3,8 +3,8 @@ require_relative "../test_helper"
 describe Samlr::LogoutRequest do
   let(:options) {
     {
-      :issuer => "https://sp.example.com/saml2",
-      :name_id => "test@test.com"
+      issuer: "https://sp.example.com/saml2",
+      name_id: "test@test.com"
     }
   }
 
@@ -36,7 +36,7 @@ describe Samlr::LogoutRequest do
   describe "#url" do
     it "returns a valid URL" do
       @request.stub(:param, "hello") do
-        assert_equal("https://foo.com/?SAMLRequest=hello&foo=bar", @request.url("https://foo.com/", :foo => "bar"))
+        assert_equal("https://foo.com/?SAMLRequest=hello&foo=bar", @request.url("https://foo.com/", foo: "bar"))
       end
     end
   end
@@ -51,7 +51,7 @@ describe Samlr::LogoutRequest do
     end
 
     it "understands name_id_format" do
-      options.merge!(:name_id_format => "some format")
+      options[:name_id_format] = "some format"
       body, stderr = capture_stderr do
         request = Samlr::LogoutRequest.new(nil, options)
         request.body
@@ -62,21 +62,21 @@ describe Samlr::LogoutRequest do
     end
 
     it "understands [:name_id_options][:format]" do
-      options.merge!(:name_id_options => {:format => "some format"})
+      options[:name_id_options] = {format: "some format"}
       request = Samlr::LogoutRequest.new(nil, options)
 
       assert_match(/<saml:NameID Format="some format">/, request.body)
     end
 
     it "understands NameQualifier" do
-      options.merge!(:name_id_options => {:name_qualifier => "Some name qualifier"})
+      options[:name_id_options] = {name_qualifier: "Some name qualifier"}
       request = Samlr::LogoutRequest.new(nil, options)
 
       assert_match(/NameQualifier="Some name qualifier"/, request.body)
     end
 
     it "understands SPNameQualifier" do
-      options.merge!(:name_id_options => {:spname_qualifier => "Some SPName qualifier"})
+      options[:name_id_options] = {spname_qualifier: "Some SPName qualifier"}
       request = Samlr::LogoutRequest.new(nil, options)
 
       assert_match(/SPNameQualifier="Some SPName qualifier"/, request.body)
@@ -90,11 +90,11 @@ describe Samlr::LogoutRequest do
     end
 
     describe "#id" do
-      it 'returns the correct value if present' do
+      it "returns the correct value if present" do
         assert_equal Nokogiri::XML(@sample_doc).xpath("//samlp:LogoutRequest").attr("ID").to_s, @request_with_data.id
       end
 
-      it 'raises error if no data' do
+      it "raises error if no data" do
         assert_raises(Samlr::NoDataError) { @request.id }
       end
     end

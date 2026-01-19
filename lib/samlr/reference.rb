@@ -6,7 +6,7 @@ module Samlr
 
     def initialize(node)
       @node = node
-      @uri  = node["URI"][1..-1]
+      @uri = node["URI"][1..]
     end
 
     def digest_method
@@ -14,7 +14,7 @@ module Samlr
     end
 
     def digest_value
-      @digest_value  ||= node.at("./ds:DigestValue", NS_MAP).text
+      @digest_value ||= node.at("./ds:DigestValue", NS_MAP).text
     end
 
     def decoded_digest_value
@@ -27,6 +27,5 @@ module Samlr
         attribute ? attribute.split(" ") : []
       end
     end
-
   end
 end

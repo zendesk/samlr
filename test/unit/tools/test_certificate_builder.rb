@@ -15,7 +15,7 @@ describe Samlr::Tools::CertificateBuilder do
 
   describe "serialization" do
     before do
-      @path  = Dir.tmpdir
+      @path = Dir.tmpdir
       Dir.glob("#{@path}/*.pem").map { |f| File.unlink(f) }
     end
 
@@ -36,6 +36,5 @@ describe Samlr::Tools::CertificateBuilder do
         end
       end
     end
-
   end
 end

@@ -3,7 +3,7 @@ require "openssl"
 
 describe Samlr::Signature do
   before do
-    @response  = fixed_saml_response
+    @response = fixed_saml_response
     @signature = @response.signature
   end
 
@@ -42,12 +42,10 @@ describe Samlr::Signature do
       end
 
       it "should raise" do
-        begin
-          @signature.send(:verify_digests!)
-          flunk("Excepted to raise due to duplicate elements")
-        rescue Samlr::SignatureError => e
-          assert_equal "Reference validation error: Invalid element references", e.message
-        end
+        @signature.send(:verify_digests!)
+        flunk("Excepted to raise due to duplicate elements")
+      rescue Samlr::SignatureError => e
+        assert_equal "Reference validation error: Invalid element references", e.message
       end
     end
   end

@@ -15,9 +15,9 @@ describe Samlr::Fingerprint do
 
   describe "#==" do
     it "compares two fingerprints" do
-      assert (Samlr::FingerprintSHA256.new("aa:33") == Samlr::FingerprintSHA256.new("AA:33"))
-      assert (Samlr::FingerprintSHA256.new("aa:33") != Samlr::FingerprintSHA256.new("AA:34"))
-      assert (Samlr::FingerprintSHA256.new("") != Samlr::FingerprintSHA256.new(""))
+      assert(Samlr::FingerprintSHA256.new("aa:33") == Samlr::FingerprintSHA256.new("AA:33"))
+      assert(Samlr::FingerprintSHA256.new("aa:33") != Samlr::FingerprintSHA256.new("AA:34"))
+      assert(Samlr::FingerprintSHA256.new("") != Samlr::FingerprintSHA256.new(""))
     end
   end
 
@@ -36,13 +36,11 @@ describe Samlr::Fingerprint do
     end
 
     it "stores fingerprints on the exception" do
-      begin
-        Samlr::FingerprintSHA256.new("aa:34").compare!(Samlr::FingerprintSHA256.new("bb:35"))
-        flunk "Exception expected"
-      rescue Samlr::FingerprintError => e
-        assert_equal "Fingerprint mismatch", e.message
-        assert_equal "AA:34 vs. BB:35", e.details
-      end
+      Samlr::FingerprintSHA256.new("aa:34").compare!(Samlr::FingerprintSHA256.new("bb:35"))
+      flunk "Exception expected"
+    rescue Samlr::FingerprintError => e
+      assert_equal "Fingerprint mismatch", e.message
+      assert_equal "AA:34 vs. BB:35", e.details
     end
 
     it "doesn't raise when fingerprints are equal" do
@@ -52,7 +50,7 @@ describe Samlr::Fingerprint do
 
   describe ".x509" do
     it "generates a SHA256 fingerprint" do
-      sha256 = OpenSSL::Digest::SHA256.new.hexdigest(TEST_CERTIFICATE.x509.to_der).scan(/../).join(":").upcase
+      sha256 = OpenSSL::Digest.new("SHA256").hexdigest(TEST_CERTIFICATE.x509.to_der).scan(/../).join(":").upcase
 
       assert_equal sha256, Samlr::FingerprintSHA256.x509(TEST_CERTIFICATE.x509)
     end

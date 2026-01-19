@@ -17,30 +17,30 @@ describe Samlr do
     let(:metadata_doc) do
       Nokogiri::XML(
         Samlr::Tools::MetadataBuilder.build(
-          :entity_id            => "https://sp.example.com/saml2",
-          :name_identity_format => "identity_format",
-          :consumer_service_url => "https://support.sp.example.com/",
-          :sign_metadata        => true,
-          :certificate          => TEST_CERTIFICATE
+          entity_id: "https://sp.example.com/saml2",
+          name_identity_format: "identity_format",
+          consumer_service_url: "https://support.sp.example.com/",
+          sign_metadata: true,
+          certificate: TEST_CERTIFICATE
         )
       )
     end
     let(:response_doc) do
       Nokogiri::XML(
         Samlr::Tools::ResponseBuilder.build(
-          :destination     => "https://example.org/saml/endpoint",
-          :in_response_to  => Samlr::Tools.uuid,
+          destination: "https://example.org/saml/endpoint",
+          in_response_to: Samlr::Tools.uuid,
           # The attacker crafts their own <Assertion>, filling in any identity/attributes.
-          :name_id         => "evil@crack.it",
-          :audience        => "example.org",
-          :not_on_or_after => Samlr::Tools::Timestamp.stamp(Time.now + 60),
-          :not_before      => Samlr::Tools::Timestamp.stamp(Time.now - 60),
-          :response_id     => Samlr::Tools.uuid,
-          :skip_conditions => true,
+          name_id: "evil@crack.it",
+          audience: "example.org",
+          not_on_or_after: Samlr::Tools::Timestamp.stamp(Time.now + 60),
+          not_before: Samlr::Tools::Timestamp.stamp(Time.now - 60),
+          response_id: Samlr::Tools.uuid,
+          skip_conditions: true,
           # This Assertion is not signed - meaning the attacker can put anything they want for the user, roles, etc.
-          :sign_assertion  => false,
-          :sign_response   => false,
-          :certificate     => TEST_CERTIFICATE
+          sign_assertion: false,
+          sign_response: false,
+          certificate: TEST_CERTIFICATE
         )
       )
     end
@@ -57,7 +57,7 @@ describe Samlr do
       # The signature, instead of referencing the Response, references the EntityDescriptor embedded somewhere in the Response.
       response_doc.at("/samlp:Response/samlp:Status/samlp:StatusCode").add_next_sibling("<samlp:StatusDetail>")
       response_doc.at("/samlp:Response/samlp:Status/samlp:StatusDetail").add_child(metadata_entity_descriptor_doc)
-			# check test/fixtures/response_signature_wrapping.xml to see an example message
+      # check test/fixtures/response_signature_wrapping.xml to see an example message
       crafted_saml_response = Samlr::Response.new(Base64.encode64(response_doc.to_xml(Samlr::COMPACT)), fingerprint: fingerprint)
 
       # The parser detects that the Signature references different node and rejects the Response.
@@ -78,7 +78,7 @@ describe Samlr do
 
       # The signature, instead of referencing the Assertion, references the EntityDescriptor embedded somewhere in the Assertion.
       assertion_doc.at("./saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData", Samlr::NS_MAP).add_child(metadata_entity_descriptor_doc)
-			# check test/fixtures/assertion_signature_wrapping.xml to see an example message
+      # check test/fixtures/assertion_signature_wrapping.xml to see an example message
       crafted_saml_response = Samlr::Response.new(Base64.encode64(response_doc.to_xml(Samlr::COMPACT)), fingerprint: fingerprint)
 
       # The parser detects that the Signature references different node and rejects the Response.

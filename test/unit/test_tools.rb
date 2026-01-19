@@ -2,7 +2,6 @@ require File.expand_path("test/test_helper")
 require "openssl"
 
 describe Samlr::Tools do
-
   describe "::canonicalize" do
     before do
       @fixture = fixed_saml_response.document.to_xml
@@ -10,7 +9,7 @@ describe Samlr::Tools do
 
     it "should namespace the SignedInfo element" do
       path = "/samlp:Response/ds:Signature/ds:SignedInfo"
-      assert_match '<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">', Samlr::Tools.canonicalize(@fixture, { :path => path })
+      assert_match '<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">', Samlr::Tools.canonicalize(@fixture, {path: path})
     end
   end
 
@@ -21,12 +20,12 @@ describe Samlr::Tools do
   end
 
   describe "::algorithm" do
-    [ 1, 384, 512 ].each do |i|
+    [1, 384, 512].each do |i|
       describe "when fed SHA#{i}" do
         subject { "#sha#{i}" }
 
         it "should return the corresponding implementation" do
-          assert_equal eval("OpenSSL::Digest::SHA#{i}"), Samlr::Tools.algorithm(subject)
+          assert_equal OpenSSL::Digest.const_get("SHA#{i}"), Samlr::Tools.algorithm(subject)
         end
       end
     end
@@ -55,36 +54,36 @@ describe Samlr::Tools do
   end
 
   describe "::validate" do
-    subject { saml_response_document(:certificate => TEST_CERTIFICATE) }
+    subject { saml_response_document(certificate: TEST_CERTIFICATE) }
 
     it "returns true for valid documents" do
-      assert Samlr::Tools.validate(:document => subject)
+      assert Samlr::Tools.validate(document: subject)
     end
 
     it "returns false for invalid documents" do
       mangled = subject.gsub("Assertion", "AyCaramba")
-      refute Samlr::Tools.validate(:document => mangled)
+      refute Samlr::Tools.validate(document: mangled)
     end
 
     it "does not change the working directory" do
       path = Dir.pwd
-      assert Samlr::Tools.validate(:document => subject)
+      assert Samlr::Tools.validate(document: subject)
       assert_equal path, Dir.pwd
     end
   end
 
   describe "::validate!" do
-    subject { saml_response_document(:certificate => TEST_CERTIFICATE) }
+    subject { saml_response_document(certificate: TEST_CERTIFICATE) }
 
     it "returns true for valid documents" do
-      assert Samlr::Tools.validate!(:document => subject)
+      assert Samlr::Tools.validate!(document: subject)
     end
 
     it "raises for invalid documents" do
       mangled = subject.gsub("Assertion", "AyCaramba")
 
       begin
-        Samlr::Tools.validate!(:document => mangled)
+        Samlr::Tools.validate!(document: mangled)
         flunk "Errors expected"
       rescue Samlr::FormatError => e
         assert_equal "Schema validation failed", e.message
@@ -93,7 +92,7 @@ describe Samlr::Tools do
 
     it "does not change the working directory" do
       path = Dir.pwd
-      assert Samlr::Tools.validate!(:document => subject)
+      assert Samlr::Tools.validate!(document: subject)
       assert_equal path, Dir.pwd
     end
   end

@@ -6,8 +6,8 @@ describe Samlr::Assertion do
 
   describe "#skip_conditions?" do
     it "reflects the passed options" do
-      assert Samlr::Assertion.new(nil, :skip_conditions => true).send(:skip_conditions?)
-      refute Samlr::Assertion.new(nil, :skip_conditions => false).send(:skip_conditions?)
+      assert Samlr::Assertion.new(nil, skip_conditions: true).send(:skip_conditions?)
+      refute Samlr::Assertion.new(nil, skip_conditions: false).send(:skip_conditions?)
     end
   end
 
@@ -27,7 +27,7 @@ describe Samlr::Assertion do
     end
 
     it "turns multiple attribute values into an array" do
-      assert_equal subject.attributes["things"].sort, [ "one", "two", "three" ].sort
+      assert_equal subject.attributes["things"].sort, ["one", "two", "three"].sort
     end
   end
 
@@ -44,10 +44,10 @@ describe Samlr::Assertion do
   end
 
   describe "#name_id_options" do
-    subject { fixed_saml_response(:name_qualifier => 'portal-happyservice-idp', :sp_name_qualifier => 'happyservice.zendesk.com').assertion }
+    subject { fixed_saml_response(name_qualifier: "portal-happyservice-idp", sp_name_qualifier: "happyservice.zendesk.com").assertion }
 
     it "returns the options for the NameID element" do
-      expected = {"Format"=>"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress", "NameQualifier"=>"portal-happyservice-idp", "SPNameQualifier"=>"happyservice.zendesk.com"}
+      expected = {"Format" => "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress", "NameQualifier" => "portal-happyservice-idp", "SPNameQualifier" => "happyservice.zendesk.com"}
       assert_equal expected, subject.name_id_options
     end
   end
@@ -59,7 +59,7 @@ describe Samlr::Assertion do
 
     describe "when assertion envelops a signature referencing other element" do
       let(:fingerprint) { Samlr::Certificate.new(TEST_CERTIFICATE.x509).fingerprint.value }
-      let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'assertion_signature_wrapping.xml'))) }
+      let(:xml_response_doc) { Base64.encode64(File.read(File.join(".", "test", "fixtures", "assertion_signature_wrapping.xml"))) }
       subject { Samlr::Response.new(xml_response_doc, fingerprint: fingerprint).assertion }
 
       it "does not associate it with the assertion" do
@@ -69,7 +69,7 @@ describe Samlr::Assertion do
 
     describe "is located in the response (detached)" do
       let(:fingerprint) { Samlr::Certificate.new(TEST_CERTIFICATE.x509).fingerprint.value }
-      let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'sample_response_detached.xml'))) }
+      let(:xml_response_doc) { Base64.encode64(File.read(File.join(".", "test", "fixtures", "sample_response_detached.xml"))) }
       subject { Samlr::Response.new(xml_response_doc, fingerprint: fingerprint).assertion }
       it "is associated to the assertion" do
         assert subject.signature.present?
@@ -81,7 +81,7 @@ describe Samlr::Assertion do
     let(:condition) do
       Class.new do
         def verify!
-          raise Samlr::ConditionsError, 'error'
+          raise Samlr::ConditionsError, "error"
         end
       end
     end

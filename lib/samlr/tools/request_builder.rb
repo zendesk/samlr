@@ -2,15 +2,14 @@ require "nokogiri"
 
 module Samlr
   module Tools
-
     # Use this for building the SAML auth request XML
     module RequestBuilder
       def self.build(options = {})
         consumer_service_url = options[:consumer_service_url]
-        issuer               = options[:issuer]
+        issuer = options[:issuer]
         name_identity_format = options[:name_identity_format]
-        allow_create         = options[:allow_create] || "true"
-        authn_context        = options[:authn_context]
+        allow_create = options[:allow_create] || "true"
+        authn_context = options[:authn_context]
 
         builder = Nokogiri::XML::Builder.new do |xml|
           xml.AuthnRequest("xmlns:samlp" => NS_MAP["samlp"], "xmlns:saml" => NS_MAP["saml"], "ID" => Samlr::Tools.uuid, "IssueInstant" => Samlr::Tools::Timestamp.stamp, "Version" => "2.0") do
@@ -38,7 +37,6 @@ module Samlr
 
         builder.to_xml(COMPACT)
       end
-
     end
   end
 end

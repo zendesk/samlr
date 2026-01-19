@@ -1,7 +1,6 @@
 require File.expand_path("test/test_helper")
 
 describe Samlr::Response do
-
   subject { fixed_saml_response }
 
   describe "#name_id" do
@@ -14,8 +13,8 @@ describe Samlr::Response do
 
   describe "#attributes" do
     it "delegates to the assertion" do
-      subject.assertion.stub(:attributes, { :name => "george" }) do
-        assert_equal({ :name => "george" }, subject.attributes)
+      subject.assertion.stub(:attributes, {name: "george"}) do
+        assert_equal({name: "george"}, subject.attributes)
       end
     end
   end
@@ -30,11 +29,11 @@ describe Samlr::Response do
     let(:metadata_doc) do
       Nokogiri::XML(
         Samlr::Tools::MetadataBuilder.build(
-          :entity_id            => "https://sp.example.com/saml2",
-          :name_identity_format => "identity_format",
-          :consumer_service_url => "https://support.sp.example.com/",
-          :sign_metadata        => true,
-          :certificate          => TEST_CERTIFICATE
+          entity_id: "https://sp.example.com/saml2",
+          name_identity_format: "identity_format",
+          consumer_service_url: "https://support.sp.example.com/",
+          sign_metadata: true,
+          certificate: TEST_CERTIFICATE
         )
       )
     end
@@ -48,7 +47,7 @@ describe Samlr::Response do
       let(:saml_response) { Samlr::Response.new(xml_response_doc, fingerprint: fingerprint) }
 
       describe "referencing other response" do
-        let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'multiple_responses.xml'))) }
+        let(:xml_response_doc) { Base64.encode64(File.read(File.join(".", "test", "fixtures", "multiple_responses.xml"))) }
 
         it "does not associate it with the response" do
           assert saml_response.signature.missing?
@@ -56,7 +55,7 @@ describe Samlr::Response do
       end
 
       describe "referencing other element" do
-        let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'response_signature_wrapping.xml'))) }
+        let(:xml_response_doc) { Base64.encode64(File.read(File.join(".", "test", "fixtures", "response_signature_wrapping.xml"))) }
 
         it "does not associate it with the response" do
           assert saml_response.signature.missing?
@@ -67,7 +66,7 @@ describe Samlr::Response do
 
   describe "XSW attack" do
     it "should not validate if SAML response is hacked" do
-      document = saml_response_document(:certificate => TEST_CERTIFICATE)
+      document = saml_response_document(certificate: TEST_CERTIFICATE)
 
       modified_document = Nokogiri::XML(document)
 
@@ -76,22 +75,22 @@ describe Samlr::Response do
       response_signature = modified_document.xpath("/samlp:Response/ds:Signature", Samlr::NS_MAP).first
 
       extensions = Nokogiri::XML::Node.new "Extensions", modified_document
-      extensions << original_assertion.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML)
+      extensions << original_assertion.to_xml(save_with: Nokogiri::XML::Node::SaveOptions::AS_XML)
       response_signature.add_next_sibling(extensions)
-      response_signature.remove()
+      response_signature.remove
 
       modified_document.xpath("/samlp:Response/samlp:Extensions/saml:Assertion/ds:Signature", Samlr::NS_MAP).remove
-      modified_document.xpath("/samlp:Response/saml:Assertion/saml:Subject/saml:NameID", Samlr::NS_MAP).first.content="evil@example.org"
+      modified_document.xpath("/samlp:Response/saml:Assertion/saml:Subject/saml:NameID", Samlr::NS_MAP).first.content = "evil@example.org"
       modified_document.xpath("/samlp:Response/saml:Assertion", Samlr::NS_MAP).first["ID"] = "evil_id"
       assert_raises(Samlr::FormatError) do
-        response = Samlr::Response.new(modified_document.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML), {:certificate => TEST_CERTIFICATE.x509})
+        response = Samlr::Response.new(modified_document.to_xml(save_with: Nokogiri::XML::Node::SaveOptions::AS_XML), {certificate: TEST_CERTIFICATE.x509})
         response.verify!
       end
     end
   end
 
   describe ".parse" do
-    before { @document = saml_response_document(:certificate => TEST_CERTIFICATE) }
+    before { @document = saml_response_document(certificate: TEST_CERTIFICATE) }
 
     describe "when given a raw XML response" do
       it "constructs and XML document" do
@@ -116,7 +115,7 @@ describe Samlr::Response do
     # https://duo.com/blog/duo-finds-saml-vulnerabilities-affecting-multiple-implementations
     describe "XML nodes comment attack" do
       let(:saml_response_doc) do
-        saml_response_document(:certificate => TEST_CERTIFICATE, name_id: "user@user.com.evil.com").tap do |doc|
+        saml_response_document(certificate: TEST_CERTIFICATE, name_id: "user@user.com.evil.com").tap do |doc|
           doc.gsub!("user@user.com.evil.com", "user@user.com<!---->.evil.com")
         end
       end
@@ -134,10 +133,9 @@ describe Samlr::Response do
       end
     end
 
-
     describe "when given a malformed XML response" do
-      subject { saml_response_document(:certificate => TEST_CERTIFICATE).gsub("Assertion", "AyCaramba") }
-      after   { Samlr.validation_mode = :reject }
+      subject { saml_response_document(certificate: TEST_CERTIFICATE).gsub("Assertion", "AyCaramba") }
+      after { Samlr.validation_mode = :reject }
 
       describe "and Samlr.validation_mode == :log" do
         before { Samlr.validation_mode = :log }

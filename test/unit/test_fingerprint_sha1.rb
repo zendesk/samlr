@@ -15,9 +15,9 @@ describe Samlr::FingerprintSHA1 do
 
   describe "#==" do
     it "compares two fingerprints" do
-      assert (Samlr::FingerprintSHA1.new("aa:33") == Samlr::FingerprintSHA1.new("AA:33"))
-      assert (Samlr::FingerprintSHA1.new("aa:33") != Samlr::FingerprintSHA1.new("AA:34"))
-      assert (Samlr::FingerprintSHA1.new("") != Samlr::FingerprintSHA1.new(""))
+      assert(Samlr::FingerprintSHA1.new("aa:33") == Samlr::FingerprintSHA1.new("AA:33"))
+      assert(Samlr::FingerprintSHA1.new("aa:33") != Samlr::FingerprintSHA1.new("AA:34"))
+      assert(Samlr::FingerprintSHA1.new("") != Samlr::FingerprintSHA1.new(""))
     end
   end
 
@@ -36,13 +36,11 @@ describe Samlr::FingerprintSHA1 do
     end
 
     it "stores fingerprints on the exception" do
-      begin
-        Samlr::FingerprintSHA1.new("aa:34").compare!(Samlr::FingerprintSHA1.new("bb:35"))
-        flunk "Exception expected"
-      rescue Samlr::FingerprintError => e
-        assert_equal "Fingerprint mismatch", e.message
-        assert_equal "AA:34 vs. BB:35", e.details
-      end
+      Samlr::FingerprintSHA1.new("aa:34").compare!(Samlr::FingerprintSHA1.new("bb:35"))
+      flunk "Exception expected"
+    rescue Samlr::FingerprintError => e
+      assert_equal "Fingerprint mismatch", e.message
+      assert_equal "AA:34 vs. BB:35", e.details
     end
 
     it "doesn't raise when fingerprints are equal" do
@@ -52,7 +50,7 @@ describe Samlr::FingerprintSHA1 do
 
   describe ".x509" do
     it "generates a SHA1 fingerprint" do
-      sha1 = OpenSSL::Digest::SHA1.new.hexdigest(TEST_CERTIFICATE.x509.to_der).scan(/../).join(":").upcase
+      sha1 = OpenSSL::Digest.new("SHA1").hexdigest(TEST_CERTIFICATE.x509.to_der).scan(/../).join(":").upcase
 
       assert_equal sha1, Samlr::FingerprintSHA1.x509(TEST_CERTIFICATE.x509)
     end
