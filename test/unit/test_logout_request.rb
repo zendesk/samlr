@@ -65,21 +65,21 @@ describe Samlr::LogoutRequest do
       options.merge!(:name_id_options => {:format => "some format"})
       request = Samlr::LogoutRequest.new(nil, options)
 
-      assert_match /<saml:NameID Format="some format">/, request.body
+      assert_match(/<saml:NameID Format="some format">/, request.body)
     end
 
     it "understands NameQualifier" do
       options.merge!(:name_id_options => {:name_qualifier => "Some name qualifier"})
       request = Samlr::LogoutRequest.new(nil, options)
 
-      assert_match /NameQualifier="Some name qualifier"/, request.body
+      assert_match(/NameQualifier="Some name qualifier"/, request.body)
     end
 
     it "understands SPNameQualifier" do
       options.merge!(:name_id_options => {:spname_qualifier => "Some SPName qualifier"})
       request = Samlr::LogoutRequest.new(nil, options)
 
-      assert_match /SPNameQualifier="Some SPName qualifier"/, request.body
+      assert_match(/SPNameQualifier="Some SPName qualifier"/, request.body)
     end
   end
 

@@ -23,7 +23,7 @@ describe "CLI" do
 
   it "shows version with --version" do
     out = samlr("--version")
-    assert_match /^#{Regexp.escape(Samlr::VERSION)}$/, out
+    assert_match(/^#{Regexp.escape(Samlr::VERSION)}$/, out)
   end
 
   it "fails with argument" do
