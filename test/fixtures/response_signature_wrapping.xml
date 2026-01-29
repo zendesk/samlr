@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<saml2p:Response xmlns:saml2p="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="samlr-32966210-941b-414d-9e74-dd16f7e676ae" InResponseTo="samlr-2bb5bd98-44c8-4676-bb68-7a8673e141c0" Version="2.0" IssueInstant="2025-10-30T13:23:08Z" Destination="https://example.org/saml/endpoint">
+  <saml:Issuer>ResponseBuilder IdP</saml:Issuer>
+  <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <SignedInfo>
+      <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+      <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+      <Reference URI="#samlr-222fe0da-90c6-44ed-93a4-3d79a01596d4">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <InclusiveNamespaces xmlns="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList=""/>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+        <DigestValue>qdW6Sx1sUmpN/joEMOUFPO1HOAc=</DigestValue>
+      </Reference>
+    </SignedInfo>
+    <SignatureValue>i+RCXmzCX5FMlh+0xgxkN6QjTJ5wzku36gv8hmUPB0GAN2AXHaSdYDtFLKCTa4F3MoFZq6oJeqSBfhkg/h1IKw==</SignatureValue>
+    <KeyInfo>
+      <X509Data>
+        <X509Certificate>MIIBjTCCATegAwIBAgIBATANBgkqhkiG9w0BAQUFADBPMQswCQYDVQQGEwJVUzEUMBIGA1UECgwLZXhhbXBsZS5vcmcxHTAbBgNVBAsMFFphbWwgUmVzcG9uc2VCdWlsZGVyMQswCQYDVQQDDAJDQTAeFw0xMjA4MDgwMjAxMDlaFw0zMjA4MDMwMjAxMTRaME8xCzAJBgNVBAYTAlVTMRQwEgYDVQQKDAtleGFtcGxlLm9yZzEdMBsGA1UECwwUWmFtbCBSZXNwb25zZUJ1aWxkZXIxCzAJBgNVBAMMAkNBMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALb9pPmyHrbZJMDLLkVsHzzXvP7DFcPiYdaNU50l5znRr8ZGhwRZFAwKroOxXwhK5e9lz06C+kGqnL1v10h1BEUCAwEAATANBgkqhkiG9w0BAQUFAANBAKU10RznL2p7xRhO9vOh0CY+gWYmT2kbkLTVRYLApghQFAW8EzIHC/NggfEHM554ykzbbPwjSvM7cRBBDHYuWoY=</X509Certificate>
+      </X509Data>
+    </KeyInfo>
+  </Signature>
+  <saml2p:Status>
+    <saml2p:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/>
+    <saml2p:StatusDetail>
+      <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" ID="samlr-222fe0da-90c6-44ed-93a4-3d79a01596d4" entityID="https://sp.example.com/saml2">
+        <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+          <md:NameIDFormat>identity_format</md:NameIDFormat>
+          <md:AssertionConsumerService index="0" Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://support.sp.example.com/"/>
+        </md:SPSSODescriptor>
+      </md:EntityDescriptor>
+    </saml2p:StatusDetail>
+  </saml2p:Status>
+  <saml:Assertion ID="samlr-43c490e8-6c91-4a6f-bf28-b52134404be6" IssueInstant="2025-10-30T13:23:08Z" Version="2.0">
+    <saml:Issuer>ResponseBuilder IdP</saml:Issuer>
+    <saml:Subject>
+      <saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">evil@crack.it</saml:NameID>
+      <saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+        <saml:SubjectConfirmationData InResponseTo="samlr-2bb5bd98-44c8-4676-bb68-7a8673e141c0" NotOnOrAfter="2025-10-30T13:24:08Z" Recipient="https://example.org/saml/endpoint"/>
+      </saml:SubjectConfirmation>
+    </saml:Subject>
+    <saml:AuthnStatement AuthnInstant="2025-10-30T13:23:08Z" SessionIndex="samlr-43c490e8-6c91-4a6f-bf28-b52134404be6">
+      <saml:AuthnContext>
+        <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:Password</saml:AuthnContextClassRef>
+      </saml:AuthnContext>
+    </saml:AuthnStatement>
+  </saml:Assertion>
+</saml2p:Response>

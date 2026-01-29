@@ -26,6 +26,45 @@ describe Samlr::Response do
     end
   end
 
+  describe "#signature" do
+    let(:metadata_doc) do
+      Nokogiri::XML(
+        Samlr::Tools::MetadataBuilder.build(
+          :entity_id            => "https://sp.example.com/saml2",
+          :name_identity_format => "identity_format",
+          :consumer_service_url => "https://support.sp.example.com/",
+          :sign_metadata        => true,
+          :certificate          => TEST_CERTIFICATE
+        )
+      )
+    end
+
+    it "is associated to the response" do
+      assert subject.signature.present?
+    end
+
+    describe "when response envelops a signature" do
+      let(:fingerprint) { Samlr::Certificate.new(TEST_CERTIFICATE.x509).fingerprint.value }
+      let(:saml_response) { Samlr::Response.new(xml_response_doc, fingerprint: fingerprint) }
+
+      describe "referencing other response" do
+        let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'multiple_responses.xml'))) }
+
+        it "does not associate it with the response" do
+          assert saml_response.signature.missing?
+        end
+      end
+
+      describe "referencing other element" do
+        let(:xml_response_doc) { Base64.encode64(File.read(File.join('.', 'test', 'fixtures', 'response_signature_wrapping.xml'))) }
+
+        it "does not associate it with the response" do
+          assert saml_response.signature.missing?
+        end
+      end
+    end
+  end
+
   describe "XSW attack" do
     it "should not validate if SAML response is hacked" do
       document = saml_response_document(:certificate => TEST_CERTIFICATE)
