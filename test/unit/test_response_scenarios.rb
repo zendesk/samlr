@@ -3,9 +3,8 @@ require File.expand_path("test/test_helper")
 # The tests in here are integraton level tests. They pass various mutations of a response
 # document to the stack and asserts behavior.
 describe Samlr do
-
   describe "a valid response" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE) }
+    subject { saml_response(certificate: TEST_CERTIFICATE) }
 
     it "verifies" do
       assert subject.verify!
@@ -14,8 +13,8 @@ describe Samlr do
   end
 
   describe "a valid response with a SHA1 fingerprint" do
-    let(:fp) { OpenSSL::Digest::SHA1.new.hexdigest(TEST_CERTIFICATE.x509.to_der) }
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :fingerprint => fp) }
+    let(:fp) { OpenSSL::Digest.new("SHA1").hexdigest(TEST_CERTIFICATE.x509.to_der) }
+    subject { saml_response(certificate: TEST_CERTIFICATE, fingerprint: fp) }
 
     it "verifies" do
       assert subject.verify!
@@ -24,8 +23,8 @@ describe Samlr do
   end
 
   describe "a valid response with a SHA256 fingerprint" do
-    let(:fp) { OpenSSL::Digest::SHA256.new.hexdigest(TEST_CERTIFICATE.x509.to_der) }
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :fingerprint => fp) }
+    let(:fp) { OpenSSL::Digest.new("SHA256").hexdigest(TEST_CERTIFICATE.x509.to_der) }
+    subject { saml_response(certificate: TEST_CERTIFICATE, fingerprint: fp) }
 
     it "verifies" do
       assert subject.verify!
@@ -34,21 +33,21 @@ describe Samlr do
   end
 
   describe "an invalid fingerprint" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :fingerprint => "hello") }
+    subject { saml_response(certificate: TEST_CERTIFICATE, fingerprint: "hello") }
     it "fails" do
       assert_raises(Samlr::FingerprintError) { subject.verify! }
     end
   end
 
   describe "an unsatisfied before condition" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :not_before => Samlr::Tools::Timestamp.stamp(Time.now + 60)) }
+    subject { saml_response(certificate: TEST_CERTIFICATE, not_before: Samlr::Tools::Timestamp.stamp(Time.now + 60)) }
 
     it "fails" do
       assert_raises(Samlr::ConditionsError) { subject.verify! }
     end
 
     describe "when jitter is in effect" do
-      after  { Samlr.jitter = nil }
+      after { Samlr.jitter = nil }
 
       it "passes" do
         Samlr.jitter = 500
@@ -58,14 +57,14 @@ describe Samlr do
   end
 
   describe "an unsatisfied after condition" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :not_on_or_after => Samlr::Tools::Timestamp.stamp(Time.now - 60)) }
+    subject { saml_response(certificate: TEST_CERTIFICATE, not_on_or_after: Samlr::Tools::Timestamp.stamp(Time.now - 60)) }
 
     it "fails" do
       assert_raises(Samlr::ConditionsError) { subject.verify! }
     end
 
     describe "when jitter is in effect" do
-      after  { Samlr.jitter = nil }
+      after { Samlr.jitter = nil }
 
       it "passes" do
         Samlr.jitter = 500
@@ -75,7 +74,7 @@ describe Samlr do
   end
 
   describe "when there are no attributes" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :attributes => {}) }
+    subject { saml_response(certificate: TEST_CERTIFICATE, attributes: {}) }
 
     it "returns an empty hash" do
       assert_equal({}, subject.attributes)
@@ -83,7 +82,7 @@ describe Samlr do
   end
 
   describe "when there are no signatures" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :sign_assertion => false, :sign_response => false) }
+    subject { saml_response(certificate: TEST_CERTIFICATE, sign_assertion: false, sign_response: false) }
 
     it "fails" do
       assert_raises(Samlr::SignatureError) { subject.verify! }
@@ -91,7 +90,7 @@ describe Samlr do
   end
 
   describe "when there is no keyinfo" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :skip_response_keyinfo => true, :skip_assertion_keyinfo => true) }
+    subject { saml_response(certificate: TEST_CERTIFICATE, skip_response_keyinfo: true, skip_assertion_keyinfo: true) }
 
     it "fails" do
       assert_raises(Samlr::SignatureError) { subject.verify! }
@@ -113,7 +112,7 @@ describe Samlr do
   end
 
   describe "when there's no assertion" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :sign_assertion => false, :skip_assertion => true) }
+    subject { saml_response(certificate: TEST_CERTIFICATE, sign_assertion: false, skip_assertion: true) }
 
     it "fails" do
       assert_raises(Samlr::FormatError) { subject.verify! }
@@ -121,7 +120,7 @@ describe Samlr do
   end
 
   describe "duplicate element ids" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :response_id => "abcdef", :assertion_id => "abcdef") }
+    subject { saml_response(certificate: TEST_CERTIFICATE, response_id: "abcdef", assertion_id: "abcdef") }
 
     it "fails" do
       assert_raises(Samlr::FormatError) { subject.verify! }
@@ -129,7 +128,7 @@ describe Samlr do
   end
 
   describe "when only the response signature is missing a certificate" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :skip_response_keyinfo => true) }
+    subject { saml_response(certificate: TEST_CERTIFICATE, skip_response_keyinfo: true) }
 
     it "verifies" do
       assert subject.verify!
@@ -137,7 +136,7 @@ describe Samlr do
   end
 
   describe "when only the assertion signature is missing a certificate" do
-    subject { saml_response(:certificate => TEST_CERTIFICATE, :skip_assertion_keyinfo => true) }
+    subject { saml_response(certificate: TEST_CERTIFICATE, skip_assertion_keyinfo: true) }
 
     it "verifies" do
       assert subject.verify!

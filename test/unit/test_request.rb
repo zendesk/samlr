@@ -1,7 +1,7 @@
 require_relative "../test_helper"
 
 describe Samlr::Request do
-  let(:data) { deflate(Samlr::Tools::LogoutRequestBuilder.build({:issuer => "https://sp.example.com/saml2", :name_id => "test@test.com"}).to_s)}
+  let(:data) { deflate(Samlr::Tools::LogoutRequestBuilder.build({issuer: "https://sp.example.com/saml2", name_id: "test@test.com"}).to_s) }
   let(:request) { Samlr::Request.new }
   let(:request_with_data) { Samlr::Request.new(data) }
 
@@ -29,13 +29,13 @@ describe Samlr::Request do
   describe "#url" do
     it "returns a valid URL" do
       request.stub(:param, "hello") do
-        assert_equal("https://foo.com/?SAMLRequest=hello&foo=bar", request.url("https://foo.com/", :foo => "bar"))
+        assert_equal("https://foo.com/?SAMLRequest=hello&foo=bar", request.url("https://foo.com/", foo: "bar"))
       end
     end
   end
 
   describe ".parse" do
-    let(:document){ deflate(Samlr::Tools::RequestBuilder.build.to_s) }
+    let(:document) { deflate(Samlr::Tools::RequestBuilder.build.to_s) }
 
     it "returns nil when given no data" do
       assert_nil Samlr::Request.parse(nil)
@@ -49,7 +49,7 @@ describe Samlr::Request do
       assert_nil Samlr::Request.parse("broken")
     end
 
-    it 'returns nill when given empty string' do
+    it "returns nill when given empty string" do
       assert_nil Samlr::Request.parse("")
     end
 
@@ -59,7 +59,7 @@ describe Samlr::Request do
 
     describe "when given a malformed XML request" do
       subject { deflate(saml_request_document.gsub("Assertion", "AyCaramba").to_s) }
-      after   { Samlr.validation_mode = :reject }
+      after { Samlr.validation_mode = :reject }
 
       describe "and Samlr.validation_mode == :log" do
         before { Samlr.validation_mode = :log }
@@ -79,7 +79,7 @@ describe Samlr::Request do
   describe "#get_attribute_or_element" do
     it "raises NoDataError when no data present" do
       assert_raises Samlr::NoDataError do
-        request.get_attribute_or_element("//samlp:LogoutRequest","ID")
+        request.get_attribute_or_element("//samlp:LogoutRequest", "ID")
       end
     end
 
@@ -89,7 +89,7 @@ describe Samlr::Request do
 
     it "returns correct attribute when present" do
       inflated = Samlr::Tools.inflate(Base64.decode64(data))
-      assert_equal Nokogiri::XML(inflated).xpath("//samlp:LogoutRequest/@ID").to_s, request_with_data.get_attribute_or_element("//samlp:LogoutRequest","ID")
+      assert_equal Nokogiri::XML(inflated).xpath("//samlp:LogoutRequest/@ID").to_s, request_with_data.get_attribute_or_element("//samlp:LogoutRequest", "ID")
     end
 
     it "returns nil when element not present" do
@@ -97,7 +97,7 @@ describe Samlr::Request do
     end
 
     it "returns nil when attribute not present" do
-      assert_nil request_with_data.get_attribute_or_element("//samlp:LogoutResponse","ID2")
+      assert_nil request_with_data.get_attribute_or_element("//samlp:LogoutResponse", "ID2")
     end
   end
 end

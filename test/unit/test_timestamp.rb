@@ -2,7 +2,7 @@ require File.expand_path("test/test_helper")
 
 describe Samlr::Tools::Timestamp do
   before { Samlr.jitter = nil }
-  after  { Samlr.jitter = nil }
+  after { Samlr.jitter = nil }
 
   describe "::parse" do
     before { @time = ::Time.now }

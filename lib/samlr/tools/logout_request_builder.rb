@@ -7,7 +7,7 @@ module Samlr
       def self.build(options = {})
         # Mandatory
         name_id = options.fetch(:name_id)
-        issuer  = options.fetch(:issuer)
+        issuer = options.fetch(:issuer)
 
         builder = Nokogiri::XML::Builder.new do |xml|
           xml.LogoutRequest("xmlns:samlp" => NS_MAP["samlp"], "xmlns:saml" => NS_MAP["saml"], "ID" => Samlr::Tools.uuid, "IssueInstant" => Samlr::Tools::Timestamp.stamp, "Version" => "2.0") do
@@ -21,10 +21,10 @@ module Samlr
       end
 
       def self.logout_options(options)
-        name_id_options  = options[:name_id_options] || {}
-        options = { "Format" => format_option(options) }
-        options.merge!("NameQualifier" => name_id_options[:name_qualifier]) if name_id_options[:name_qualifier]
-        options.merge!("SPNameQualifier" => name_id_options[:spname_qualifier]) if name_id_options[:spname_qualifier]
+        name_id_options = options[:name_id_options] || {}
+        options = {"Format" => format_option(options)}
+        options["NameQualifier"] = name_id_options[:name_qualifier] if name_id_options[:name_qualifier]
+        options["SPNameQualifier"] = name_id_options[:spname_qualifier] if name_id_options[:spname_qualifier]
         options
       end
 

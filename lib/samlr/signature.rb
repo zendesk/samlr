@@ -13,11 +13,11 @@ module Samlr
       # Signature validations require document alterations
       @original = original
       @document = original.dup
-      @prefix   = prefix
-      @options  = options
+      @prefix = prefix
+      @options = options
       @signature = nil
 
-      id = @document.at("#{prefix}", NS_MAP)&.attribute('ID')
+      id = @document.at(prefix.to_s, NS_MAP)&.attribute("ID")
       @signature = find_signature_for_element_id(id) if id
 
       @fingerprint = if options[:fingerprint]
@@ -51,7 +51,6 @@ module Samlr
         refs_xpath.each do |ref|
           refs << Samlr::Reference.new(ref)
         end
-
       end
     end
 
@@ -70,7 +69,7 @@ module Samlr
     def verify_digests!
       # Check if we need to remove an enveloped signature
       if @signature && !@signature_removed
-        signed_element = @document.at("#{prefix}", NS_MAP)
+        signed_element = @document.at(prefix.to_s, NS_MAP)
         is_enveloped = signed_element&.xpath(".//ds:Signature", NS_MAP)&.include?(@signature)
 
         # Remove enveloped signature for digest verification
@@ -81,9 +80,9 @@ module Samlr
       end
 
       references.each do |reference|
-        node    = referenced_node(reference.uri)
+        node = referenced_node(reference.uri)
         canoned = node.canonicalize(C14N, reference.namespaces)
-        digest  = reference.digest_method.digest(canoned)
+        digest = reference.digest_method.digest(canoned)
 
         if digest != reference.decoded_digest_value
           raise SignatureError.new("Reference validation error: Digest mismatch for #{reference.uri}")
@@ -128,14 +127,10 @@ module Samlr
     end
 
     def certificate
-      @certificate ||= begin
-        if node = certificate_node
-          Certificate.new(Base64.decode64(node.text))
-        elsif cert = options[:certificate]
-          Certificate.new(cert)
-        else
-          nil
-        end
+      @certificate ||= if (node = certificate_node)
+        Certificate.new(Base64.decode64(node.text))
+      elsif (cert = options[:certificate])
+        Certificate.new(cert)
       end
     end
 
@@ -150,9 +145,7 @@ module Samlr
     def find_signature_for_element_id(element_id)
       return nil unless element_id
 
-      return @document.at_xpath("//ds:Signature[ds:SignedInfo/ds:Reference[@URI='##{element_id}']]", NS_MAP)
-
+      @document.at_xpath("//ds:Signature[ds:SignedInfo/ds:Reference[@URI='##{element_id}']]", NS_MAP)
     end
-
   end
 end

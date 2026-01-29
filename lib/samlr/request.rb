@@ -41,14 +41,14 @@ module Samlr
       Samlr::Tools.parse(data, compressed: true)
     end
 
-    def get_attribute_or_element(x_path,attribute=nil)
+    def get_attribute_or_element(x_path, attribute = nil)
       if document
         element = document.xpath(x_path)
         if element.length == 0
           nil
         elsif attribute
           value = element.attr(attribute)
-          value.to_s if value
+          value&.to_s
         else
           element
         end

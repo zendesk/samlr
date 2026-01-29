@@ -2,7 +2,6 @@ require "forwardable"
 require "nokogiri"
 
 module Samlr
-
   # This is the object interface to the XML response object.
   class Response
     extend Forwardable
@@ -11,7 +10,7 @@ module Samlr
     attr_reader :document, :options
 
     def initialize(data, options)
-      @options  = options
+      @options = options
       @document = Response.parse(data)
     end
 

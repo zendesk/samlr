@@ -4,8 +4,8 @@ describe Samlr::Tools::LogoutResponseBuilder do
   describe ".build" do
     before do
       @xml = Samlr::Tools::LogoutResponseBuilder.build(
-        :issuer => "https://sp.example.com/saml2",
-        :name_id => "test@test.com"
+        issuer: "https://sp.example.com/saml2",
+        name_id: "test@test.com"
       )
       @doc = Nokogiri::XML(@xml) { |c| c.strict }
     end
@@ -18,7 +18,7 @@ describe Samlr::Tools::LogoutResponseBuilder do
     end
 
     it "validates against schemas" do
-      assert Samlr::Tools.validate(:document => @xml)
+      assert Samlr::Tools.validate(document: @xml)
     end
   end
 end

@@ -25,7 +25,7 @@ module Samlr
           "Version" => "2.0"
         }
         result["InResponseTo"] = options[:in_response_to] if options[:in_response_to]
-        result["Destination"] = options[:destination]     if options[:destination]
+        result["Destination"] = options[:destination] if options[:destination]
         result
       end
     end

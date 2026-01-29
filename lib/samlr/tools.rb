@@ -15,10 +15,10 @@ require "samlr/tools/logout_response_builder"
 module Samlr
   module Tools
     SHA_MAP = {
-      1    => OpenSSL::Digest::SHA1,
-      256  => OpenSSL::Digest::SHA256,
-      384  => OpenSSL::Digest::SHA384,
-      512  => OpenSSL::Digest::SHA512
+      1 => OpenSSL::Digest::SHA1,
+      256 => OpenSSL::Digest::SHA256,
+      384 => OpenSSL::Digest::SHA384,
+      512 => OpenSSL::Digest::SHA512
     }
 
     # Convert algorithm attribute value to Ruby implementation
@@ -32,13 +32,13 @@ module Samlr
 
     # Accepts a document and optionally :path => xpath, :c14n_mode => c14n_mode
     def self.canonicalize(xml, options = {})
-      options  = { :c14n_mode => C14N }.merge(options)
+      options = {c14n_mode: C14N}.merge(options)
       document = Nokogiri::XML(xml) { |c| c.strict.noblanks }
 
-      if path = options[:path]
-        node = document.at(path, NS_MAP)
+      node = if (path = options[:path])
+        document.at(path, NS_MAP)
       else
-        node = document
+        document
       end
 
       node.canonicalize(options[:c14n_mode], options[:namespaces])
@@ -52,17 +52,16 @@ module Samlr
     # Deflates, Base64 encodes and CGI escapes a string
     def self.encode(string)
       deflated = Zlib::Deflate.deflate(string, 9)[2..-5]
-      encoded  = Base64.encode64(deflated)
-      escaped  = CGI.escape(encoded)
-      escaped
+      encoded = Base64.encode64(deflated)
+      CGI.escape(encoded)
     end
 
     # CGI unescapes, Base64 decodes and inflates a string
     def self.decode(string)
       unescaped = CGI.unescape(string)
-      decoded   = Base64.decode64(unescaped)
-      inflater  = Zlib::Inflate.new(-Zlib::MAX_WBITS)
-      inflated  = inflater.inflate(decoded)
+      decoded = Base64.decode64(unescaped)
+      inflater = Zlib::Inflate.new(-Zlib::MAX_WBITS)
+      inflated = inflater.inflate(decoded)
 
       inflater.finish
       inflater.close
@@ -71,29 +70,29 @@ module Samlr
     end
 
     def self.validate!(options = {})
-      validate(options.merge(:bang => true))
+      validate(options.merge(bang: true))
     end
 
     # Validate a SAML request or response against an XSD. Supply either :path or :document in the options and
     # a :schema (defaults to SAML validation)
     def self.validate(options = {})
       document = options[:document] || File.read(options[:path])
-      schema   = options.fetch(:schema, SAML_SCHEMA)
-      bang     = options.fetch(:bang, false)
+      schema = options.fetch(:schema, SAML_SCHEMA)
+      bang = options.fetch(:bang, false)
 
-      if document.is_a?(Nokogiri::XML::Document)
-        xml = document
+      xml = if document.is_a?(Nokogiri::XML::Document)
+        document
       else
-        xml = Nokogiri::XML(document) { |c| c.strict }
+        Nokogiri::XML(document) { |c| c.strict }
       end
 
       # All bundled schemas are using relative schemaLocation. This means we'll have to
       # change working directory to find them during validation.
       Dir.chdir(Samlr.schema_location) do
-        if schema.is_a?(Nokogiri::XML::Schema)
-          xsd = schema
+        xsd = if schema.is_a?(Nokogiri::XML::Schema)
+          schema
         else
-          xsd = Nokogiri::XML::Schema(File.read(schema))
+          Nokogiri::XML::Schema(File.read(schema))
         end
 
         result = xsd.validate(xml)
@@ -113,7 +112,7 @@ module Samlr
     def self.parse(data, compressed: false)
       return unless data
       decoded = Base64.decode64(data)
-      decoded = self.inflate(decoded) if compressed
+      decoded = inflate(decoded) if compressed
       return unless decoded
       begin
         doc = Nokogiri::XML(decoded) { |config| config.strict }
@@ -126,7 +125,7 @@ module Samlr
       end
 
       begin
-        Samlr::Tools.validate!(:document => doc)
+        Samlr::Tools.validate!(document: doc)
       rescue Samlr::SamlrError => e
         Samlr.logger.warn("Accepting non schema conforming response: #{e.message}, #{e.details}")
         raise e unless Samlr.validation_mode == :log
@@ -135,7 +134,7 @@ module Samlr
     end
 
     def self.inflate(data)
-      inflater  = Zlib::Inflate.new(-Zlib::MAX_WBITS)
+      inflater = Zlib::Inflate.new(-Zlib::MAX_WBITS)
       decoded = inflater.inflate(data)
       inflater.finish
       inflater.close

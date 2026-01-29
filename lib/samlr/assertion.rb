@@ -5,7 +5,7 @@ module Samlr
 
     def initialize(document, options)
       @document = document
-      @options  = options
+      @options = options
     end
 
     def verify!
@@ -31,15 +31,15 @@ module Samlr
     def attributes
       @attributes ||= {}.tap do |attrs|
         assertion.xpath("./saml:AttributeStatement/saml:Attribute", NS_MAP).each do |statement|
-          name   = statement["Name"]
+          name = statement["Name"]
           values = statement.xpath("./saml:AttributeValue", NS_MAP)
 
-          if values.size == 0
-            value = nil
+          value = if values.size == 0
+            nil
           elsif values.size == 1
-            value = values.first.text
+            values.first.text
           else
-            value = values.map { |value| value.text }
+            values.map { |value| value.text }
           end
 
           attrs[name] = value
@@ -56,7 +56,7 @@ module Samlr
     end
 
     def name_id_options
-      @name_id_options ||= Hash[name_id_node.attributes.map{|k,v| [k, v.value]}]
+      @name_id_options ||= name_id_node.attributes.map { |k, v| [k, v.value] }.to_h
     end
 
     def conditions

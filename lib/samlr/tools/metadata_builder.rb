@@ -1,6 +1,5 @@
 module Samlr
   module Tools
-
     # Builds you some SP metadata. Accepts a hash with the below keys. No support for arrays
     # of name id formats or asserion consumer services, build it if you need it.
     #
@@ -8,16 +7,15 @@ module Samlr
     #  :name_identity_format => Samlr::EMAIL_FORMAT,
     #  :consumer_service_url => "https://sp.example.org/saml"
     class MetadataBuilder
-
       def self.build(options = {})
-        name_identity_format     = options[:name_identity_format]
-        consumer_service_url     = options[:consumer_service_url]
+        name_identity_format = options[:name_identity_format]
+        consumer_service_url = options[:consumer_service_url]
         consumer_service_binding = options[:consumer_service_binding] || "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-        metadata_id              = options[:metadata_id] || Samlr::Tools.uuid
-        sign_metadata            = options[:sign_metadata] || false
+        metadata_id = options[:metadata_id] || Samlr::Tools.uuid
+        sign_metadata = options[:sign_metadata] || false
 
         # Mandatory
-        entity_id                = options.fetch(:entity_id)
+        entity_id = options.fetch(:entity_id)
 
         builder = Nokogiri::XML::Builder.new do |xml|
           xml.EntityDescriptor("xmlns:md" => NS_MAP["md"], "ID" => metadata_id, "entityID" => entity_id) do

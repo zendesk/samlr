@@ -1,7 +1,7 @@
 require File.expand_path("test/test_helper")
 
 describe Samlr::Certificate do
-  let(:fingerprint) { OpenSSL::Digest::SHA256.new.hexdigest(TEST_CERTIFICATE.x509.to_der).scan(/../).join(":").upcase }
+  let(:fingerprint) { OpenSSL::Digest.new("SHA256").hexdigest(TEST_CERTIFICATE.x509.to_der).scan(/../).join(":").upcase }
 
   describe ".fingerprint" do
     it "returns the SHA266 fingerprint" do
@@ -15,7 +15,7 @@ describe Samlr::Certificate do
     end
 
     it "returns false when comparing against nil" do
-      refute Samlr::Certificate.new(TEST_CERTIFICATE.x509) == nil
+      refute Samlr::Certificate.new(TEST_CERTIFICATE.x509).nil?
     end
 
     it "returns false when comparing against a different certificate" do

@@ -1,0 +1,10 @@
+# Auto generated files with errors to ignore.
+# Remove from this list as you refactor files.
+---
+ignore:
+- test/unit/test_certificate.rb:
+  - Lint/BinaryOperatorWithIdenticalOperands
+- test/unit/test_fingerprint_sha1.rb:
+  - Lint/BinaryOperatorWithIdenticalOperands
+- test/unit/test_fingerprint_sha256.rb:
+  - Lint/BinaryOperatorWithIdenticalOperands

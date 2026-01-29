@@ -3,10 +3,10 @@ module Samlr
     attr_reader :audience, :not_before, :not_on_or_after, :options
 
     def initialize(condition, options)
-      @options         = options
-      @not_before      = (condition || {})["NotBefore"]
+      @options = options
+      @not_before = (condition || {})["NotBefore"]
       @not_on_or_after = (condition || {})["NotOnOrAfter"]
-      @audience        = extract_audience(condition)
+      @audience = extract_audience(condition)
     end
 
     def verify!
@@ -35,9 +35,9 @@ module Samlr
 
     def audience_satisfied?
       options[:audience].nil? ||
-      audience.nil?           ||
-      audience.empty?         ||
-      audience.any? { |a| options[:audience] === a }
+        audience.nil? ||
+        audience.empty? ||
+        audience.any? { |a| options[:audience] === a }
     end
 
     private
@@ -45,10 +45,10 @@ module Samlr
     def extract_audience(condition)
       return unless condition
 
-      audience_restriction_node = condition.at('./saml:AudienceRestriction', NS_MAP)
+      audience_restriction_node = condition.at("./saml:AudienceRestriction", NS_MAP)
       return unless audience_restriction_node
 
-      audience_nodes = audience_restriction_node.search('./saml:Audience', NS_MAP)
+      audience_nodes = audience_restriction_node.search("./saml:Audience", NS_MAP)
       return unless audience_nodes.any?
 
       audience_nodes.map(&:text)

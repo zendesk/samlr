@@ -4,11 +4,11 @@ describe Samlr::Tools::RequestBuilder do
   describe ".build" do
     before do
       @xml = Samlr::Tools::RequestBuilder.build({
-        :issuer               => "https://sp.example.com/saml2",
-        :name_identity_format => "identity_format",
-        :allow_create         => "true",
-        :consumer_service_url => "https://support.sp.example.com/",
-        :authn_context        => "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport"
+        issuer: "https://sp.example.com/saml2",
+        name_identity_format: "identity_format",
+        allow_create: "true",
+        consumer_service_url: "https://support.sp.example.com/",
+        authn_context: "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport"
       })
 
       @doc = Nokogiri::XML(@xml) { |c| c.strict }
@@ -27,9 +27,8 @@ describe Samlr::Tools::RequestBuilder do
     end
 
     it "validates against schemas" do
-      result = Samlr::Tools.validate(:document => @xml)
+      result = Samlr::Tools.validate(document: @xml)
       assert result
     end
-
   end
 end
