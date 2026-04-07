@@ -145,7 +145,14 @@ module Samlr
     def find_signature_for_element_id(element_id)
       return nil unless element_id
 
-      @document.at_xpath("//ds:Signature[ds:SignedInfo/ds:Reference[@URI='##{element_id}']]", NS_MAP)
+      # Prevent XPath injection by using parameterized XPath queries with variable bindings.
+      # Nokogiri's xpath() method supports passing variables separately from the query,
+      # which prevents injection attacks like "_x'or'1'='1" from breaking out of the predicate.
+      @document.at_xpath(
+        "//ds:Signature[ds:SignedInfo/ds:Reference[@URI=$uri]]",
+        NS_MAP,
+        {uri: "##{element_id}"}
+      )
     end
   end
 end
